@@ -7,9 +7,9 @@ public abstract class BaseBehavior : ScriptableObject
 {
     protected System.Object data;
 
-    public virtual void Start() { }
+    public virtual void StartBehavior(Mob mob) { }
 
-    public abstract void Update();
+    public abstract void UpdateBehavior(Mob mob);
 
-    public virtual void End() { }
+    public virtual void EndBehavior(Mob mob) { }
 }

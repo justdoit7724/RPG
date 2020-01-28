@@ -9,7 +9,11 @@ public class IdleBehavior : BaseBehavior
         this.data = data;
     }
 
-    public override void Update()
+    public override void StartBehavior(Mob mob)
+    {
+    }
+
+    public override void UpdateBehavior(Mob mob)
     {
         
     }

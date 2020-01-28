@@ -4,18 +4,27 @@ using UnityEngine;
 
 public class Player : Mob
 {
-    public Transform dest;
+    WeaponTrail trail;
+    float temp = 0;
 
     public override void Start()
     {
         base.Start();
+
+        trail = GetComponentInChildren<WeaponTrail>();
+    }
+
+    public void StartTrail()
+    {
+        trail.StartTrail();
+    }
+    public void EndTrail()
+    {
+        trail.EndTrail();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(dest!=null)
-        nav.SetDestination(dest.position);
-
     }
 }
