@@ -42,7 +42,7 @@ public class WeaponTrail : MonoBehaviour
         meshRenderer = GetComponent(typeof(MeshRenderer)) as MeshRenderer;
         for (int i = 0; i < maxVertCount; ++i)
         {
-            colors[i] = new Color(1, 1, 1, 0.4f);
+            colors[i] = new Color(1, 1, 1, 0.2f);
         }
     }
     public void StartTrail()

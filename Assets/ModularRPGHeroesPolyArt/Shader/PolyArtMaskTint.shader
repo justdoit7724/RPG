@@ -4,6 +4,7 @@ Shader "PolyArtMaskTint"
 {
 	Properties
 	{
+		_HitFlash("HitFlash", Range(0,1))=0
 		_Smoothness("Smoothness", Range( 0 , 1)) = 0
 		_Metallic("Metallic", Range( 0 , 1)) = 0
 		_Color03("Color03", Color) = (0,0,0,0)
@@ -34,6 +35,7 @@ Shader "PolyArtMaskTint"
 		uniform float4 _Color01;
 		uniform float4 _Color02;
 		uniform float4 _Color03;
+		uniform float _HitFlash;
 		uniform float _Metallic;
 		uniform float _Smoothness;
 
@@ -49,7 +51,7 @@ Shader "PolyArtMaskTint"
 			float4 blendOpSrc22 = tex2DNode16;
 			float4 blendOpDest22 = ( min( temp_cast_0 , _Color01 ) + min( temp_cast_1 , _Color02 ) + min( temp_cast_2 , _Color03 ) );
 			float4 lerpResult4 = lerp( tex2DNode16 , ( ( saturate( ( blendOpSrc22 * blendOpDest22 ) )) * 2.0 ) , ( tex2DNode13.r + tex2DNode13.g + tex2DNode13.b ));
-			o.Albedo = lerpResult4.rgb;
+			o.Albedo = lerp(lerpResult4.rgb, 1, _HitFlash);
 			o.Metallic = _Metallic;
 			o.Smoothness = _Smoothness;
 			o.Alpha = 1;

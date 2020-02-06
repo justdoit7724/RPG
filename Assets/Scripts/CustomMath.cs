@@ -20,4 +20,5 @@ public class CustomMath
     {
         return (1 - t) * (1 - t) * p0 + (2 * t - 2 * t * t) * p1 + t * t * p2;
     }
+
 }

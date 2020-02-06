@@ -1,20 +1,27 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class IdleBehavior : BaseBehavior
 {
-    public IdleBehavior(System.Object data)
-    {
-        this.data = data;
-    }
 
     public override void StartBehavior(Mob mob)
     {
+        base.StartBehavior(mob);
+
+        mob.Anim.SetBool("isRun", false);
+        mob.Nav.isStopped = true;
+        mob.Nav.destination = mob.transform.position;
     }
 
-    public override void UpdateBehavior(Mob mob)
+    public override bool UpdateBehavior(Mob mob)
     {
-        
+        return true;
+    }
+
+    public override void EndBehavior(Mob mob)
+    {
+        base.EndBehavior(mob);
     }
 }
