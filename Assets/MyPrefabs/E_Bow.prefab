@@ -5119,7 +5119,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aef88255b67c4646a24e9deba344f52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 400
   arrowPrefab: {fileID: 9146419659830979453, guid: cdd0382f382c2f64ab717788b197a3ab,
     type: 3}
   arrowFirePt: {fileID: 6912688417145237077}
@@ -6900,6 +6899,7 @@ MonoBehaviour:
   detectRad: 25
   attRad: 12.5
   visualArrow: {fileID: 1385905041924122}
+  bowDamage: 30
 --- !u!195 &59609688
 NavMeshAgent:
   m_ObjectHideFlags: 0

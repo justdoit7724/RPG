@@ -21,9 +21,11 @@ public abstract class BaseBehavior : ScriptableObject
 
     private BehaviorPriority priority;
     private bool isAlone = true;
+    private BehaviorState state= BehaviorState.NotStarted;
 
-    public BehaviorState state= BehaviorState.NotStarted;
-
+    public bool IsAlone { get { return isAlone; } }
+    public BehaviorPriority Priority { get { return priority; } }
+    public BehaviorState State { get { return state; } }
 
     public virtual void Init(BehaviorPriority p, System.Object data, bool isAlone)
     {

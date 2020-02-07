@@ -16,13 +16,14 @@ public class SwordAttBehaviorData
 
 public class SwordAttBehavior : BaseBehavior
 {
+    SwordAttBehaviorData mData;
     private float lifeTime=1;
 
     public override void StartBehavior(Mob mob)
     {
         base.StartBehavior(mob);
 
-        SwordAttBehaviorData mData = (SwordAttBehaviorData)data;
+        mData = (SwordAttBehaviorData)data;
         mob.Anim.SetTrigger(mData.name);
         lifeTime = mData.lifeTime;
     }
@@ -39,6 +40,7 @@ public class SwordAttBehavior : BaseBehavior
     public override void EndBehavior(Mob mob)
     {
         base.EndBehavior(mob);
+        mob.Anim.ResetTrigger(mData.name);
 
         ESword bMob = mob as ESword;
         if (bMob && bMob.Target.IsDeath())

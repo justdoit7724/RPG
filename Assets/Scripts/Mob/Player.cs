@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -13,16 +14,12 @@ public class Player : Mob
     private WeaponTrail trail;
     private Sword weapon;
 
-    private BaseBehavior manualRunBehavior;
-    private ManualRunBehaviorData manualRunData;
-    private BaseBehavior attBehavior;
-    private SwordAttBehaviorData attData;
+    private SwordAttBehaviorData att1Data;
+    private SwordAttBehaviorData att2Data;
+    private SwordAttBehaviorData att3Data;
 
     private string curAtt="none";
     private float curAttTime = 0;
-    private const float att1Time = 0.15f;
-    private const float att2Time = 0.15f;
-    private const float att3Time = 1.0f;
 
     public override void Start()
     {
@@ -31,12 +28,9 @@ public class Player : Mob
         trail = GetComponentInChildren<WeaponTrail>();
         weapon = GetComponentInChildren<Sword>();
 
-        manualRunData = new ManualRunBehaviorData(true, speed);
-        manualRunBehavior = ScriptableObject.CreateInstance<ManualRunBehavior>();
-        manualRunBehavior.Init(BehaviorPriority.Basic, manualRunData,true);
-        attData = new SwordAttBehaviorData("att", 0);
-        attBehavior = ScriptableObject.CreateInstance<SwordAttBehavior>();
-        attBehavior.Init(BehaviorPriority.Skill, attData,false);
+        att1Data = new SwordAttBehaviorData("att1", 3.0f);
+        att2Data = new SwordAttBehaviorData("att2", 3.0f);
+        att3Data = new SwordAttBehaviorData("att3", 6.0f);
     }
 
     public override void AE_StartAttack()
@@ -59,59 +53,71 @@ public class Player : Mob
 
         curAttTime -= Time.deltaTime;
 
+        bool isRun = false;
 #if UNITY_EDITOR
-        Vector3 camRight = Camera.main.transform.right;
-        camRight.y = 0;
-        Vector3 camForward = Camera.main.transform.forward;
-        camForward.y = 0;
-        Vector3 moveDir =
-            Input.GetAxisRaw("Horizontal") * camRight +
-            Input.GetAxisRaw("Vertical") * camForward;
-        manualRunData.dir = moveDir.normalized;
-        manualRunData.isRunning = (moveDir.magnitude > 0.0001f);
+        isRun = 
+            Input.GetKey(KeyCode.A) ||
+            Input.GetKey(KeyCode.D) ||
+            Input.GetKey(KeyCode.W) ||
+            Input.GetKey(KeyCode.S);
 
         // 보류
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && fsm.CanAdd(BehaviorPriority.Skill))
         {
-            if (curAttTime < 0.01f)
+            if (curAttTime <= 0)
+            {
+                curAtt = "att1";
+                curAttTime = att1Data.lifeTime;
+
+                BaseBehavior attBehavior = ScriptableObject.CreateInstance<SwordAttBehavior>();
+                attBehavior.Init(BehaviorPriority.Skill, att1Data, false);
+                fsm.AddBehavior(attBehavior);
+            }
+            else
             {
                 switch (curAtt)
                 {
-                    case "none":
-                        curAtt = "att1";
-                        curAttTime = att1Time;
-                        attData.lifeTime = curAttTime;
-                        fsm.AddBehavior(attBehavior);
-                        break;
                     case "att1":
-                        curAtt = "att2";
-                        curAttTime = att2Time;
-                        attData.lifeTime = curAttTime;
-                        fsm.AddBehavior(attBehavior);
+                        if (curAttTime < 1.0f)
+                        {
+                            curAtt = "att2";
+                            curAttTime = att2Data.lifeTime;
+
+                            BaseBehavior attBehavior = ScriptableObject.CreateInstance<SwordAttBehavior>();
+                            attBehavior.Init(BehaviorPriority.Skill, att2Data, false);
+                            fsm.AddBehavior(attBehavior);
+                        }
                         break;
                     case "att2":
-                        curAtt = "att3";
-                        curAttTime = att3Time;
-                        attData.lifeTime = att3Time;
-                        fsm.AddBehavior(attBehavior);
-                        break;
-                    case "att3":
-                        curAtt = "none";
+                        if (curAttTime < 1.0f)
+                        {
+                            curAtt = "att3";
+                            curAttTime = att3Data.lifeTime;
+
+                            BaseBehavior attBehavior = ScriptableObject.CreateInstance<SwordAttBehavior>();
+                            attBehavior.Init(BehaviorPriority.Skill, att3Data, false);
+                            fsm.AddBehavior(attBehavior);
+                        }
                         break;
                 }
-
             }
         }
 #elif UNITY_ANDROID
 #endif
-
-        if (manualRunData.isRunning)
+        if (fsm.CanAdd(BehaviorPriority.Basic))
         {
-            fsm.AddBehavior(manualRunBehavior);
-        }
-        else
-        {
-            fsm.AddBehavior(idleBehavior);
+            if (isRun && fsm.CurBehaviorName() != "ManualRunBehavior")
+            {
+                BaseBehavior manualRunBehavior = ScriptableObject.CreateInstance<ManualRunBehavior>();
+                manualRunBehavior.Init(BehaviorPriority.Basic, speed, true);
+                fsm.AddBehavior(manualRunBehavior);
+            }
+            else if(fsm.CurBehaviorName() != "IdleBehavior")
+            {
+                BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
+                idleBehavior.Init(BehaviorPriority.Basic, null, false);
+                fsm.AddBehavior(idleBehavior);
+            }
         }
     }
 

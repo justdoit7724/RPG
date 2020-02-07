@@ -13,9 +13,6 @@ public abstract class Mob : MonoBehaviour
     protected Animator anim;
     protected FSM fsm;
 
-    protected BaseBehavior idleBehavior;
-    protected BaseBehavior walkBehavior;
-    protected BaseBehavior deathBehavior;
     protected RunBehaviorData walkData = new RunBehaviorData(new Vector3(0, 0, 0));
 
     public virtual void GetDamaged(float amount)
@@ -23,6 +20,8 @@ public abstract class Mob : MonoBehaviour
         // die this time
         if(curHP > 0 && curHP <=amount)
         {
+            BaseBehavior deathBehavior = ScriptableObject.CreateInstance<DieBehavior>();
+            deathBehavior.Init(BehaviorPriority.Vital, null, true);
             fsm.AddBehavior(deathBehavior);
         }
         
@@ -42,14 +41,6 @@ public abstract class Mob : MonoBehaviour
         fsm = GetComponent<FSM>();
         nav = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
-
-        idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
-        walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
-        deathBehavior = ScriptableObject.CreateInstance<DieBehavior>();
-        idleBehavior.Init(BehaviorPriority.Basic, null, true);
-        walkBehavior.Init(BehaviorPriority.Basic, walkData, true);
-        deathBehavior.Init(BehaviorPriority.Vital, null,true);
-
 
         curHP = maxHP;
     }

@@ -5,12 +5,17 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class Sword : MonoBehaviour
 {
-    [SerializeField] private float damage=1;
+    private float damage=0;
 
     private Collider weaponCollider;
 
     private int layer;
     private int opponentLayer;
+
+    public void SetDamage(float d)
+    {
+        damage = d;
+    }
 
     private void Start()
     {

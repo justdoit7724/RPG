@@ -10,7 +10,7 @@ public class IdleBehavior : BaseBehavior
     {
         base.StartBehavior(mob);
 
-        mob.Anim.SetBool("isRun", false);
+        mob.Anim.SetTrigger("idle");
         mob.Nav.isStopped = true;
         mob.Nav.destination = mob.transform.position;
     }
@@ -23,5 +23,6 @@ public class IdleBehavior : BaseBehavior
     public override void EndBehavior(Mob mob)
     {
         base.EndBehavior(mob);
+        mob.Anim.ResetTrigger("idle");
     }
 }

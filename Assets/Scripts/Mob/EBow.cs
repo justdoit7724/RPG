@@ -7,12 +7,12 @@ public class EBow : Mob
     [SerializeField] private float detectRad = 30;
     [SerializeField] private float attRad = 15;
     [SerializeField] private GameObject visualArrow;
+    [SerializeField] private float bowDamage = 30;
     private float sqrAttRad;
     private Mob target = null;
     private WeaponTrail trail;
     private Bow weapon;
-    private BaseBehavior attBehavior;
-    private ArrowAttBehaviorData attData = new ArrowAttBehaviorData(null, 3.5f);
+
 
     public Mob Target { get { return target; } }
 
@@ -24,10 +24,7 @@ public class EBow : Mob
 
         trail = GetComponentInChildren<WeaponTrail>();
         weapon = GetComponentInChildren<Bow>();
-
-        attBehavior = ScriptableObject.CreateInstance<ArrowAttBehavior>();
-       
-        attBehavior.Init(BehaviorPriority.Skill, attData, true);
+        weapon.SetDamage(bowDamage);
     }
 
     public override void AE_StartAttack()
@@ -54,24 +51,31 @@ public class EBow : Mob
             {
                 target = colliders[0].GetComponent<Mob>();
             }
-            else
+            else if(fsm.CanAdd(BehaviorPriority.Basic))
+            {
+                BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
+                idleBehavior.Init(BehaviorPriority.Basic, null, true);
                 fsm.AddBehavior(idleBehavior);
+            }
         }
 
         if (target)
         {
             Vector3 subVec = transform.position - target.transform.position;
-            if (subVec.sqrMagnitude <= sqrAttRad)
+            if (subVec.sqrMagnitude <= sqrAttRad && fsm.CanAdd(BehaviorPriority.Skill))
             {
-                attData.target = target.transform;
+                BaseBehavior attBehavior = ScriptableObject.CreateInstance<ArrowAttBehavior>();
+                attBehavior.Init(BehaviorPriority.Skill, new ArrowAttBehaviorData(target.transform, 3.5f), true);
+
                 fsm.AddBehavior(attBehavior);
             }
-            else
+            else if(fsm.CanAdd(BehaviorPriority.Basic))
             {
+                BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
+                walkBehavior.Init(BehaviorPriority.Basic, walkData, true);
                 walkData.dest = target.transform.position;
                 fsm.AddBehavior(walkBehavior);
             }
-            
         }
     }
 

@@ -6731,7 +6731,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4158162170571520
 Transform:
   m_ObjectHideFlags: 0
@@ -6830,7 +6830,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1500168017719090}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.35
+  m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -6867,9 +6867,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fc2eb4f72a79534b9039f0fed66b3b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 1000
+  maxHP: 150
   detectRad: 20
-  attRad: 2.5
+  attRad: 1.4
+  swordDamage: 20
 --- !u!1 &1501762419466848
 GameObject:
   m_ObjectHideFlags: 0
@@ -11731,8 +11732,6 @@ GameObject:
   - component: {fileID: 23236117925143378}
   - component: {fileID: 7261803068127888874}
   - component: {fileID: 4718097422043686645}
-  - component: {fileID: 13652005}
-  - component: {fileID: 13652004}
   m_Layer: 10
   m_Name: Sword1_R
   m_TagString: Untagged
@@ -11809,7 +11808,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1940490361052568}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.07
   m_Height: 1.1
@@ -11827,34 +11826,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98405d58f508ac142bb29292d1cee5a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 1
---- !u!136 &13652005
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1940490361052568}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.07
-  m_Height: 1.2
-  m_Direction: 1
-  m_Center: {x: 0, y: -0.68, z: 0}
---- !u!114 &13652004
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1940490361052568}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98405d58f508ac142bb29292d1cee5a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 1
 --- !u!1 &1940801478037690
 GameObject:
   m_ObjectHideFlags: 0

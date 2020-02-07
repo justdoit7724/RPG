@@ -4,11 +4,16 @@ using UnityEngine;
 
 public class Bow : MonoBehaviour
 {
-    [SerializeField] private float damage = 1;
+    private float damage = 0;
     [SerializeField] private GameObject arrowPrefab;
     [SerializeField] private Transform arrowFirePt;
 
     private Arrow curArrow = null;
+
+    public void SetDamage(float d)
+    {
+        damage = d;
+    }
 
     void Start()
     {

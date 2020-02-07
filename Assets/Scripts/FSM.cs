@@ -10,27 +10,41 @@ public class FSM : MonoBehaviour
     LinkedList<BaseBehavior> behaviors = new LinkedList<BaseBehavior>();
     Mob mob;
 
-    public bool AddBehavior(BaseBehavior behavior)
+    public string CurBehaviorName()
+    {
+        if (behaviors.Count == 0)
+            return null;
+
+        return (CurBehavior().GetType().ToString());
+    }
+    public bool CanAdd(BehaviorPriority priority)
+    {
+        if (behaviors.Count == 0)
+            return true;
+
+        return (
+            (LastBehavior().Priority < priority) ||
+            ((LastBehavior().Priority == priority) && !LastBehavior().IsAlone)
+            );
+    }
+    public void AddBehavior(BaseBehavior behavior)
     {
         if (behaviors.Count == 0)
         {
             behaviors.AddLast(behavior);
-            return true;
         }
-        else
+        else if(LastBehavior() < behavior)
         {
             bool isAdd = false;
             while (LastBehavior() && LastBehavior() < behavior)
             {
                 isAdd = true;
-                if (LastBehavior().state == BehaviorState.InProcess)
+                if (LastBehavior().State == BehaviorState.InProcess)
                     LastBehavior().EndBehavior(mob);
                 behaviors.RemoveLast();
             }
             if(isAdd)
                 behaviors.AddLast(behavior);
-
-            return isAdd;
         }
     }
     private BaseBehavior CurBehavior()

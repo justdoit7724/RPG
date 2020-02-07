@@ -25,9 +25,9 @@ public class DieBehavior : BaseBehavior
         if (delayTime > 0.0f)
             return true;
 
-        if (mob.transform.position.y > -5.0f)
+        if (mob.transform.position.y > -3.0f)
         {
-            mob.transform.position = mob.transform.position - mob.transform.up * Time.deltaTime * 0.5f;
+            mob.transform.position = mob.transform.position - mob.transform.up * Time.deltaTime * 0.25f;
             return true;
         }
         else
