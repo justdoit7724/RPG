@@ -510,7 +510,7 @@ ModelImporter:
       takeName: Take 001
       internalID: 0
       firstFrame: 0
-      lastFrame: 15
+      lastFrame: 12
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -539,6 +539,13 @@ ModelImporter:
         messageOptions: 0
       - time: 0.6439394
         functionName: AE_EndAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.5446154
+        functionName: AE_FireBall
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

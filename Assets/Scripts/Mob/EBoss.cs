@@ -1,23 +1,35 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EBoss : Mob
+public class EBoss : NPC
 {
-    [SerializeField] private float detectRad = 30;
-    private Mob target = null;
     private WeaponTrail trail;
     private BaseBehavior idleBehavior;
     private BaseBehavior dieBehavior;
+
+    public override void GetDamaged(float amount)
+    {
+        // die this time
+        if (curHP > 0 && curHP <= amount)
+        {
+            BaseBehavior deathBehavior = ScriptableObject.CreateInstance<DieBehavior>();
+            deathBehavior.Init(BehaviorPriority.Vital, 0, null);
+            fsm.AddBehavior(deathBehavior);
+        }
+
+        curHP -= amount;
+    }
 
     public override void Start()
     {
         base.Start();
 
         trail = GetComponentInChildren<WeaponTrail>();
-
+      
         idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
-        idleBehavior.Init(BehaviorPriority.Basic, null, true);
+        idleBehavior.Init(BehaviorPriority.Basic, 0, null);
     }
 
     public override void AE_StartAttack()
@@ -29,20 +41,24 @@ public class EBoss : Mob
         trail.EndTrail();
     }
 
+
     private void Update()
     {
         if (IsDeath())
             return;
 
-        if(target==null)
+        UpdateHPBar();
+        UpdateTarget("Alley", ref target);
+
+        if (target==null)
         {
-            Collider[] colliders = Physics.OverlapSphere(transform.position, detectRad, LayerMask.GetMask("Player"));
-            if (colliders.Length > 0)
-                target = colliders[0].GetComponent<Mob>();
-        }
-        else
-        {
-            fsm.AddBehavior(idleBehavior);
+            if (!fsm.ContainBehavior(Type.GetType("IdleBehavior")))
+            {
+                BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
+                runBehaviorData.dest = target.transform.position;
+                idleBehavior.Init(BehaviorPriority.Basic, 0, runBehaviorData);
+                fsm.AddBehavior(idleBehavior);
+            }
         }
     }
 

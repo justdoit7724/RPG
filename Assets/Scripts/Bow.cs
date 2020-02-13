@@ -7,6 +7,7 @@ public class Bow : MonoBehaviour
     private float damage = 0;
     [SerializeField] private GameObject arrowPrefab;
     [SerializeField] private Transform arrowFirePt;
+    [SerializeField] private GameObject fireEffect;
 
     private Arrow curArrow = null;
 
@@ -25,7 +26,9 @@ public class Bow : MonoBehaviour
             arrowFirePt.position,
             arrowFirePt.rotation).GetComponent<Arrow>();
 
-        curArrow.Fire(16.5f, damage, LayerMask.NameToLayer("Player"));
+        curArrow.Fire(16.5f, damage, LayerMask.NameToLayer("Alley"));
+
+        Instantiate(fireEffect, transform.position,transform.rotation);
     }
 
 }

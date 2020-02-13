@@ -1,17 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EBow : Mob
+public class EBow : NPC
 {
-    [SerializeField] private float detectRad = 30;
-    [SerializeField] private float attRad = 15;
+    [SerializeField] protected float attRad = 15;
     [SerializeField] private GameObject visualArrow;
     [SerializeField] private float bowDamage = 30;
-    private float sqrAttRad;
-    private Mob target = null;
-    private WeaponTrail trail;
+    protected float sqrAttRad;
     private Bow weapon;
+
 
 
     public Mob Target { get { return target; } }
@@ -22,14 +21,12 @@ public class EBow : Mob
 
         sqrAttRad = attRad * attRad;
 
-        trail = GetComponentInChildren<WeaponTrail>();
         weapon = GetComponentInChildren<Bow>();
         weapon.SetDamage(bowDamage);
     }
 
     public override void AE_StartAttack()
     {
-            trail.StartTrail();
     }
     public void AE_Fire()
     {
@@ -38,49 +35,48 @@ public class EBow : Mob
     }
     public override void AE_EndAttack()
     {
-        trail.EndTrail();
         visualArrow.SetActive(true);
     }
 
+    
+
     void Update()
     {
+        if (IsDeath())
+            return;
+
+        UpdateHPBar();
+        UpdateTarget("Alley", ref target);
+
         if (target == null)
         {
-            Collider[] colliders = Physics.OverlapSphere(transform.position, detectRad, LayerMask.GetMask("Player"));
-            if (colliders.Length > 0)
-            {
-                target = colliders[0].GetComponent<Mob>();
-            }
-            else if(fsm.CanAdd(BehaviorPriority.Basic))
+            if(!fsm.ContainBehavior(Type.GetType("IdleBehavior")))
             {
                 BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
-                idleBehavior.Init(BehaviorPriority.Basic, null, true);
+                idleBehavior.Init(BehaviorPriority.Basic, 0, null);
                 fsm.AddBehavior(idleBehavior);
             }
         }
-
-        if (target)
+        else
         {
             Vector3 subVec = transform.position - target.transform.position;
-            if (subVec.sqrMagnitude <= sqrAttRad && fsm.CanAdd(BehaviorPriority.Skill))
+            if (subVec.sqrMagnitude <= sqrAttRad)
             {
-                BaseBehavior attBehavior = ScriptableObject.CreateInstance<ArrowAttBehavior>();
-                attBehavior.Init(BehaviorPriority.Skill, new ArrowAttBehaviorData(target.transform, 3.5f), true);
+                if (!fsm.ContainBehavior(Type.GetType("ArrowAttBehavior")))
+                {
+                    BaseBehavior attBehavior = ScriptableObject.CreateInstance<ArrowAttBehavior>();
+                    attBehavior.Init(BehaviorPriority.Skill, 4.0f, target.transform);
 
-                fsm.AddBehavior(attBehavior);
+                    fsm.AddBehavior(attBehavior);
+                }
             }
-            else if(fsm.CanAdd(BehaviorPriority.Basic))
+            else if(!fsm.ContainBehavior(Type.GetType("RunBehavior")))
             {
                 BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
-                walkBehavior.Init(BehaviorPriority.Basic, walkData, true);
-                walkData.dest = target.transform.position;
+                runBehaviorData.dest = target.transform.position;
+                walkBehavior.Init(BehaviorPriority.Basic, 0, runBehaviorData);
                 fsm.AddBehavior(walkBehavior);
             }
         }
-    }
-
-    public void ClearTarget()
-    {
-        target = null;
     }
 }

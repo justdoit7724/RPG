@@ -18,47 +18,29 @@ public enum BehaviorState
 public abstract class BaseBehavior : ScriptableObject
 {
     protected System.Object data=null;
+    protected float lifeTime = 0;
 
-    private BehaviorPriority priority;
-    private bool isAlone = true;
-    private BehaviorState state= BehaviorState.NotStarted;
+    protected BehaviorPriority priority;
+    protected BehaviorState state= BehaviorState.NotStarted;
+    
+    public virtual List<BaseBehavior> Get()
+    {
+        List<BaseBehavior> list = new List<BaseBehavior>(1);
+        list.Add(this);
+        return list;
+    }
 
-    public bool IsAlone { get { return isAlone; } }
     public BehaviorPriority Priority { get { return priority; } }
     public BehaviorState State { get { return state; } }
 
-    public virtual void Init(BehaviorPriority p, System.Object data, bool isAlone)
+    public virtual void Init(BehaviorPriority p, float lifeTime, System.Object data)
     {
         this.priority = p;
         this.data = data;
-        this.isAlone = isAlone;
+        // forever if negative
+        this.lifeTime = (lifeTime <= 0) ? float.MaxValue : lifeTime;
     }
 
-    public static bool operator >(BaseBehavior a, BaseBehavior b)
-    {
-        if(a.priority > b.priority)
-        {
-            return true;
-        }
-        else if(a.priority == b.priority)
-        {
-            if(!b.isAlone)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    public static bool operator <(BaseBehavior a, BaseBehavior b)
-    {
-        if ((a.priority < b.priority)|| (a.priority == b.priority && !a.isAlone))
-        {
-            return true;
-        }
-
-        return false;
-    }
 
     public virtual void StartBehavior(Mob mob)
     {

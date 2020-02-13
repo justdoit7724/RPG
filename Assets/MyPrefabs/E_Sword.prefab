@@ -55,6 +55,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6119036fdf6f342f8979f1dabbfae332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  trailMat: {fileID: 2100000, guid: e013d49975be34033a86a6226b42d85d, type: 2}
   startPoint: {fileID: 1999524915}
   endPoint: {fileID: 1869686018}
   lifeTime: 0.2
@@ -6725,6 +6726,8 @@ GameObject:
   - component: {fileID: 6677046404094989973}
   - component: {fileID: 8321788112134762010}
   - component: {fileID: 7458053123462729944}
+  - component: {fileID: 1777491477}
+  - component: {fileID: 1777491478}
   m_Layer: 10
   m_Name: E_Sword
   m_TagString: Untagged
@@ -6867,10 +6870,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fc2eb4f72a79534b9039f0fed66b3b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 150
+  maxHP: 170
+  mainMat: {fileID: 2100000, guid: 1c569ef19bc3bfd419c8cf99c7793706, type: 2}
   detectRad: 20
+  hpBarPrefab: {fileID: 7630893359727299938, guid: a4e17527930a9934db4179e7d5ce4117,
+    type: 3}
   attRad: 1.4
   swordDamage: 20
+--- !u!54 &1777491477
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500168017719090}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 100000000
+  m_AngularDrag: 100000
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 84
+  m_CollisionDetection: 0
+--- !u!136 &1777491478
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500168017719090}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1.8
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!1 &1501762419466848
 GameObject:
   m_ObjectHideFlags: 0

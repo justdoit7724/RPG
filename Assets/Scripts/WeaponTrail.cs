@@ -6,6 +6,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(MeshFilter))]
 public class WeaponTrail : MonoBehaviour
 {
+    [SerializeField] Material trailMat;
     [SerializeField] Transform startPoint;
     [SerializeField] Transform endPoint;
     [SerializeField] float lifeTime = 0.20f;
@@ -40,6 +41,8 @@ public class WeaponTrail : MonoBehaviour
         MeshFilter meshF = GetComponent(typeof(MeshFilter)) as MeshFilter;
         mesh = meshF.mesh;
         meshRenderer = GetComponent(typeof(MeshRenderer)) as MeshRenderer;
+        trailMat = new Material(trailMat);
+        meshRenderer.material = trailMat;
         for (int i = 0; i < maxVertCount; ++i)
         {
             colors[i] = new Color(1, 1, 1, 0.2f);
@@ -54,7 +57,10 @@ public class WeaponTrail : MonoBehaviour
     {
         isOn = false;
     }
-
+    public void SetColor(Color c)
+    {
+        trailMat.SetColor("_TintColor", c);
+    }
 
 
     void Update()

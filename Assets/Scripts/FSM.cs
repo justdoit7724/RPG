@@ -7,45 +7,54 @@ using UnityEngine;
 public class FSM : MonoBehaviour
 {
     // push back / pop front
-    LinkedList<BaseBehavior> behaviors = new LinkedList<BaseBehavior>();
-    Mob mob;
+    private LinkedList<BaseBehavior> behaviors = new LinkedList<BaseBehavior>();
+    private Dictionary<Type, int> behaviorKinds = new Dictionary<Type, int>();
+    private Mob mob;
 
-    public string CurBehaviorName()
+    public bool ContainBehavior(Type type)
     {
-        if (behaviors.Count == 0)
-            return null;
-
-        return (CurBehavior().GetType().ToString());
+        return behaviorKinds.ContainsKey(type);
     }
-    public bool CanAdd(BehaviorPriority priority)
-    {
-        if (behaviors.Count == 0)
-            return true;
 
-        return (
-            (LastBehavior().Priority < priority) ||
-            ((LastBehavior().Priority == priority) && !LastBehavior().IsAlone)
-            );
-    }
     public void AddBehavior(BaseBehavior behavior)
     {
-        if (behaviors.Count == 0)
+        List<BaseBehavior> lists = behavior.Get();
+
+        while(LastBehavior() && LastBehavior().Priority <= behavior.Priority)
+        {
+            RemoveLastBehavior();
+        }
+
+        foreach (var item in lists)
         {
             behaviors.AddLast(behavior);
-        }
-        else if(LastBehavior() < behavior)
-        {
-            bool isAdd = false;
-            while (LastBehavior() && LastBehavior() < behavior)
+            if (behaviorKinds.ContainsKey(behavior.GetType()))
             {
-                isAdd = true;
-                if (LastBehavior().State == BehaviorState.InProcess)
-                    LastBehavior().EndBehavior(mob);
-                behaviors.RemoveLast();
+                behaviorKinds[behavior.GetType()]++;
             }
-            if(isAdd)
-                behaviors.AddLast(behavior);
+            else
+            {
+                behaviorKinds.Add(behavior.GetType(), 1);
+            }
         }
+    }
+    private void RemoveFirstBehavior()
+    {
+        BaseBehavior firstBehavior = behaviors.First.Value;
+        firstBehavior.EndBehavior(mob);
+        behaviors.RemoveFirst();
+        behaviorKinds[firstBehavior.GetType()]--;
+        if (behaviorKinds[firstBehavior.GetType()] == 0)
+            behaviorKinds.Remove(firstBehavior.GetType());
+    }
+    private void RemoveLastBehavior()
+    {
+        BaseBehavior lastBehavior = behaviors.Last.Value;
+        lastBehavior.EndBehavior(mob);
+        behaviors.RemoveLast();
+        behaviorKinds[lastBehavior.GetType()]--;
+        if (behaviorKinds[lastBehavior.GetType()] == 0)
+            behaviorKinds.Remove(lastBehavior.GetType());
     }
     private BaseBehavior CurBehavior()
     {
@@ -85,14 +94,14 @@ public class FSM : MonoBehaviour
             // update
             if (!(CurBehavior().UpdateBehavior(mob)))
             {
-                CurBehavior().EndBehavior(mob);
-                behaviors.RemoveFirst();
+                RemoveFirstBehavior();
             }
         }
     }
 
     private void OnGUI()
     {
+
         Vector2 scn = Camera.main.WorldToScreenPoint(transform.position);
         scn.y = Screen.height - scn.y;
         bool isFirst = false;

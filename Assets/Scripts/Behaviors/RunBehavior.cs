@@ -14,22 +14,23 @@ public class RunBehaviorData
 
 public class RunBehavior : BaseBehavior
 {
-    public override void Init(BehaviorPriority p, object data, bool isAlone)
-    {
-        base.Init(p, data, isAlone);
-    }
+    RunBehaviorData mData;
 
     public override void StartBehavior(Mob mob) {
 
         base.StartBehavior(mob);
 
-        mob.Anim.SetBool("isRun", true);
+        mob.Anim.SetTrigger("run");
         mob.Nav.isStopped = false;
+        mData = (RunBehaviorData)data;
     }
 
     public override bool UpdateBehavior(Mob mob)
     {
-        mob.Nav.destination=((RunBehaviorData)data).dest;
+        mob.Nav.destination = mData.dest;
+        Vector3 targetDir = (mData.dest - mob.transform.position).normalized;
+        Vector3 curDir = mob.transform.forward;
+        mob.transform.forward = Vector3.Lerp(curDir, targetDir, 0.05f);
 
         return true;
     }
@@ -37,7 +38,9 @@ public class RunBehavior : BaseBehavior
     public override void EndBehavior(Mob mob)
     {
         base.EndBehavior(mob);
+        mob.Anim.ResetTrigger("run");
         mob.Nav.isStopped = true;
+        mob.Nav.destination = mob.transform.position;
     }
 
 }

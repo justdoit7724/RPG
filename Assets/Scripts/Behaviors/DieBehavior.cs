@@ -10,7 +10,7 @@ public class DieBehavior : BaseBehavior
     {
         base.StartBehavior(mob);
 
-        mob.Anim.SetTrigger("isDie");
+        mob.Anim.SetTrigger("die");
         mob.Nav.enabled = false;
         Collider coll = mob.GetComponent<Collider>();
         if (coll)
