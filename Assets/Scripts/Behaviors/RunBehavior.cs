@@ -32,7 +32,9 @@ public class RunBehavior : BaseBehavior
         Vector3 curDir = mob.transform.forward;
         mob.transform.forward = Vector3.Lerp(curDir, targetDir, 0.05f);
 
-        return true;
+        Vector3 subPos = mob.transform.position - mData.dest;
+
+        return (subPos.sqrMagnitude > 0.15f);
     }
 
     public override void EndBehavior(Mob mob)

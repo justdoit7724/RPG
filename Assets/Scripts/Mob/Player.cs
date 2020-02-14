@@ -7,6 +7,10 @@ using UnityEngine.UI;
 
 public class Player : Mob
 {
+
+    [SerializeField] private SkillButton fireBallSkButton;
+    [SerializeField] private SkillButton golemSkill1Button;
+    [SerializeField] private SkillButton golemSkill2Button;
     [SerializeField] private GameObject followCamera;
     [SerializeField] private Vector3 camPosOffset=new Vector3(0,5,-3);
     [SerializeField] private Vector3 camRotOffset=new Vector3(60,90,0);
@@ -25,6 +29,7 @@ public class Player : Mob
     private WeaponTrail trail;
     private MeleeWeapon weapon;
     private Vector3 camFollowPt;
+    private Golem golem = null;
 
     private float curTime = 0;
     private float curSpawnTime = 0;
@@ -39,6 +44,7 @@ public class Player : Mob
     private const float rollSpeed = 13.0f;
     private Vector2 rIndicatorMaxRad = new Vector2(2.0f, 5.0f);
     private const float spawnChargeTime = 6.0f;
+    private const float camZoonOutTime = 6.0f;
     private const float camMaxDist = 11.0f;
 
     private bool isSequenceAtt = false;
@@ -84,6 +90,9 @@ public class Player : Mob
         rIndicator.gameObject.SetActive(false);
 
         followCamera.transform.Rotate(camRotOffset);
+
+        golemSkill1Button.gameObject.SetActive(true);
+        golemSkill2Button.gameObject.SetActive(false);
     }
 
     public override void AE_StartAttack()
@@ -108,25 +117,47 @@ public class Player : Mob
 
     public void BT_Skill1()
     {
-        if(curBehavior == PlayerBehavior.Idle || curBehavior == PlayerBehavior.Run)
+        if((curBehavior == PlayerBehavior.Idle || curBehavior == PlayerBehavior.Run) && fireBallSkButton.IsReady)
         {
             StartNewState(PlayerBehavior.Sk_FireBall);
+            fireBallSkButton.StartCooldown();
         }
     }
     public void BT_Skill2()
     {
-        if (curBehavior == PlayerBehavior.Idle || curBehavior == PlayerBehavior.Run)
+        if ((curBehavior == PlayerBehavior.Idle || curBehavior == PlayerBehavior.Run) && golemSkill1Button.IsReady)
         {
             StartNewState(PlayerBehavior.Sk_SpawnGolem);
         }
+    }
+    public void BT_Skill2_2()
+    {
+        if(golemSkill2Button.IsReady)
+            StartNewState(PlayerBehavior.Sk_JumpGolem);
+    }
+    public void SpawnGolem(Golem golem)
+    {
+        this.golem = golem;
+
+        golemSkill1Button.gameObject.SetActive(false);
+        golemSkill2Button.gameObject.SetActive(true);
+    }
+    public void DieGolem()
+    {
+        golemSkill1Button.StartCooldown();
+        golem = null;
+
+        golemSkill1Button.gameObject.SetActive(true);
+        golemSkill2Button.gameObject.SetActive(false);
     }
 
     private void StartNewState(PlayerBehavior behavior)
     {
         curTime = 0;
         rigid.velocity = Vector3.zero;
+        rIndicator.gameObject.SetActive(false);
 
-        switch(behavior)
+        switch (behavior)
         {
             case PlayerBehavior.Idle:
                 anim.SetTrigger("idle");
@@ -160,9 +191,17 @@ public class Player : Mob
             case PlayerBehavior.Sk_SpawnGolem:
                 anim.SetTrigger("sk_spawnGolem1");
                 curSpawnTime = 0;
+                rIndicator.SetPosition(transform.position);
                 golemSpawnBodyEffect = Instantiate(golemSpawnBodyPrefab, transform.position, Quaternion.identity);
+                golemSkill1Button.StartCooldown();
+                golemSkill2Button.StartCooldown();
                 break;
             case PlayerBehavior.Sk_JumpGolem:
+                anim.SetTrigger("idle");
+                rIndicator.gameObject.SetActive(true);
+                rIndicator.SetMaxRad(4.0f);
+                rIndicator.SetProgress(0.5f);
+                golemSkill2Button.StartCooldown();
                 break;
             case PlayerBehavior.Die:
                 anim.SetTrigger("die");
@@ -245,13 +284,14 @@ public class Player : Mob
                 break;
 
             case PlayerBehavior.Roll://-------------------------------------------------------------ROLL---------------------------------------
-                float t = Mathf.Clamp01(curTime / rollTime);
-                float mt = Mathf.Log(Mathf.Sin(t*Mathf.PI), 4);
-                transform.position += transform.forward * rollSpeed * Time.deltaTime * t;
+                {
+                    float t = Mathf.Clamp01(curTime / rollTime);
+                    float mt = Mathf.Log(Mathf.Sin(t * Mathf.PI), 4);
+                    transform.position += transform.forward * rollSpeed * Time.deltaTime * t;
 
-                if (curTime >= rollTime)
-                    StartNewState(isRunning ? PlayerBehavior.Run : PlayerBehavior.Idle);
-
+                    if (curTime >= rollTime)
+                        StartNewState(isRunning ? PlayerBehavior.Run : PlayerBehavior.Idle);
+                }
                 break;
             case PlayerBehavior.Att1://-------------------------------------------------------------ATT1---------------------------------------
 #if UNITY_EDITOR
@@ -336,13 +376,13 @@ public class Player : Mob
                     if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, float.MaxValue, LayerMask.GetMask("Ground")))
                     {
                         rIndicator.gameObject.SetActive(true);
-                        float spawnT = Mathf.Clamp01(curSpawnTime / spawnChargeTime);
-                        float curRIndicatorMaxRad = Mathf.Lerp(rIndicatorMaxRad.x, rIndicatorMaxRad.y, spawnT);
+                        float zoomT = Mathf.Clamp01(curSpawnTime / camZoonOutTime);
+                        float curRIndicatorMaxRad = Mathf.Lerp(rIndicatorMaxRad.x, rIndicatorMaxRad.y, zoomT);
                         rIndicator.SetMaxRad(curRIndicatorMaxRad);
-                        rIndicator.SetProgress(spawnT);
+                        rIndicator.SetProgress(zoomT);
                         rIndicator.SetPosition(hit.point);
 
-                        float camT = Mathf.Clamp01((1 - Mathf.Pow(spawnT-1,2)) * 0.5f);
+                        float camT = Mathf.Clamp01((1 - Mathf.Pow(zoomT - 1,2)) * 0.5f);
                         camFollowPt = transform.position + camPosOffset - followCamera.transform.forward * camMaxDist * camT;
                     }
                 }
@@ -354,17 +394,50 @@ public class Player : Mob
                     Vector3 ballDir = (new Vector3(1,-1,0)).normalized;
                     float growRate = Mathf.Clamp01(curSpawnTime / spawnChargeTime);
                     float ballDist = Mathf.Lerp(30,50, growRate);
-                    Instantiate(golemBallPrefab, rIndicator.transform.position - ballDir * ballDist, Quaternion.LookRotation(ballDir)).GetComponent<GolemBall>().Init(growRate, rIndicator.transform.position);
+                    GolemBall golemBall = Instantiate(golemBallPrefab, rIndicator.transform.position - ballDir * ballDist, Quaternion.LookRotation(ballDir)).GetComponent<GolemBall>();
+                    golemBall.Init(growRate, rIndicator.transform.position);
+
+                    golemSkill1Button.gameObject.SetActive(false);
+                    golemSkill2Button.gameObject.SetActive(true);
 
                     StartNewState(PlayerBehavior.Idle);
                 }
 
                 break;
+
+            case PlayerBehavior.Sk_JumpGolem://-------------------------------------------------------------------JUMP_GOLEM---------------------------------
+                {
+                    if (golem)
+                    {
+                        float t = Mathf.Clamp01(curTime / camZoonOutTime);
+                        float camT = (1 - Mathf.Pow(t - 1, 2)) * 0.5f;
+                        camFollowPt = transform.position + camPosOffset - followCamera.transform.forward * camMaxDist * 0.5f * camT;
+
+                        RaycastHit hit;
+                        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, float.MaxValue, LayerMask.GetMask("Ground")))
+                        {
+                            rIndicator.SetPosition(hit.point);
+
+                            if (Input.GetMouseButtonDown(0))
+                            {
+                                golem.Jump(hit.point);
+
+                                StartNewState(PlayerBehavior.Idle);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        StartNewState(PlayerBehavior.Idle);
+                    }
+                }
+                break;
+
             case PlayerBehavior.Die:
                 break;
         }
 
-        if(curBehavior != PlayerBehavior.Sk_SpawnGolem)
+        if(curBehavior != PlayerBehavior.Sk_SpawnGolem && curBehavior != PlayerBehavior.Sk_JumpGolem)
             camFollowPt = transform.position + camPosOffset;
     }
 

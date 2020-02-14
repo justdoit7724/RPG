@@ -5,13 +5,11 @@ using UnityEngine;
 public class JumpBehaviorData
 {
     public Vector3 dest;
-    public float maxHeight;
     public float airTime;
 
-    public JumpBehaviorData(Vector3 dest, float maxHeight, float airTime)
+    public JumpBehaviorData(Vector3 dest, float airTime)
     {
         this.dest = dest;
-        this.maxHeight = maxHeight;
         this.airTime = airTime;
     }
 }
@@ -28,7 +26,10 @@ public class JumpBehavior : BaseBehavior
 
         mob.Anim.SetTrigger("jump");
         mData = (JumpBehaviorData)data;
+        mob.Nav.enabled = false;
         firstPos = mob.transform.position;
+        Vector3 subVec = mData.dest - firstPos;
+        mob.transform.forward = subVec.normalized;
     }
 
     public override bool UpdateBehavior(Mob mob)
@@ -36,13 +37,18 @@ public class JumpBehavior : BaseBehavior
         curTime += Time.deltaTime;
 
         float t = Mathf.Clamp01(curTime / mData.airTime);
-        float posT = 1 - Mathf.Pow(curTime - 1, 2);
-        float heightT = 1 - Mathf.Pow(2*curTime - 1, 2);
 
-        Vector3 curPos = Vector3.Lerp(firstPos, mData.dest, posT);
-        curPos.y = heightT * mData.maxHeight;
+        Vector3 curPos = Vector3.Lerp(firstPos, mData.dest, t);
         mob.transform.position = curPos;
 
         return (t < 1);
+    }
+
+    public override void EndBehavior(Mob mob)
+    {
+        base.EndBehavior(mob);
+
+        mob.Nav.enabled = true;
+        mob.Nav.destination = mob.transform.position;
     }
 }

@@ -6,6 +6,7 @@ public enum BehaviorPriority
 {
     None,
     Basic,
+    Att,
     Skill,
     Vital
 }

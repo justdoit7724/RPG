@@ -14,10 +14,10 @@ public class CompositeBehavior : BaseBehavior
 
     public override bool UpdateBehavior(Mob mob)
     {
-        BaseBehavior curBehavior = behaviors.First.Value;
-
-        if (curBehavior)
+        if (behaviors.Count>0)
         {
+            BaseBehavior curBehavior = behaviors.First.Value;
+
             if (curBehavior.State == BehaviorState.NotStarted)
                 curBehavior.StartBehavior(mob);
 

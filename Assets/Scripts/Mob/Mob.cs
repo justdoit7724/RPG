@@ -9,6 +9,7 @@ public abstract class Mob : MonoBehaviour
     [SerializeField] protected Material mainMat;
     protected float curHP=0;
 
+    protected Collider mainCollider;
     protected Rigidbody rigid;
     protected NavMeshAgent nav;
     protected Animator anim;
@@ -29,6 +30,7 @@ public abstract class Mob : MonoBehaviour
 
     public virtual void Start()
     {
+        mainCollider = GetComponent<Collider>();
         rigid = GetComponent<Rigidbody>();
         nav = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();

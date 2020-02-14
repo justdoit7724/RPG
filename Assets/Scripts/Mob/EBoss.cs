@@ -55,8 +55,7 @@ public class EBoss : NPC
             if (!fsm.ContainBehavior(Type.GetType("IdleBehavior")))
             {
                 BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
-                runBehaviorData.dest = target.transform.position;
-                idleBehavior.Init(BehaviorPriority.Basic, 0, runBehaviorData);
+                idleBehavior.Init(BehaviorPriority.Basic, 0, null);
                 fsm.AddBehavior(idleBehavior);
             }
         }

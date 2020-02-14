@@ -68,23 +68,26 @@ public class ESword : NPC
                     if (UnityEngine.Random.Range(0, 2) == 0)
                     {
                         BaseBehavior att1Behavior = ScriptableObject.CreateInstance<CloseAttBehavior>();
-                        att1Behavior.Init(BehaviorPriority.Skill, 2.0f, "att1");
+                        att1Behavior.Init(BehaviorPriority.Att, 2.0f, "att1");
                         fsm.AddBehavior(att1Behavior);
                     }
                     else
                     {
                         BaseBehavior att2Behavior = ScriptableObject.CreateInstance<CloseAttBehavior>();
-                        att2Behavior.Init(BehaviorPriority.Skill, 2.0f, "att2");
+                        att2Behavior.Init(BehaviorPriority.Att, 2.0f, "att2");
                         fsm.AddBehavior(att2Behavior);
                     }
                 }
             }
-            else if(!fsm.ContainBehavior(Type.GetType("RunBehavior")))
+            else
             {
-                BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
                 runBehaviorData.dest = target.transform.position;
-                walkBehavior.Init(BehaviorPriority.Basic, 0, runBehaviorData);
-                fsm.AddBehavior(walkBehavior);
+                if (!fsm.ContainBehavior(Type.GetType("RunBehavior")))
+                {
+                    BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
+                    walkBehavior.Init(BehaviorPriority.Basic, 0, runBehaviorData);
+                    fsm.AddBehavior(walkBehavior);
+                }
             }
         }
     }

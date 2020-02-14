@@ -17,7 +17,9 @@ public class IdleBehavior : BaseBehavior
 
     public override bool UpdateBehavior(Mob mob)
     {
-        return true;
+        lifeTime -= Time.deltaTime;
+
+        return (lifeTime>0);
     }
 
     public override void EndBehavior(Mob mob)

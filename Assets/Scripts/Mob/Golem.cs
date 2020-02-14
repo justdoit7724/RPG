@@ -6,15 +6,20 @@ using UnityEngine;
 public class Golem : NPC
 {
     [Header("Golem")]
+    public GameObject jumpHitEffectPrefab;
     public Vector2 bodyScale = new Vector2(0.9f, 1.5f);
     public Vector2 attDamage = new Vector2(50, 90);
-    public Vector2 stompDamage = new Vector2(120, 240);
+    public Vector2 stompDamage = new Vector2(50, 130);
     public Vector2 maxHPRange = new Vector2(700, 1200);
     public Vector2 attRad = new Vector2(1.5f, 2.0f);
+    public Vector2 jumpSplashRange = new Vector2(2.5f, 4.0f);
+    public Vector2 colliderSizeRange = new Vector2(0.45f, 0.6f);
 
     private MeleeWeapon fist;
+    private Player player;
     private float sqrAttRad;
     private float mStompDamage;
+    private float jumpSplash;
 
     public void Init(float growRate)
     {
@@ -24,12 +29,18 @@ public class Golem : NPC
         transform.localScale = new Vector3(mScale, mScale, mScale);
         mStompDamage = Mathf.Lerp(stompDamage.x, stompDamage.y, growRate);
         maxHP = Mathf.Lerp(maxHPRange.x, maxHPRange.y, growRate);
-
+        jumpSplash = Mathf.Lerp(jumpSplashRange.x, jumpSplashRange.y, growRate);
+        GetComponent<CapsuleCollider>().radius = Mathf.Lerp(colliderSizeRange.x, colliderSizeRange.y, growRate);
         fist = GetComponentInChildren<MeleeWeapon>();
         fist.SetDamage(Mathf.Lerp(attDamage.x, attDamage.y, growRate));
 
-        enabled = false;
+        player = FindObjectOfType<Player>();
+        if(player)
+        {
+            player.SpawnGolem(this);
+        }
 
+        enabled = false;
         StartCoroutine(IE_Enable());
     }
 
@@ -46,6 +57,51 @@ public class Golem : NPC
     public override void AE_EndAttack()
     {
         fist.enabled = false;
+    }
+    public void AE_StartJump()
+    {
+        nav.enabled = false;
+        mainCollider.enabled = false;
+    }
+    public void AE_EndJump()
+    {
+        nav.enabled = true;
+        mainCollider.enabled = true;
+        Instantiate(jumpHitEffectPrefab, transform.position, Quaternion.identity);
+
+        Collider[] colls = Physics.OverlapSphere(transform.position, jumpSplash, LayerMask.GetMask("Enemy"));
+        foreach (var item in colls)
+        {
+            NPC target = item.GetComponent<NPC>();
+            if (target)
+            {
+                Vector3 subVec = target.transform.position - transform.position;
+                float distRate = 1.0f - (subVec.magnitude / jumpSplash);
+                float curDamage = distRate * mStompDamage;
+                target.GetDamaged(curDamage);
+                target.Rigid.AddForce(subVec.normalized * distRate * 150.0f);
+            }
+        }
+    }
+    public void Jump(Vector3 dest)
+    {
+        if (!fsm.ContainBehavior(Type.GetType("GolemJumpBehavior")))
+        {
+            GolemJumpBehavior jumpBehavior = ScriptableObject.CreateInstance<GolemJumpBehavior>();
+            jumpBehavior.Init(dest, transform.position, BehaviorPriority.Skill);
+
+            fsm.AddBehavior(jumpBehavior);
+        }
+    }
+
+    public override void GetDamaged(float amount)
+    {
+        base.GetDamaged(amount);
+
+        if(IsDeath())
+        {
+            player.DieGolem();
+        }
     }
 
     private void Update()
@@ -75,15 +131,19 @@ public class Golem : NPC
                     transform.LookAt(target.transform.position, Vector3.up);
 
                     BaseBehavior att1Behavior = ScriptableObject.CreateInstance<CloseAttBehavior>();
-                    att1Behavior.Init(BehaviorPriority.Skill, 4.0f, "att");
+                    att1Behavior.Init(BehaviorPriority.Att, 4.0f, "att");
                     fsm.AddBehavior(att1Behavior);
                 }
             }
-            else if (!fsm.ContainBehavior(Type.GetType("RunBehavior")))
+            else
             {
-                BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
-                walkBehavior.Init(BehaviorPriority.Basic, 1.0f, target.transform);
-                fsm.AddBehavior(walkBehavior);
+                runBehaviorData.dest = target.transform.position;
+                if (!fsm.ContainBehavior(Type.GetType("RunBehavior")))
+                {
+                    BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
+                    walkBehavior.Init(BehaviorPriority.Basic, 1.0f, runBehaviorData);
+                    fsm.AddBehavior(walkBehavior);
+                }
             }
         }
     }

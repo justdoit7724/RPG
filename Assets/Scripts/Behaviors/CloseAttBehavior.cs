@@ -27,7 +27,7 @@ public class CloseAttBehavior : BaseBehavior
     public override void EndBehavior(Mob mob)
     {
         base.EndBehavior(mob);
-        mob.Anim.ResetTrigger(attName);
+        //mob.Anim.ResetTrigger(attName);
 
         //ESword bMob = mob as ESword;
         //if (bMob && bMob.Target.IsDeath())

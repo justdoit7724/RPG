@@ -65,17 +65,20 @@ public class EBow : NPC
                 if (!fsm.ContainBehavior(Type.GetType("ArrowAttBehavior")))
                 {
                     BaseBehavior attBehavior = ScriptableObject.CreateInstance<ArrowAttBehavior>();
-                    attBehavior.Init(BehaviorPriority.Skill, 4.0f, target.transform);
+                    attBehavior.Init(BehaviorPriority.Att, 4.0f, target.transform);
 
                     fsm.AddBehavior(attBehavior);
                 }
             }
-            else if(!fsm.ContainBehavior(Type.GetType("RunBehavior")))
+            else
             {
-                BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
                 runBehaviorData.dest = target.transform.position;
-                walkBehavior.Init(BehaviorPriority.Basic, 0, runBehaviorData);
-                fsm.AddBehavior(walkBehavior);
+                if (!fsm.ContainBehavior(Type.GetType("RunBehavior")))
+                {
+                    BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
+                    walkBehavior.Init(BehaviorPriority.Basic, 0, runBehaviorData);
+                    fsm.AddBehavior(walkBehavior);
+                }
             }
         }
     }

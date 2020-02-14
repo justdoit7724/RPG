@@ -8,8 +8,8 @@ public class GolemBall : MonoBehaviour
     public GameObject rangeIndicatorPrefab;
     public GameObject golemPrefab;
     public float speed=5;
-    public Vector2 damage = new Vector2(80, 250);
-    public Vector2 splashRad = new Vector2(7.5f, 20.0f);
+    public Vector2 damage = new Vector2(100, 240);
+    public Vector2 splashRad = new Vector2(3.5f, 7.0f);
 
     private RangeIndicator rIndicator;
     private float mDamage;
@@ -46,9 +46,11 @@ public class GolemBall : MonoBehaviour
             NPC target = item.GetComponent<NPC>();
             if (target)
             {
-                float distRate = 1.0f - ((transform.position - item.transform.position).magnitude / mSplashRad);
+                Vector3 subVec = target.transform.position - transform.position;
+                float distRate = 1.0f - (subVec.magnitude / mSplashRad);
                 float curDamage = distRate * mDamage;
                 target.GetDamaged(curDamage);
+                target.Rigid.AddForce(subVec.normalized * distRate * 350.0f);
             }
         }
 

@@ -35,7 +35,7 @@ Shader "GAP/AdditiveMobileDistortionScroll" {
             Tags {
                 "LightMode"="ForwardBase"
             }
-            Blend OneMinusSrcAlpha One
+            Blend One One
             Cull Off
             ZWrite Off
             
