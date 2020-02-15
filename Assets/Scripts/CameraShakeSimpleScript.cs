@@ -12,7 +12,10 @@ public class CameraShakeSimpleScript : MonoBehaviour {
 	}
 
 	public void ShakeCamera() {	
-		anim.Play(anim.clip.name);
+		if (anim != null)
+			anim.Play (anim.clip.name);
+		else
+			ShakeCaller (0.25f, 0.1f);
 	}
 
 	//other shake option
@@ -23,23 +26,23 @@ public class CameraShakeSimpleScript : MonoBehaviour {
 	IEnumerator Shake (float amount, float duration){
 		isRunning = true;
 
-		Vector3 originalPos = transform.position;
+		Vector3 originalPos = transform.localPosition;
 		int counter = 0;
 
 		while (duration > 0.01f) {
 			counter++;
 
 			var x = Random.Range (-1f, 1f) * (amount/counter);
-			var z = Random.Range (-1f, 1f) * (amount/counter);
+			var y = Random.Range (-1f, 1f) * (amount/counter);
 
-			transform.position = new Vector3 (x, 0, z) + originalPos;
+			transform.localPosition = Vector3.Lerp (transform.localPosition, new Vector3 (originalPos.x + x, originalPos.y + y, originalPos.z), 0.5f);
 
 			duration -= Time.deltaTime;
 			
 			yield return new WaitForSeconds (0.1f);
 		}
 
-		transform.position = originalPos;
+		transform.localPosition = originalPos;
 
 		isRunning = false;
 	}

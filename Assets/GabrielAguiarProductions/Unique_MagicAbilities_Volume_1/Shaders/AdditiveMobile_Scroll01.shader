@@ -101,7 +101,7 @@ Shader "GAP/AdditiveMobileDistortionScroll" {
                 float4 _Gradient_var = tex2D(_Gradient,TRANSFORM_TEX(node_6774, _Gradient));
                 float3 emissive = ((_DistortionMask_copy.rgb*_MainTexutre_var.rgb)*i.vertexColor.rgb*(_ColorMultiplier*_TintColor.rgb*_ColorRamp_var.rgb)*2.0*(_MainTexutre_var.a*pow(_Gradient_var.r,_GradientPower)*clamp(isFrontFace,_DoubleSided,1.0)));
                 float3 finalColor = emissive;
-                return fixed4(finalColor, _TintColor.a);
+                return fixed4(finalColor,1);
             }
             ENDCG
         }

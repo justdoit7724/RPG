@@ -54,7 +54,7 @@ public class EBow : NPC
             {
                 BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
                 idleBehavior.Init(BehaviorPriority.Basic, 0, null);
-                fsm.AddBehavior(idleBehavior);
+                fsm.CheckAndAddBehavior(idleBehavior);
             }
         }
         else
@@ -67,7 +67,7 @@ public class EBow : NPC
                     BaseBehavior attBehavior = ScriptableObject.CreateInstance<ArrowAttBehavior>();
                     attBehavior.Init(BehaviorPriority.Att, 4.0f, target.transform);
 
-                    fsm.AddBehavior(attBehavior);
+                    fsm.CheckAndAddBehavior(attBehavior);
                 }
             }
             else
@@ -77,7 +77,7 @@ public class EBow : NPC
                 {
                     BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
                     walkBehavior.Init(BehaviorPriority.Basic, 0, runBehaviorData);
-                    fsm.AddBehavior(walkBehavior);
+                    fsm.CheckAndAddBehavior(walkBehavior);
                 }
             }
         }

@@ -53,7 +53,7 @@ public class ESword : NPC
             {
                 BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
                 idleBehavior.Init(BehaviorPriority.Basic, 0, null);
-                fsm.AddBehavior(idleBehavior);
+                fsm.CheckAndAddBehavior(idleBehavior);
             }
         }
         else
@@ -69,13 +69,13 @@ public class ESword : NPC
                     {
                         BaseBehavior att1Behavior = ScriptableObject.CreateInstance<CloseAttBehavior>();
                         att1Behavior.Init(BehaviorPriority.Att, 2.0f, "att1");
-                        fsm.AddBehavior(att1Behavior);
+                        fsm.CheckAndAddBehavior(att1Behavior);
                     }
                     else
                     {
                         BaseBehavior att2Behavior = ScriptableObject.CreateInstance<CloseAttBehavior>();
                         att2Behavior.Init(BehaviorPriority.Att, 2.0f, "att2");
-                        fsm.AddBehavior(att2Behavior);
+                        fsm.CheckAndAddBehavior(att2Behavior);
                     }
                 }
             }
@@ -86,7 +86,7 @@ public class ESword : NPC
                 {
                     BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
                     walkBehavior.Init(BehaviorPriority.Basic, 0, runBehaviorData);
-                    fsm.AddBehavior(walkBehavior);
+                    fsm.CheckAndAddBehavior(walkBehavior);
                 }
             }
         }

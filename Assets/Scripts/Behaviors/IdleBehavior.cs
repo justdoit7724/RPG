@@ -25,6 +25,6 @@ public class IdleBehavior : BaseBehavior
     public override void EndBehavior(Mob mob)
     {
         base.EndBehavior(mob);
-        mob.Anim.ResetTrigger("idle");
+        //mob.Nav.isStopped = false;
     }
 }

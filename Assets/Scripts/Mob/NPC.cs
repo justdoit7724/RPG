@@ -52,7 +52,7 @@ public class NPC : Mob
             Destroy(hpBar.transform.gameObject);
             BaseBehavior deathBehavior = ScriptableObject.CreateInstance<DieBehavior>();
             deathBehavior.Init(BehaviorPriority.Vital, 0, null);
-            fsm.AddBehavior(deathBehavior);
+            fsm.CheckAndAddBehavior(deathBehavior);
         }
 
         curHP -= amount;

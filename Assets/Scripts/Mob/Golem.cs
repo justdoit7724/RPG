@@ -90,7 +90,7 @@ public class Golem : NPC
             GolemJumpBehavior jumpBehavior = ScriptableObject.CreateInstance<GolemJumpBehavior>();
             jumpBehavior.Init(dest, transform.position, BehaviorPriority.Skill);
 
-            fsm.AddBehavior(jumpBehavior);
+            fsm.CheckAndAddBehavior(jumpBehavior);
         }
     }
 
@@ -118,7 +118,7 @@ public class Golem : NPC
             {
                 BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
                 idleBehavior.Init(BehaviorPriority.Basic, 0, null);
-                fsm.AddBehavior(idleBehavior);
+                fsm.CheckAndAddBehavior(idleBehavior);
             }
         }
         else
@@ -132,7 +132,7 @@ public class Golem : NPC
 
                     BaseBehavior att1Behavior = ScriptableObject.CreateInstance<CloseAttBehavior>();
                     att1Behavior.Init(BehaviorPriority.Att, 4.0f, "att");
-                    fsm.AddBehavior(att1Behavior);
+                    fsm.CheckAndAddBehavior(att1Behavior);
                 }
             }
             else
@@ -142,7 +142,7 @@ public class Golem : NPC
                 {
                     BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
                     walkBehavior.Init(BehaviorPriority.Basic, 1.0f, runBehaviorData);
-                    fsm.AddBehavior(walkBehavior);
+                    fsm.CheckAndAddBehavior(walkBehavior);
                 }
             }
         }

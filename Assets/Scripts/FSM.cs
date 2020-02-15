@@ -11,31 +11,40 @@ public class FSM : MonoBehaviour
     private Dictionary<Type, int> behaviorKinds = new Dictionary<Type, int>();
     private Mob mob;
 
+    public int Count { get { return behaviors.Count; } }
+
     public bool ContainBehavior(Type type)
     {
         return behaviorKinds.ContainsKey(type);
     }
 
-    public void AddBehavior(BaseBehavior behavior)
+    public void CheckAndAddBehavior(BaseBehavior behavior)
     {
-        List<BaseBehavior> lists = behavior.Get();
-
         while(LastBehavior() && LastBehavior().Priority <= behavior.Priority)
         {
             RemoveLastBehavior();
         }
 
-        foreach (var item in lists)
+        behaviors.AddLast(behavior);
+        if (behaviorKinds.ContainsKey(behavior.GetType()))
         {
-            behaviors.AddLast(behavior);
-            if (behaviorKinds.ContainsKey(behavior.GetType()))
-            {
-                behaviorKinds[behavior.GetType()]++;
-            }
-            else
-            {
-                behaviorKinds.Add(behavior.GetType(), 1);
-            }
+            behaviorKinds[behavior.GetType()]++;
+        }
+        else
+        {
+            behaviorKinds.Add(behavior.GetType(), 1);
+        }
+    }
+    public void DirectAddBehavior(BaseBehavior behavior)
+    {
+        behaviors.AddLast(behavior);
+        if (behaviorKinds.ContainsKey(behavior.GetType()))
+        {
+            behaviorKinds[behavior.GetType()]++;
+        }
+        else
+        {
+            behaviorKinds.Add(behavior.GetType(), 1);
         }
     }
     private void RemoveFirstBehavior()

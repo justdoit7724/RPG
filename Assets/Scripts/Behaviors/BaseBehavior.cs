@@ -24,13 +24,6 @@ public abstract class BaseBehavior : ScriptableObject
     protected BehaviorPriority priority;
     protected BehaviorState state= BehaviorState.NotStarted;
     
-    public virtual List<BaseBehavior> Get()
-    {
-        List<BaseBehavior> list = new List<BaseBehavior>(1);
-        list.Add(this);
-        return list;
-    }
-
     public BehaviorPriority Priority { get { return priority; } }
     public BehaviorState State { get { return state; } }
 

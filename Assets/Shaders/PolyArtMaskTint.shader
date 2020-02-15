@@ -1,6 +1,5 @@
-// Made with Amplify Shader Editor
-// Available at the Unity Asset Store - http://u3d.as/y3X 
-Shader "PolyArtMaskTint"
+
+Shader "Custom/MainShader"
 {
 	Properties
 	{
@@ -12,6 +11,7 @@ Shader "PolyArtMaskTint"
 		_Color01("Color01", Color) = (0,0,0,0)
 		_PolyArtAlbedo("PolyArtAlbedo", 2D) = "white" {}
 		_PolyArtMask("PolyArtMask", 2D) = "white" {}
+		_Emission("Emission", Range(0,1))=0
 		[HideInInspector] _texcoord( "", 2D ) = "white" {}
 		[HideInInspector] __dirty( "", Int ) = 1
 	}
@@ -24,6 +24,7 @@ Shader "PolyArtMaskTint"
 		CGPROGRAM
 		#pragma target 3.0
 		#pragma surface surf Standard keepalpha addshadow fullforwardshadows 
+		#include "CustomShaderFunctions.cginc"
 		struct Input
 		{
 			float2 uv_texcoord;
@@ -39,6 +40,7 @@ Shader "PolyArtMaskTint"
 		uniform float _HitFlash;
 		uniform float _Metallic;
 		uniform float _Smoothness;
+		uniform float _Emission;
 
 		void surf( Input i , inout SurfaceOutputStandard o )
 		{
@@ -53,7 +55,7 @@ Shader "PolyArtMaskTint"
 			float4 blendOpDest22 = ( min( temp_cast_0 , _Color01 ) + min( temp_cast_1 , _Color02 ) + min( temp_cast_2 , _Color03 ) );
 			float4 lerpResult4 = lerp( tex2DNode16 , ( ( saturate( ( blendOpSrc22 * blendOpDest22 ) )) * 2.0 ) , ( tex2DNode13.r + tex2DNode13.g + tex2DNode13.b ));
 			o.Albedo = lerpResult4.rgb;
-			o.Emission = lerpResult4.rgb + _HitFlash.xxx;
+			o.Emission = Lerp(0,lerpResult4.rgb, _Emission) + _HitFlash.xxx;
 			o.Metallic = _Metallic;
 			o.Smoothness = _Smoothness;
 			o.Alpha = 1;

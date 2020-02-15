@@ -134,7 +134,8 @@ namespace GAP_ParticleSystemController{
 						}
 
 						//LOOP
-						main.loop = loop;
+						if(!main.loop)
+							main.loop = loop;
 
 						//PREWARM
 						main.prewarm = prewarm;
@@ -277,23 +278,23 @@ namespace GAP_ParticleSystemController{
 								main.startColor = startColor;
 							} 
 							if (main.startColor.mode == ParticleSystemGradientMode.Gradient) {
-								startColor.gradient = ChangeGradientColor (startColor.gradient, newMaxColor);
+								startColor.gradient = ChangeGradientColor (startColor.gradient, newMaxColor, newMinColor);
 								main.startColor = startColor;
 							} 
 							if (main.startColor.mode == ParticleSystemGradientMode.TwoGradients) {
-								startColor.gradientMax = ChangeGradientColor (startColor.gradientMax, newMaxColor);
-								startColor.gradientMin = ChangeGradientColor (startColor.gradientMin, newMinColor);
+								startColor.gradientMax = ChangeGradientColor (startColor.gradientMax, newMaxColor, newMinColor);
+								startColor.gradientMin = ChangeGradientColor (startColor.gradientMin, newMinColor, newMaxColor);
 								main.startColor = startColor;
 							} 
 
 							//COLOR OVERLIFETIME
 							if (colorOverLifetime.enabled) {
 								if (colorOverLifetime.color.mode == ParticleSystemGradientMode.Gradient) {							
-									colorOverLifetimeC.gradient = ChangeGradientColor (colorOverLifetimeC.gradient, newMaxColor);
+									colorOverLifetimeC.gradient = ChangeGradientColor (colorOverLifetimeC.gradient, newMaxColor, newMinColor);
 								}
 								if (colorOverLifetime.color.mode == ParticleSystemGradientMode.TwoGradients) {
-									colorOverLifetimeC.gradientMax = ChangeGradientColor (colorOverLifetimeC.gradientMax, newMaxColor);
-									colorOverLifetimeC.gradientMin = ChangeGradientColor (colorOverLifetimeC.gradientMin, newMinColor);
+									colorOverLifetimeC.gradientMax = ChangeGradientColor (colorOverLifetimeC.gradientMax, newMaxColor, newMinColor);
+									colorOverLifetimeC.gradientMin = ChangeGradientColor (colorOverLifetimeC.gradientMin, newMinColor, newMaxColor);
 								}
 								colorOverLifetime.color = colorOverLifetimeC;
 							}
@@ -319,7 +320,7 @@ namespace GAP_ParticleSystemController{
 								trail.widthMultiplier = listOriginalSettings [i]._trailWidthMultiplier;
 								trail.time = listOriginalSettings [i]._trailTime;
 							}
-							trail.colorGradient = ChangeGradientColor (trail.colorGradient, newMaxColor);
+							trail.colorGradient = ChangeGradientColor (trail.colorGradient, newMaxColor, newMinColor);
 							trail.widthMultiplier *= size;
 
 							float amount = 1;
@@ -338,10 +339,218 @@ namespace GAP_ParticleSystemController{
 				}
 				if (!SaveParticleSystemScript.CheckExistingFile (gameObject)) {		
 					SaveParticleSystemScript.SaveVFX (gameObject, psOriginalSettingsList);
-				}
-			}
+                }
+#if UNITY_2018_3_OR_NEWER
+                else
+                {
+                    SaveParticleSystemScript.SaveNestedPrefab(gameObject);
+                }
+#endif
+            }
 			else
 				Debug.Log("No Particle Systems added to the Particle Systems list");
+		}
+
+		public void ChangeColorOnly () {
+			if (ParticleSystems.Count == 0) {
+				FillLists ();
+			}
+
+			if (ParticleSystems.Count > 0) {
+				for (int i = 0; i < ParticleSystems.Count; i++) {
+					var ps = ParticleSystems [i].GetComponent<ParticleSystem> ();
+					if (ps != null) {
+						var main = ps.main;
+						var colorOverLifetime = ps.colorOverLifetime;
+						var colorOverLifetimeC = colorOverLifetime.color;
+						var startColor = main.startColor;
+						//COLOR
+						if (changeColor) {
+							if (main.startColor.mode == ParticleSystemGradientMode.Color) {
+								startColor.color = ChangeHUE (startColor.color, newMaxColor);
+								main.startColor = startColor;
+							}
+							if (main.startColor.mode == ParticleSystemGradientMode.TwoColors) {
+								startColor.colorMax = ChangeHUE (startColor.colorMax, newMaxColor);
+								startColor.colorMin = ChangeHUE (startColor.colorMin, newMinColor);
+								main.startColor = startColor;
+							} 
+							if (main.startColor.mode == ParticleSystemGradientMode.Gradient) {
+								startColor.gradient = ChangeGradientColor (startColor.gradient, newMaxColor, newMinColor);
+								main.startColor = startColor;
+							} 
+							if (main.startColor.mode == ParticleSystemGradientMode.TwoGradients) {
+								startColor.gradientMax = ChangeGradientColor (startColor.gradientMax, newMaxColor, newMinColor);
+								startColor.gradientMin = ChangeGradientColor (startColor.gradientMin, newMinColor, newMaxColor);
+								main.startColor = startColor;
+							} 
+
+							//COLOR OVERLIFETIME
+							if (colorOverLifetime.enabled) {
+								if (colorOverLifetime.color.mode == ParticleSystemGradientMode.Gradient) {							
+									colorOverLifetimeC.gradient = ChangeGradientColor (colorOverLifetimeC.gradient, newMaxColor, newMinColor);
+								}
+								if (colorOverLifetime.color.mode == ParticleSystemGradientMode.TwoGradients) {
+									colorOverLifetimeC.gradientMax = ChangeGradientColor (colorOverLifetimeC.gradientMax, newMaxColor, newMinColor);
+									colorOverLifetimeC.gradientMin = ChangeGradientColor (colorOverLifetimeC.gradientMin, newMinColor, newMaxColor);
+								}
+								colorOverLifetime.color = colorOverLifetimeC;
+							}
+						}
+					} else {
+						//TRAIL RENDERER
+						var trail = ParticleSystems [i].GetComponent<TrailRenderer> ();
+						if (trail != null) {
+							if (!SaveParticleSystemScript.CheckExistingFile (gameObject)) {		
+								ParticleSystemOriginalSettings psOriginalSettings =	new ParticleSystemOriginalSettings {
+									_trailGradient = new SerializableGradient (trail.colorGradient),
+									_localPosition = new SerializableVector3 (trail.transform.localPosition),
+									_trailWidthMultiplier = trail.widthMultiplier,
+									_trailTime = trail.time
+								};
+								psOriginalSettingsList.Add (psOriginalSettings);
+							} else {
+								List<ParticleSystemOriginalSettings> listOriginalSettings = new List<ParticleSystemOriginalSettings> ();
+								listOriginalSettings = SaveParticleSystemScript.LoadVFX (gameObject);
+
+								trail.colorGradient = listOriginalSettings [i]._trailGradient.GetGradient ();
+								trail.transform.localPosition = listOriginalSettings [i]._localPosition.GetVector3 ();
+								trail.widthMultiplier = listOriginalSettings [i]._trailWidthMultiplier;
+								trail.time = listOriginalSettings [i]._trailTime;
+							}
+							trail.colorGradient = ChangeGradientColor (trail.colorGradient, newMaxColor, newMinColor);
+						}
+					}
+				}
+			}
+		}
+
+		public void ResizeOnly () {
+			if (ParticleSystems.Count == 0) {
+				FillLists ();
+			}
+			
+			if (ParticleSystems.Count > 0) {
+				for (int i = 0; i < ParticleSystems.Count; i ++) {
+					var ps = ParticleSystems [i].GetComponent<ParticleSystem> ();
+					if (ps != null) {
+						var main = ps.main;						
+						var shape = ps.shape;
+						var startSize = main.startSize;
+						var startSizeX = main.startSizeX;
+						var startSizeY = main.startSizeY;
+						var startSizeZ = main.startSizeZ;
+						var startSpeed = main.startSpeed;
+						var velocityOverLifetime = ps.velocityOverLifetime;
+						var velocityOverLifetimeX = velocityOverLifetime.x;
+						var velocityOverLifetimeY = velocityOverLifetime.y;
+						var velocityOverLifetimeZ = velocityOverLifetime.z;
+						var localPos = ParticleSystems [i].transform.localPosition;
+
+						//POSITION
+						if (i > 0) {
+							if (localPos.x != 0 || localPos.y != 0 || localPos.z != 0) {						
+								localPos.x *= size;
+								localPos.y *= size;
+								localPos.z *= size;
+								ParticleSystems [i].transform.localPosition = localPos;
+							}
+						}
+						
+						//SIZE
+						if (main.startSize3D) {
+							if (startSize.mode == ParticleSystemCurveMode.TwoConstants) {
+								startSizeX.constantMax *= size;
+								startSizeX.constantMin *= size;
+
+								startSizeY.constantMax *= size;
+								startSizeY.constantMin *= size;
+
+								startSizeZ.constantMax *= size;
+								startSizeZ.constantMin *= size;
+							} else {
+								startSizeX.constant *= size;
+								startSizeY.constant *= size;
+								startSizeZ.constant *= size;
+							}
+							main.startSizeX = startSizeX;
+							main.startSizeY = startSizeY;
+							main.startSizeZ = startSizeZ;
+						} else {
+							if (startSize.mode == ParticleSystemCurveMode.TwoConstants) {
+								startSize.constantMax *= size;
+								startSize.constantMin *= size;
+							} else {
+								startSize.constant *= size;
+							}
+							main.startSize = startSize;
+						}
+
+						//START_SPEED (affected by size)
+						if (startSpeed.mode == ParticleSystemCurveMode.TwoConstants) {
+							startSpeed.constantMax *= size;
+							startSpeed.constantMin *= size;
+							main.startSpeed = startSpeed;
+						} else {
+							startSpeed.constant *= size;
+							main.startSpeed = startSpeed;
+						}
+
+						//VELOCITY OVERLIFETIME
+						if(velocityOverLifetime.enabled){
+							float amount = 1;
+							if(size != 1)
+								amount = size;
+							if(speed != 1)
+								amount = speed;
+							if(size != 1 && speed != 1) 
+								amount = (size + speed)/2;
+							
+							if (velocityOverLifetime.x.mode == ParticleSystemCurveMode.TwoConstants) {								
+								velocityOverLifetimeX.constantMax *= amount;
+								velocityOverLifetimeX.constantMin *= amount;
+
+								velocityOverLifetimeY.constantMax *= amount;
+								velocityOverLifetimeY.constantMin *= amount;
+
+								velocityOverLifetimeZ.constantMax *= amount;
+								velocityOverLifetimeZ.constantMin *= amount;
+							} else {
+								velocityOverLifetimeX.constant *= amount;
+								velocityOverLifetimeY.constant *= amount;
+								velocityOverLifetimeZ.constant *= amount;
+							}
+							velocityOverLifetime.x = velocityOverLifetimeX;
+							velocityOverLifetime.y = velocityOverLifetimeY;
+							velocityOverLifetime.z = velocityOverLifetimeZ;
+						}
+
+						//RADIUS
+						if (shape.enabled) {
+							shape.radius *= size;
+						}
+					}
+					else{
+						//TRAIL RENDERER
+						var trail = ParticleSystems [i].GetComponent<TrailRenderer> ();
+						if (trail != null) {							
+							trail.widthMultiplier *= size;
+
+							float amount = 1;
+							if(size != 1)
+								amount = size;
+							if(speed != 1)
+								amount = speed;
+							if(size != 1 && speed != 1) 
+								amount = (size + speed)/2;
+							if(amount > 1)
+								trail.time *= 1 / amount;
+							else
+							trail.time *= amount;
+						}
+					}
+				}
+			}
 		}
 
 		public void ResetParticleSystem (){
@@ -385,10 +594,13 @@ namespace GAP_ParticleSystemController{
 						}
 					}
 				}
-				Debug.Log ( gameObject.name + " reseted to default.");
+#if UNITY_2018_3_OR_NEWER
+                SaveParticleSystemScript.SaveNestedPrefab(gameObject);
+#endif
+                Debug.Log ( gameObject.name + " reseted to default.");
 			}
 		}
-
+		
 		public Color ChangeHUE (Color oldColor, Color newColor){
 			float newHue;
 			float newSaturation;
@@ -404,11 +616,14 @@ namespace GAP_ParticleSystemController{
 			return updatedColor;
 		}
 
-		public Gradient ChangeGradientColor (Gradient oldGradient, Color newColor){
+		public Gradient ChangeGradientColor (Gradient oldGradient, Color newMaxColor, Color newMinColor){
 			GradientColorKey[] colorKeys = new GradientColorKey[oldGradient.colorKeys.Length];
 			for(int j = 0; j < oldGradient.colorKeys.Length; j++){
 				colorKeys [j].time = oldGradient.colorKeys [j].time;
-				colorKeys [j].color = ChangeHUE (oldGradient.colorKeys[j].color, newColor);
+				if(j%2 == 0)
+					colorKeys [j].color = ChangeHUE (oldGradient.colorKeys[j].color, newMaxColor);
+				if(j%2 == 1)
+					colorKeys [j].color = ChangeHUE (oldGradient.colorKeys[j].color, newMinColor);
 			}
 			oldGradient.SetKeys (colorKeys, oldGradient.alphaKeys);
 			return oldGradient;

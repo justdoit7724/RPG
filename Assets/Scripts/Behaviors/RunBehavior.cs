@@ -34,7 +34,7 @@ public class RunBehavior : BaseBehavior
 
         Vector3 subPos = mob.transform.position - mData.dest;
 
-        return (subPos.sqrMagnitude > 0.15f);
+        return (subPos.sqrMagnitude > 0.1f);
     }
 
     public override void EndBehavior(Mob mob)
