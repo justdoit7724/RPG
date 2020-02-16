@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-    public float rad;
+    public GameObject prefab;
 
     // Start is called before the first frame update
     void Start()
@@ -15,14 +15,14 @@ public class Test : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Collider[] colls = Physics.OverlapSphere(transform.position, rad, LayerMask.GetMask("Ground", "Wall"));
-        Debug.Log(colls.Length);
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            Instantiate(prefab, transform.position, Quaternion.identity);
+        }
 
     }
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, rad);
     }
 }

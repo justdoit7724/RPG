@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class RangeIndicator : MonoBehaviour
 {
-    Material mat;
+    private Material mat;
+    private bool isProgressing = false;
 
     public void Init(float maxRad, Color c, float viewAngle)
     {
@@ -30,5 +31,32 @@ public class RangeIndicator : MonoBehaviour
     public void SetProgress(float t)
     {
         mat.SetFloat("_Value", t);
+    }
+
+    public void StartProgress(float time, bool destroy)
+    {
+        if(!isProgressing)
+            StartCoroutine(IE_Progress(time, destroy));
+    }
+
+    public IEnumerator IE_Progress(float time, bool destroy)
+    {
+        isProgressing = true;
+
+        float curTime = 0;
+
+        while(curTime< time)
+        {
+            curTime += Time.deltaTime;
+
+            mat.SetFloat("_Value", curTime / time);
+
+            yield return null;
+        }
+
+        isProgressing = false;
+
+        if (destroy)
+            Destroy(gameObject);
     }
 }

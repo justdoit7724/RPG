@@ -10,6 +10,7 @@ public class GolemBall : MonoBehaviour
     public float speed=5;
     public Vector2 damage = new Vector2(100, 240);
     public Vector2 splashRad = new Vector2(3.5f, 7.0f);
+    public Vector2 hitScaleRange = new Vector2(0.4f, 0.65f);
 
     private RangeIndicator rIndicator;
     private float mDamage;
@@ -26,9 +27,6 @@ public class GolemBall : MonoBehaviour
         spawnHeight = transform.position.y;
         rIndicator = Instantiate(rangeIndicatorPrefab, expPt, Quaternion.identity).GetComponent<RangeIndicator>();
         rIndicator.Init(mSplashRad, Color.red, 360);
-
-
-
     }
 
     void Update()
@@ -40,6 +38,9 @@ public class GolemBall : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Ground"))
+            return;
+
         Collider[] colls = Physics.OverlapSphere(transform.position, mSplashRad, LayerMask.GetMask("Enemy"));
         foreach (var item in colls)
         {
@@ -58,7 +59,7 @@ public class GolemBall : MonoBehaviour
         spawnPos.y = 0;
         Golem golem = Instantiate(golemPrefab, spawnPos, Quaternion.identity).GetComponent<Golem>();
         golem.Init(growRate);
-        Instantiate(golemHitEffectPrefab, rIndicator.transform.position, Quaternion.identity);
+        Instantiate(golemHitEffectPrefab, rIndicator.transform.position, Quaternion.identity).transform.localScale = Vector3.one * Mathf.Lerp(hitScaleRange.x, hitScaleRange.y, growRate);
 
         Destroy(rIndicator.gameObject);
         Destroy(gameObject);

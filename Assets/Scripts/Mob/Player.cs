@@ -42,7 +42,7 @@ public class Player : Mob
     private const float skBallTime = 0.6f;
     private const float rollTime = 0.5f;
     private const float rollSpeed = 13.0f;
-    private Vector2 rIndicatorMaxRad = new Vector2(2.0f, 5.0f);
+    private Vector2 rIndicatorMaxRad = new Vector2(2.0f, 10.0f);
     private const float spawnChargeTime = 6.0f;
     private const float camZoonOutTime = 6.0f;
     private const float camMaxDist = 11.0f;
@@ -192,6 +192,7 @@ public class Player : Mob
                 anim.SetTrigger("sk_spawnGolem1");
                 curSpawnTime = 0;
                 rIndicator.SetPosition(transform.position);
+                rIndicator.SetMaxRad(rIndicatorMaxRad.y);
                 golemSpawnBodyEffect = Instantiate(golemSpawnBodyPrefab, transform.position, Quaternion.identity);
                 golemSkill1Button.StartCooldown();
                 golemSkill2Button.StartCooldown();
@@ -200,7 +201,6 @@ public class Player : Mob
                 anim.SetTrigger("idle");
                 rIndicator.gameObject.SetActive(true);
                 rIndicator.SetMaxRad(4.0f);
-                rIndicator.SetProgress(0.5f);
                 golemSkill2Button.StartCooldown();
                 break;
             case PlayerBehavior.Die:
@@ -376,10 +376,10 @@ public class Player : Mob
                     if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, float.MaxValue, LayerMask.GetMask("Ground")))
                     {
                         rIndicator.gameObject.SetActive(true);
+                        float growRate = Mathf.Clamp01(curSpawnTime / spawnChargeTime);
                         float zoomT = Mathf.Clamp01(curSpawnTime / camZoonOutTime);
-                        float curRIndicatorMaxRad = Mathf.Lerp(rIndicatorMaxRad.x, rIndicatorMaxRad.y, zoomT);
-                        rIndicator.SetMaxRad(curRIndicatorMaxRad);
-                        rIndicator.SetProgress(zoomT);
+                        float curRIndicatorMaxRad = Mathf.Lerp(rIndicatorMaxRad.x, rIndicatorMaxRad.y, growRate);
+                        rIndicator.SetProgress(growRate);
                         rIndicator.SetPosition(hit.point);
 
                         float camT = Mathf.Clamp01((1 - Mathf.Pow(zoomT - 1,2)) * 0.5f);
@@ -396,9 +396,6 @@ public class Player : Mob
                     float ballDist = Mathf.Lerp(30,50, growRate);
                     GolemBall golemBall = Instantiate(golemBallPrefab, rIndicator.transform.position - ballDir * ballDist, Quaternion.LookRotation(ballDir)).GetComponent<GolemBall>();
                     golemBall.Init(growRate, rIndicator.transform.position);
-
-                    golemSkill1Button.gameObject.SetActive(false);
-                    golemSkill2Button.gameObject.SetActive(true);
 
                     StartNewState(PlayerBehavior.Idle);
                 }

@@ -1,4 +1,12 @@
-﻿using UnityEngine;
+﻿
+
+#pragma warning disable 0162 // unreachable code detected.
+#pragma warning disable 0168 // variable declared but not used.
+#pragma warning disable 0219 // variable assigned but not used.
+#pragma warning disable 0414 // private field assigned but not used.
+#pragma warning disable 0472 // comparing color with null is always null.
+
+using UnityEngine;
 using System;
 
 namespace GAP_ParticleSystemController{

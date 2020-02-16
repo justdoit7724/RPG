@@ -1,4 +1,14 @@
-﻿using System.Collections;
+﻿//
+//NOTES:
+//This script is used for DEMONSTRATION porpuses of the Projectiles. I recommend everyone to create their own code for their own projects.
+//This is just a basic example.
+//
+
+#pragma warning disable 0168 // variable declared but not used.
+#pragma warning disable 0219 // variable assigned but not used.
+#pragma warning disable 0414 // private field assigned but not used.
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 

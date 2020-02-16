@@ -10,8 +10,17 @@ public class Lazer : MonoBehaviour
     private float curTime = 0;
     private bool isReadyToHit = true;
 
-    public void Init(float damage, float interval)
+    public void Init(float length, float damage, float interval)
     {
+        LineRenderer[] lines = GetComponentsInChildren<LineRenderer>();
+        foreach(var item in lines)
+        {
+            item.SetPosition(1, new Vector3(0, 0, length+1));
+        }
+        CapsuleCollider coll = GetComponent<CapsuleCollider>();
+        coll.height = length;
+        coll.center = new Vector3(0, 0, length * 0.5f);
+
         this.damage = damage;
         this.interval = interval;
         
