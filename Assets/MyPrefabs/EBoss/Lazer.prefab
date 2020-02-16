@@ -4997,7 +4997,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dc9bacdd60d10f4fb84460bac3581a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitEffectPrefab: {fileID: 4105595715463619650, guid: 45c94bd1c4e236248963c7b64b780222,
+  hitEffectPrefab: {fileID: 6655277056233985626, guid: e6846466bc040ef46b2c090f179c4888,
     type: 3}
 --- !u!111 &37338127825265538
 Animation:
