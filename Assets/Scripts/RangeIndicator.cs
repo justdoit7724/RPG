@@ -28,6 +28,10 @@ public class RangeIndicator : MonoBehaviour
         transform.position = pos + transform.up * 0.2f;
         mat.SetVector("_Center", pos + transform.up * 0.2f);
     }
+    public void SetDir(Vector3 dir)
+    {
+        mat.SetVector("_ViewDir", dir);
+    }
     public void SetProgress(float t)
     {
         mat.SetFloat("_Value", t);

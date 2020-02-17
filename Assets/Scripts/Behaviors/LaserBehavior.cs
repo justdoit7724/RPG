@@ -2,15 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+class LaserBehaviorData
+{
+    public bool isStartLaser = false;
+    public Transform target;
+
+    public LaserBehaviorData(Transform target)
+    {
+        this.target = target;
+    }
+}
+
 public class LaserBehavior : BaseBehavior
 {
-    private Transform target;
+    private LaserBehaviorData mData;
 
     public override void StartBehavior(Mob mob)
     {
         base.StartBehavior(mob);
 
-        target = (Transform)data;
+        mData = (LaserBehaviorData)data;
         mob.Anim.SetTrigger("laser");
     }
 
@@ -20,7 +31,7 @@ public class LaserBehavior : BaseBehavior
         if (lifeTime <= 0)
             return false;
 
-        Vector3 targetDir = (target.position - mob.transform.position).normalized;
+        Vector3 targetDir = (mData.target.position - mob.transform.position).normalized;
         float dotV = Vector3.Dot(targetDir, mob.transform.forward);
         float cosRad = Mathf.Acos(dotV);
         if (cosRad < (Mathf.PI * 0.25f))

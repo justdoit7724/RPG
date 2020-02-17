@@ -3,43 +3,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BehaviorSelector
+public class Selector
 {
-    Dictionary<Type, int> list = new Dictionary<Type, int>();
-    Type[] selection = null;
+    Dictionary<string, int> list = new Dictionary<string, int>();
+    string[] selection = null;
 
     public void Add(string behaviorName, int preference)
     {
         preference=Mathf.Clamp(1, 10, preference);
 
-        list.Add(Type.GetType(behaviorName), preference);
+        list.Add(behaviorName, preference);
 
-        Type[] tempArr = selection;
+        string[] tempArr = selection;
         if (tempArr != null)
         {
-            selection = new Type[tempArr.Length + preference];
+            selection = new string[tempArr.Length + preference];
             for (int i = 0; i < tempArr.Length; ++i)
             {
                 selection[i] = tempArr[i];
             }
             for (int i = tempArr.Length; i < selection.Length; ++i)
             {
-                selection[i] = Type.GetType(behaviorName);
+                selection[i] = behaviorName;
             }
         }
         else
         {
-            selection = new Type[preference];
+            selection = new string[preference];
             for (int i = 0; i < preference; ++i)
             {
-                selection[i] = Type.GetType(behaviorName);
+                selection[i] = behaviorName;
             }
         }
     }
 
-    public Type Get()
+    public string Get()
     {
-        Type nextBehavior = null;
+        string nextBehavior = null;
         try
         {
             nextBehavior = selection[UnityEngine.Random.Range(0, selection.Length)];
@@ -57,6 +57,11 @@ public class EBoss : NPC
 {
     public GameObject laserPrefab;
     public Transform laserPt;
+    public GameObject ballPrefab;
+    public GameObject ballSpawnEffectPrefab;
+    public GameObject mobSpawnEffectPrefab;
+    public GameObject swordMobPrefab;
+    public GameObject bowMobPrefab;
     public GameObject rangeIndicatorPrefab;
 
     public float attRad = 1.3f;
@@ -66,11 +71,12 @@ public class EBoss : NPC
 
     private Lazer laser=null;
     private MeleeWeapon wand;
-    private BehaviorSelector selector;
+    private Selector selector;
     private WeaponTrail trail;
     private float colliderRad;
     private float sqrAttRad;
 
+    private const float laserDuration = 8.0f;
     private const float xMoveOffset= 20.0f;
     private const float zMoveOffset= 20.0f;
 
@@ -88,10 +94,12 @@ public class EBoss : NPC
 
         colliderRad = GetComponent<CapsuleCollider>().radius;
 
-        selector = new BehaviorSelector();
-        selector.Add("RunBehavior", 7);
-        selector.Add("CloseAttBehavior", 4);
-        selector.Add("LaserBehavior", 4);
+        selector = new Selector();
+        selector.Add("RunBehavior", 3);
+        selector.Add("CloseAtt", 9);
+        selector.Add("LaserBehavior", 2);
+        selector.Add("BallBehavior", 10);
+        selector.Add("SpawnBehavior", 2);
     }
 
     public override void AE_StartAttack()
@@ -115,6 +123,52 @@ public class EBoss : NPC
         Destroy(laser.gameObject, 2.0f);
         laser = null;
     }
+    public void AE_SpawnBall()
+    {
+        Instantiate(ballSpawnEffectPrefab, transform.position, Quaternion.identity);
+
+        StartCoroutine(IE_Balls());
+    }
+    public void AE_StartSpawn()
+    {
+
+    }
+
+    private IEnumerator IE_Balls()
+    {
+        yield return new WaitForSeconds(1.0f);
+
+        const float height = 1.0f;
+        const int ballNumPer = 12;
+        float intvRad = (Mathf.PI*2.0f) / ballNumPer;
+        float startRad = 0;
+        for(int i=0; i<ballNumPer; ++i)
+        {
+            Vector3 dir = new Vector3(
+                Mathf.Cos(startRad+intvRad * i),
+                0,
+                Mathf.Sin(startRad+intvRad * i));
+
+            Instantiate(ballPrefab, transform.position + dir * 0.1f + Vector3.up * height, Quaternion.LookRotation(dir, Vector3.up));
+
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(0.1f);
+
+        startRad += Mathf.PI / 12.0f;
+        for (int i = 0; i < ballNumPer; ++i)
+        {
+            Vector3 dir = new Vector3(
+                Mathf.Cos(startRad+intvRad * i),
+                0,
+                Mathf.Sin(startRad+intvRad * i));
+
+            Instantiate(ballPrefab, transform.position + dir * 0.1f + Vector3.up * height, Quaternion.LookRotation(dir, Vector3.up));
+
+            yield return null;
+        }
+    }
 
     Vector3 tempDest;
     private void Update()
@@ -126,8 +180,7 @@ public class EBoss : NPC
 
         if (fsm.Count == 0)
         {
-            Type nextBehavior = selector.Get();
-            switch(nextBehavior.ToString())
+            switch(selector.Get())
             {
                 case "RunBehavior":
                     {
@@ -144,7 +197,7 @@ public class EBoss : NPC
                             {
                                 tempDest = rPos;
                                 runBehaviorData.dest = rPos;
-                                BaseBehavior runBehavior = ScriptableObject.CreateInstance(nextBehavior) as BaseBehavior;
+                                BaseBehavior runBehavior = ScriptableObject.CreateInstance<RunBehavior>();
                                 runBehavior.Init(BehaviorPriority.Basic, 0, runBehaviorData);
                                 fsm.DirectAddBehavior(runBehavior);
                                 BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
@@ -156,7 +209,7 @@ public class EBoss : NPC
 
                     }
                     break;
-                case "CloseAttBehavior":
+                case "CloseAtt":
                     {
                         Collider[] colls = Physics.OverlapSphere(transform.position, attRad, LayerMask.GetMask("Alley"));
                         if(colls.Length>0)
@@ -165,7 +218,7 @@ public class EBoss : NPC
                             if(subVec.sqrMagnitude <= sqrAttRad)
                             {
                                 transform.LookAt(colls[0].transform.position, Vector3.up);
-                                BaseBehavior attBehavior = ScriptableObject.CreateInstance<CloseAttBehavior>() as BaseBehavior;
+                                BaseBehavior attBehavior = ScriptableObject.CreateInstance<AnimEventBehavior>() as BaseBehavior;
                                 attBehavior.Init(BehaviorPriority.Att, 2.0f, "att");
                                 fsm.DirectAddBehavior(attBehavior);
                                 IdleBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
@@ -197,13 +250,40 @@ public class EBoss : NPC
 
                         if(target)
                         {
+                            transform.LookAt(target.transform.position, Vector3.up);
                             LaserBehavior laserBehavior = ScriptableObject.CreateInstance<LaserBehavior>();
                             laserBehavior.Init(BehaviorPriority.Skill, 8, target.transform);
                             fsm.DirectAddBehavior(laserBehavior);
                             IdleBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
                             idleBehavior.Init(BehaviorPriority.Basic, 2.0f, null);
                             fsm.DirectAddBehavior(idleBehavior);
+
+                            RangeIndicator rIndicator = Instantiate(rangeIndicatorPrefab, transform.position, Quaternion.identity).GetComponent<RangeIndicator>();
+                            rIndicator.Init(laserLength, Color.blue, 10);
+                            rIndicator.SetDir(transform.forward);
+                            rIndicator.StartProgress(1.0f, true);
                         }
+                    }
+                    break;
+                case "BallBehavior":
+                    {
+                        AnimEventBehavior animBehavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
+                        animBehavior.Init(BehaviorPriority.Skill, 2.0f, "ball");
+                        fsm.DirectAddBehavior(animBehavior);
+                        IdleBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
+                        idleBehavior.Init(BehaviorPriority.Basic, 2.0f, null);
+                        fsm.DirectAddBehavior(idleBehavior);
+                    }
+
+                    break;
+                case "SpawnBehavior":
+                    {
+                        AnimEventBehavior animBehavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
+                        animBehavior.Init(BehaviorPriority.Skill, 2.0f, "spawn");
+                        fsm.DirectAddBehavior(animBehavior);
+                        IdleBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
+                        idleBehavior.Init(BehaviorPriority.Basic, 2.0f, null);
+                        fsm.DirectAddBehavior(idleBehavior);
                     }
                     break;
             }

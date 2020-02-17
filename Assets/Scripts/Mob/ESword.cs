@@ -61,19 +61,19 @@ public class ESword : NPC
             Vector3 subVec = transform.position - target.transform.position;
             if (subVec.sqrMagnitude <= sqrAttRad)
             {
-                if (!fsm.ContainBehavior(Type.GetType("CloseAttBehavior")))
+                if (!fsm.ContainBehavior(Type.GetType("AnimEventBehavior")))
                 {
                     transform.LookAt(target.transform.position, Vector3.up);
 
                     if (UnityEngine.Random.Range(0, 2) == 0)
                     {
-                        BaseBehavior att1Behavior = ScriptableObject.CreateInstance<CloseAttBehavior>();
+                        BaseBehavior att1Behavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
                         att1Behavior.Init(BehaviorPriority.Att, 2.0f, "att1");
                         fsm.CheckAndAddBehavior(att1Behavior);
                     }
                     else
                     {
-                        BaseBehavior att2Behavior = ScriptableObject.CreateInstance<CloseAttBehavior>();
+                        BaseBehavior att2Behavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
                         att2Behavior.Init(BehaviorPriority.Att, 2.0f, "att2");
                         fsm.CheckAndAddBehavior(att2Behavior);
                     }

@@ -9,7 +9,7 @@ float Circle(float3 worldPos, float3 center, float rad)
     float3 subVec = worldPos - center;
     float sqrLength = dot(subVec, subVec);
     
-    return saturate(ceil(rad - sqrLength));
+    return saturate(ceil(sqrRad - sqrLength));
 }
 
 float AngleBetweenDir(float3 dir1, float3 dir2)

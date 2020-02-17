@@ -6829,10 +6829,15 @@ MonoBehaviour:
   laserPrefab: {fileID: 8224801683017986523, guid: bec3c3ad72ad7e44da6d8ce14b880dd7,
     type: 3}
   laserPt: {fileID: 6342082552540831501}
+  ballPrefab: {fileID: 4433605450008418085, guid: 47b71da0e101bb34da1ee68e1c1e4091,
+    type: 3}
+  ballSpawnEffectPrefab: {fileID: 5104206406811080588, guid: eea2a77a606ebcd4aa78a602d9f43fa0,
+    type: 3}
   rangeIndicatorPrefab: {fileID: 1694476336989272658, guid: ffc744d9e306ddc45bbd415fb09b8162,
     type: 3}
   attRad: 1.3
   damage: 60
+  laserDamage: 10
   laserLength: 15
 --- !u!114 &123003205
 MonoBehaviour:

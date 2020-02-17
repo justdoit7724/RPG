@@ -126,11 +126,11 @@ public class Golem : NPC
             Vector3 subVec = transform.position - target.transform.position;
             if (subVec.sqrMagnitude <= sqrAttRad)
             {
-                if (!fsm.ContainBehavior(Type.GetType("CloseAttBehavior")))
+                if (!fsm.ContainBehavior(Type.GetType("AnimEventBehavior")))
                 {
                     transform.LookAt(target.transform.position, Vector3.up);
 
-                    BaseBehavior att1Behavior = ScriptableObject.CreateInstance<CloseAttBehavior>();
+                    BaseBehavior att1Behavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
                     att1Behavior.Init(BehaviorPriority.Att, 4.0f, "att");
                     fsm.CheckAndAddBehavior(att1Behavior);
                 }

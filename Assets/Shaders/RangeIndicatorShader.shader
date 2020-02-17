@@ -1,13 +1,13 @@
-﻿Shader "Unlit/RangeIndicatorShader"
+﻿Shader "Custom/RangeIndicatorShader"
 {
     Properties
     {
         _Color ("Color", Color) = (1,0,0,0)
 		_Center("Center", Vector) = (0,0,0,0)
 		[HideInInspector] _ViewDir("ViewDir", Vector) =(1,0,0,0)
-		[HideInInspector] _ViewAngle("ViewAngle", Range(0,360)) = 360
-		[HideInInspector] _MaxRad("MaxRad", Range(0,25)) = 1
-		[HideInInspector] _Value("Value", Range(0,1)) = 0
+		 _ViewAngle("ViewAngle", Range(0,360)) = 360
+		 _MaxRad("MaxRad", Range(0,25)) = 1
+		 _Value("Value", Range(0,1)) = 0
     }
 
 
@@ -57,6 +57,9 @@
 
 			fixed4 frag(v2f i) : SV_Target
 			{
+				i.wPos.y = 0;
+			_Center.y = 0;
+
 			float outShape = Circle(i.wPos, _Center.xyz, _MaxRad) * 0.4f;
 			float inShape = Circle(i.wPos, _Center.xyz, _MaxRad* saturate(_Value)) * 0.15f;
 

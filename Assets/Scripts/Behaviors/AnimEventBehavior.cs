@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class CloseAttBehavior : BaseBehavior
+public class AnimEventBehavior : BaseBehavior
 {
     private string attName;
 

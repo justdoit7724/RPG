@@ -6,6 +6,21 @@ public class BossBall : MonoBehaviour
 {
     public GameObject HitEffectPrefab;
     public float damage = 50.0f;
+    public float speed = 5.0f;
+    public float lifeTime = 4.0f;
+
+    private void Update()
+    {
+        transform.position += transform.forward * speed * Time.deltaTime;
+
+        lifeTime -= Time.deltaTime;
+        if (lifeTime <= 0)
+        {
+            Destroy(gameObject);
+            Instantiate(HitEffectPrefab, transform.position, Quaternion.identity);
+            return;
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
