@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8229158958614524489}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Start
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,7 +46,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8229019119071218457}
   - component: {fileID: 8325107733458456827}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Laser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -183,7 +183,7 @@ GameObject:
   - component: {fileID: 8228764387878466977}
   - component: {fileID: 8133595324738824149}
   - component: {fileID: 8135452813421489039}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ParticlesBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4959,7 +4959,7 @@ GameObject:
   - component: {fileID: 474479077807766733}
   - component: {fileID: 37338127825265538}
   - component: {fileID: 4770125823307835464}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Lazer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5040,7 +5040,7 @@ GameObject:
   - component: {fileID: 8228654036823931357}
   - component: {fileID: 8134071316945683953}
   - component: {fileID: 8133802763997386603}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9617,7 +9617,7 @@ GameObject:
   - component: {fileID: 8228804695395610727}
   - component: {fileID: 8114644749907430331}
   - component: {fileID: 8134707837411305213}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ShinyBeam01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14370,7 +14370,7 @@ GameObject:
   - component: {fileID: 8228842396435489141}
   - component: {fileID: 8114838750967152215}
   - component: {fileID: 8133956370303593617}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Circles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19122,7 +19122,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8226982574285374535}
   - component: {fileID: 8326644930244694629}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LaserDark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19259,7 +19259,7 @@ GameObject:
   - component: {fileID: 8229181394433313923}
   - component: {fileID: 8114838238651649207}
   - component: {fileID: 8135469989848378521}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ring
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24019,7 +24019,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8227482738912305997}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Middle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24052,7 +24052,7 @@ GameObject:
   - component: {fileID: 8228885565701990683}
   - component: {fileID: 8134222311998536701}
   - component: {fileID: 8135694379590754875}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BeamFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28827,7 +28827,7 @@ GameObject:
   - component: {fileID: 8227094653927249841}
   - component: {fileID: 8133627969888950983}
   - component: {fileID: 8134004865067496225}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33580,7 +33580,7 @@ GameObject:
   - component: {fileID: 8227315979845028349}
   - component: {fileID: 8134138019905662499}
   - component: {fileID: 8133813165890663159}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ShinyBeam02
   m_TagString: Untagged
   m_Icon: {fileID: 0}

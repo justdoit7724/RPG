@@ -746,7 +746,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 2.1
+      value: 1.5
       mode: 0
       spread: 0
       speed:
@@ -5530,7 +5530,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 2.2
+      value: 1.2
       mode: 0
       spread: 0
       speed:
@@ -9988,7 +9988,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 7
+      scalar: 3.5
       minScalar: 2.5
       maxCurve:
         serializedVersion: 2
@@ -14763,7 +14763,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 5
       minScalar: 9
       maxCurve:
         serializedVersion: 2
@@ -19538,7 +19538,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 7
+      scalar: 3.5
       minScalar: 9
       maxCurve:
         serializedVersion: 2
@@ -24481,7 +24481,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 8
+      scalar: 4
       minScalar: 2.5
       maxCurve:
         serializedVersion: 2
@@ -29256,7 +29256,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 25
+      scalar: 12.5
       minScalar: 9
       maxCurve:
         serializedVersion: 2
@@ -29309,7 +29309,7 @@ ParticleSystem:
     startSizeY:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 25
+      scalar: 12.5
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -29362,7 +29362,7 @@ ParticleSystem:
     startSizeZ:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 20
+      scalar: 10
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -33757,6 +33757,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1524938410747840259}
   - component: {fileID: 1491822675275294989}
+  - component: {fileID: 8176789629479802958}
   m_Layer: 0
   m_Name: MobSpawnAura
   m_TagString: Untagged
@@ -33796,6 +33797,19 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
+--- !u!114 &8176789629479802958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1531213993111479777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b36d4bba233899142a291ea8e2a5c5c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lifeTime: 3
 --- !u!1 &7870048909065508206
 GameObject:
   m_ObjectHideFlags: 0
@@ -34080,8 +34094,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 2.25
-      minScalar: 3.65
+      scalar: 1.25
+      minScalar: 2.65
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -34133,8 +34147,8 @@ ParticleSystem:
     startSizeY:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 2.25
-      minScalar: 3.65
+      scalar: 1.25
+      minScalar: 2.65
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -34186,8 +34200,8 @@ ParticleSystem:
     startSizeZ:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 2.5
-      minScalar: 5
+      scalar: 2
+      minScalar: 4
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -38855,8 +38869,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 8
-      minScalar: 6
+      scalar: 6
+      minScalar: 4
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -39317,7 +39331,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 2.25
+      value: 1.4
       mode: 0
       spread: 0
       speed:
@@ -43621,7 +43635,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.6
+      scalar: 0.4
       minScalar: 0.2
       maxCurve:
         serializedVersion: 2
@@ -43674,7 +43688,7 @@ ParticleSystem:
     startSizeY:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.25
+      scalar: 0.2
       minScalar: 0.1
       maxCurve:
         serializedVersion: 2
@@ -44083,7 +44097,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 3.5
+      value: 1.7
       mode: 0
       spread: 0
       speed:

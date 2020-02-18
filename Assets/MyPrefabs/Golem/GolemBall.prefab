@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2924444902020438348}
   - component: {fileID: 3013998045412936432}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Trail_Center
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,7 +146,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2924386137794980354}
   - component: {fileID: 3016486880635130208}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Trail_AB_Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -283,7 +283,7 @@ GameObject:
   - component: {fileID: 2921439600485412140}
   - component: {fileID: 3046319500550724070}
   - component: {fileID: 3046606614132412330}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ParticlesAdd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5045,7 +5045,7 @@ GameObject:
   - component: {fileID: 2924101470888446198}
   - component: {fileID: 3045807651648990720}
   - component: {fileID: 3044704743078401580}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Circles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9820,7 +9820,7 @@ GameObject:
   - component: {fileID: 2921658091143208242}
   - component: {fileID: 3043134996516302934}
   - component: {fileID: 3046607092968100624}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BeamAB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14658,7 +14658,7 @@ GameObject:
   - component: {fileID: 2921484710985079610}
   - component: {fileID: 3045570610698372674}
   - component: {fileID: 3046679213741781542}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: FireCenter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19496,7 +19496,7 @@ GameObject:
   - component: {fileID: 2921499662959912018}
   - component: {fileID: 3045769924519910204}
   - component: {fileID: 3046636364503432030}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ParticlesAB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24258,7 +24258,7 @@ GameObject:
   - component: {fileID: 2924397812808106658}
   - component: {fileID: 3045853709392368934}
   - component: {fileID: 3044816996115857060}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Shockwaves
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29033,7 +29033,7 @@ GameObject:
   - component: {fileID: 2924013115544023780}
   - component: {fileID: 3045870752837441278}
   - component: {fileID: 3044795882879297000}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SmokeWorld
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33785,7 +33785,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2921497258356783278}
   - component: {fileID: 3013600479618806418}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Trail_AB_Bot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33922,7 +33922,7 @@ GameObject:
   - component: {fileID: 2921203999669015652}
   - component: {fileID: 3045700623720764888}
   - component: {fileID: 3044930382195929866}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Flare
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38761,7 +38761,7 @@ GameObject:
   - component: {fileID: 2902100009977528600}
   - component: {fileID: 7248420291939508176}
   - component: {fileID: 7371248013757059162}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: GolemBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38842,4 +38842,5 @@ MonoBehaviour:
     type: 3}
   speed: 5
   damage: {x: 100, y: 240}
-  splashRad: {x: 3.5, y: 7}
+  splashRad: {x: 2.5, y: 5}
+  hitScaleRange: {x: 0.4, y: 0.65}

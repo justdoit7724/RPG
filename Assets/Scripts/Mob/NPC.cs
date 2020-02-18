@@ -51,7 +51,7 @@ public class NPC : Mob
         {
             Destroy(hpBar.transform.gameObject);
             BaseBehavior deathBehavior = ScriptableObject.CreateInstance<DieBehavior>();
-            deathBehavior.Init(BehaviorPriority.Vital, 0, null);
+            deathBehavior.Init(BehaviorPriority.Vital, null, true);
             fsm.CheckAndAddBehavior(deathBehavior);
         }
 

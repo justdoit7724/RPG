@@ -42,7 +42,7 @@ public class Player : Mob
     private const float skBallTime = 0.6f;
     private const float rollTime = 0.5f;
     private const float rollSpeed = 13.0f;
-    private Vector2 rIndicatorMaxRad = new Vector2(2.0f, 10.0f);
+    private Vector2 rIndicatorMaxRad = new Vector2(2.5f, 5.0f);
     private const float spawnChargeTime = 6.0f;
     private const float camZoonOutTime = 6.0f;
     private const float camMaxDist = 11.0f;
@@ -452,35 +452,3 @@ public class Player : Mob
     }
 }
 
-
-//public class ManualRunBehavior : BaseBehavior
-//{
-//    private float speed;
-
-//    public override void Init(BehaviorPriority p, object data, bool isAlone)
-//    {
-//        base.Init(p, data, isAlone);
-
-//        speed = (float)data;
-//    }
-
-//    public override void StartBehavior(Mob mob)
-//    {
-//        base.StartBehavior(mob);
-
-//        mob.Anim.SetTrigger("run");
-//    }
-
-//    public override bool UpdateBehavior(Mob mob)
-//    {
-
-//        return (mob.Rigid.velocity.sqrMagnitude > 0.0001f);
-//    }
-
-//    public override void EndBehavior(Mob mob)
-//    {
-//        base.EndBehavior(mob);
-//        mob.Rigid.velocity = Vector3.zero;
-//        mob.Anim.ResetTrigger("run");
-//    }
-//}

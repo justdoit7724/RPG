@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-    public GameObject prefab;
+    public float rad = 2.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -15,14 +15,14 @@ public class Test : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Q))
+        //if(Input.GetKeyDown(KeyCode.Q))
         {
-            Instantiate(prefab, transform.position, Quaternion.identity);
         }
 
     }
 
     private void OnDrawGizmos()
     {
+        Gizmos.DrawWireSphere(transform.position, rad);
     }
 }

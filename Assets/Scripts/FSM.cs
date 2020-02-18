@@ -108,26 +108,26 @@ public class FSM : MonoBehaviour
         }
     }
 
-    private void OnGUI()
-    {
+    //private void OnGUI()
+    //{
 
-        Vector2 scn = Camera.main.WorldToScreenPoint(transform.position);
-        scn.y = Screen.height - scn.y;
-        bool isFirst = false;
-        foreach(var i in behaviors)
-        {
-            if(!isFirst)
-            {
-                GUI.color = Color.red;
-                isFirst = true;
-            }
-            else
-            {
-                GUI.color = Color.cyan;
-            }
-            GUI.Label(new Rect(scn, new Vector2(150, 30)), i.ToString());
+    //    Vector2 scn = Camera.main.WorldToScreenPoint(transform.position);
+    //    scn.y = Screen.height - scn.y;
+    //    bool isFirst = false;
+    //    foreach(var i in behaviors)
+    //    {
+    //        if(!isFirst)
+    //        {
+    //            GUI.color = Color.red;
+    //            isFirst = true;
+    //        }
+    //        else
+    //        {
+    //            GUI.color = Color.cyan;
+    //        }
+    //        GUI.Label(new Rect(scn, new Vector2(150, 30)), i.ToString());
 
-            scn.y += 20;
-        }
-    }
+    //        scn.y += 20;
+    //    }
+    //}
 }

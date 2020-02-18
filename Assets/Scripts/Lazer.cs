@@ -26,6 +26,13 @@ public class Lazer : MonoBehaviour
         
     }
 
+    public void Destroy(float t)
+    {
+        GetComponent<Collider>().enabled = false;
+        GetComponent<Animation>().Play();
+        Destroy(gameObject, t);
+    }
+
     private void Update()
     {
         curTime += Time.deltaTime;

@@ -27,6 +27,8 @@ public class RunBehavior : BaseBehavior
 
     public override bool UpdateBehavior(Mob mob)
     {
+
+
         mob.Nav.destination = mData.dest;
         Vector3 targetDir = (mData.dest - mob.transform.position).normalized;
         Vector3 curDir = mob.transform.forward;
@@ -34,13 +36,12 @@ public class RunBehavior : BaseBehavior
 
         Vector3 subPos = mob.transform.position - mData.dest;
 
-        return (subPos.sqrMagnitude > 0.1f);
+        return (subPos.sqrMagnitude > 0.2f);
     }
 
     public override void EndBehavior(Mob mob)
     {
         base.EndBehavior(mob);
-        mob.Anim.ResetTrigger("run");
         mob.Nav.isStopped = true;
         mob.Nav.destination = mob.transform.position;
     }
