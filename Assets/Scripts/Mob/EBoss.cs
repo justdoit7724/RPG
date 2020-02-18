@@ -65,7 +65,7 @@ public class EBoss : NPC
     public GameObject bowMobPrefab;
     public GameObject rangeIndicatorPrefab;
 
-    public float attRad = 2.2f;
+    public float attRad = 2.5f;
     public float damage = 60;
     public float laserDamage = 10.0f;
     public float laserLength = 15.0f;
