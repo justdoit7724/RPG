@@ -5,9 +5,19 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
+[System.Serializable]
+public struct SwordInfo
+{
+    public MeleeWeapon obj;
+    public Transform skillPt;
+}
+
 public class Player : Mob
 {
-
+    [SerializeField] private SwordInfo[] swords;
+    [SerializeField] private GameObject[] bodys;
+    [SerializeField] private GameObject[] hairs;
+    [SerializeField] private GameObject[] shoulderPad;
     [SerializeField] private SkillButton fireBallSkButton;
     [SerializeField] private SkillButton golemSkill1Button;
     [SerializeField] private SkillButton golemSkill2Button;
@@ -91,8 +101,13 @@ public class Player : Mob
 
         followCamera.transform.Rotate(camRotOffset);
 
-        golemSkill1Button.gameObject.SetActive(true);
+        golemSkill1Button.gameObject.SetActive(false);
         golemSkill2Button.gameObject.SetActive(false);
+    }
+
+    public void Init()
+    {
+        golemSkill1Button.gameObject.SetActive(true);
     }
 
     public override void AE_StartAttack()

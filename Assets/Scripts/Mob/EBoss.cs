@@ -154,7 +154,7 @@ public class EBoss : NPC
         for(int i=0; i<4; ++i)
         {
             Vector3 rPt = mobSpawnPts[spawnPtIdx++].transform.position;
-            Instantiate(swordMobPrefab, rPt, Quaternion.identity);
+            Instantiate(swordMobPrefab, rPt, Quaternion.identity).GetComponent<NPC>().Init(0.75f);
             Instantiate(mobSpawnPtEffectPrefab, rPt, Quaternion.identity);
 
             yield return null;
@@ -162,7 +162,7 @@ public class EBoss : NPC
         for (int i = 0; i < 3; ++i)
         {
             Vector3 rPt = mobSpawnPts[spawnPtIdx++].transform.position;
-            Instantiate(bowMobPrefab, rPt, Quaternion.identity);
+            Instantiate(bowMobPrefab, rPt, Quaternion.identity).GetComponent<NPC>().Init(0.75f);
             Instantiate(mobSpawnPtEffectPrefab, rPt, Quaternion.identity);
 
             yield return null;

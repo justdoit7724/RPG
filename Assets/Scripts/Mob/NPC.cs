@@ -40,6 +40,20 @@ public class NPC : Mob
         fsm = GetComponent<FSM>();
 
         runBehaviorData = new RunBehaviorData(transform.position);
+
+        enabled = false;
+    }
+
+    public void Init(float delayTime)
+    {
+        StartCoroutine(IE_Init(delayTime));
+    }
+
+    private IEnumerator IE_Init(float d)
+    {
+        yield return new WaitForSeconds(d);
+
+        enabled = true;
     }
 
     public override void GetDamaged(float amount)
