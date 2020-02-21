@@ -1066,7 +1066,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetHairItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &175282582
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1576,7 +1587,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetClothItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &248568982
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1760,7 +1782,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetClothItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &328304805
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2490,7 +2523,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetSwordItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &468586819
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3159,7 +3203,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetClothItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &569620203
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3920,7 +3975,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetShoulderPadItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &661536044
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4650,7 +4716,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetClothItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 4
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &766738279
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5094,7 +5171,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetSwordItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &833804930
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5406,7 +5494,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetShoulderPadItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &889526085
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5517,7 +5616,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetSwordItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &910076010
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6161,7 +6271,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetClothItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 5
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &1000405110
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6519,20 +6640,53 @@ MonoBehaviour:
   activeButtonSprite: {fileID: 21300000, guid: b198fc9c4e441724fbaa759edc82d7d5, type: 3}
   unactiveButtonSprite: {fileID: 21300000, guid: bb4ffea0d38ef5b469f6defac440f7be,
     type: 3}
+  equipButtonSprite: {fileID: 21300000, guid: 3a5803702d3e45342872862b065f0786, type: 3}
+  unequipButtonSprite: {fileID: 21300000, guid: d33124863f30b714ea3cda468ecba1c4,
+    type: 3}
   selectPanel: {fileID: 607106742}
   selections:
-  - obj: {fileID: 1665057113}
+  - kind: 0
+    obj: {fileID: 1665057113}
     content: {fileID: 1462569789}
     activeButtonImage: {fileID: 672906475}
-  - obj: {fileID: 750121579}
+  - kind: 1
+    obj: {fileID: 750121579}
     content: {fileID: 2053193460}
     activeButtonImage: {fileID: 710203486}
-  - obj: {fileID: 991532165}
+  - kind: 2
+    obj: {fileID: 991532165}
     content: {fileID: 594616265}
     activeButtonImage: {fileID: 833773810}
-  - obj: {fileID: 50545264}
+  - kind: 3
+    obj: {fileID: 50545264}
     content: {fileID: 1816418328}
     activeButtonImage: {fileID: 350738158}
+  modelHairs:
+  - {fileID: 8033200786469847969}
+  - {fileID: 8032683781238239111}
+  - {fileID: 8033558415141648513}
+  - {fileID: 8032828273745814871}
+  - {fileID: 8032742726520626703}
+  modelCloths:
+  - {fileID: 8033093773512963243}
+  - {fileID: 8032767192292305469}
+  - {fileID: 8033051829941412081}
+  - {fileID: 8033098347807609833}
+  - {fileID: 8032967952120953283}
+  - {fileID: 8032268471627339977}
+  - {fileID: 8032456094876421899}
+  modelSwords:
+  - {fileID: 8033472598214202199}
+  - {fileID: 8032825724618935783}
+  - {fileID: 8033127236576084527}
+  - {fileID: 8032667690922093877}
+  modelShoulderPad:
+  - {fileID: 8032618484869344015}
+  - {fileID: 8032888732715087097}
+  - {fileID: 8033252619609059057}
+  - {fileID: 8033137379176040527}
+  - {fileID: 8033161909759863151}
+  - {fileID: 8032815557982115337}
   sceneChangeImageInside: {fileID: 1426940591}
   sceneChangeImageOutside: {fileID: 1026476626}
 --- !u!1 &1061584594
@@ -6637,7 +6791,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetShoulderPadItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 4
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &1061584598
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6876,7 +7041,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetClothItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 6
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &1109864563
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6987,7 +7163,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetClothItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &1127009981
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7590,7 +7777,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetHairItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &1280427650
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7922,7 +8120,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetShoulderPadItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &1358340052
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8185,7 +8394,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetHairItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 4
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &1394881455
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9091,7 +9311,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetHairItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &1560342980
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10497,7 +10728,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetHairItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &1891752171
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -11836,7 +12078,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetSwordItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &2072945883
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -12262,7 +12515,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1046521765}
+        m_MethodName: SetShoulderPadItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &2099744383
 CanvasRenderer:
   m_ObjectHideFlags: 0

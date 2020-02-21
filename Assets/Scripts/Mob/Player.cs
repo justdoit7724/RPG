@@ -6,33 +6,41 @@ using UnityEngine.AI;
 using UnityEngine.UI;
 
 [System.Serializable]
-public struct SwordInfo
+public struct PlayerSwordInfo
 {
-    public MeleeWeapon obj;
+    public GameObject obj;
     public Transform skillPt;
 }
 
 public class Player : Mob
 {
-    [SerializeField] private SwordInfo[] swords;
-    [SerializeField] private GameObject[] bodys;
-    [SerializeField] private GameObject[] hairs;
-    [SerializeField] private GameObject[] shoulderPad;
+
+    [SerializeField] private float speed = 5.0f;
+    [SerializeField] private Slider hpBar;
+    [SerializeField] private Text hpAmount;
+
+    [Header("Model")]
+    public GameObject[] modelHairs;
+    public GameObject[] modelCloths;
+    public PlayerSwordInfo[] modelSwords;
+    public GameObject[] modelShoulderPads;
+
+    [Header("UI")]
     [SerializeField] private SkillButton fireBallSkButton;
     [SerializeField] private SkillButton golemSkill1Button;
     [SerializeField] private SkillButton golemSkill2Button;
+    [Header("Camera")]
     [SerializeField] private GameObject followCamera;
     [SerializeField] private Vector3 camPosOffset=new Vector3(0,5,-3);
     [SerializeField] private Vector3 camRotOffset=new Vector3(60,90,0);
+
+    [Header("Effect & Prefab")]
     [SerializeField] private GameObject rollEffectPrefab;
     [SerializeField] private GameObject fireBallPrefab;
-    [SerializeField] private Transform fireBallPt;
     [SerializeField] private GameObject golemSpawnBodyPrefab;
     [SerializeField] private GameObject golemSpawnFinishPrefab;
     [SerializeField] private GameObject golemBallPrefab;
-    [SerializeField] private float speed=5.0f;
-    [SerializeField] private Slider hpBar;
-    [SerializeField] private Text hpAmount;
+
 
     private RangeIndicator rIndicator=null;
     private GameObject golemSpawnBodyEffect;
@@ -40,14 +48,15 @@ public class Player : Mob
     private MeleeWeapon weapon;
     private Vector3 camFollowPt;
     private Golem golem = null;
+    private Transform fireBallPt;
 
     private float curTime = 0;
     private float curSpawnTime = 0;
     private const float att1Damage = 45;
     private const float att2Damage = 50;
     private const float att3Damage = 65;
-    private const float att1Time = 0.5f;
-    private const float att2Time = 0.5f;
+    private const float att1Time = 0.4f;
+    private const float att2Time = 0.4f;
     private const float att3Time = 1.0f;
     private const float skBallTime = 0.6f;
     private const float rollTime = 0.5f;
@@ -93,8 +102,8 @@ public class Player : Mob
     {
         base.Start();
 
-        trail = GetComponentInChildren<WeaponTrail>();
-        weapon = GetComponentInChildren<MeleeWeapon>();
+        SetupModels();
+
         rIndicator = GetComponentInChildren<RangeIndicator>();
         rIndicator.Init(rIndicatorMaxRad.x, Color.red, 360);
         rIndicator.gameObject.SetActive(false);
@@ -109,6 +118,100 @@ public class Player : Mob
         enabled = false;
     }
 
+    private void SetupModels()
+    {
+        if (PlayerPrefs.HasKey("Hair"))
+        {
+            for (int i = 0; i < modelHairs.Length; ++i)
+            {
+                if (PlayerPrefs.GetInt("Hair") == i)
+                {
+                    modelHairs[i].SetActive(true);
+                }
+                else
+                {
+                    Destroy(modelHairs[i]);
+                }
+                modelHairs[i] = null;
+            }
+        }
+        else
+        {
+            modelHairs[0].SetActive(true);
+        }
+        if (PlayerPrefs.HasKey("Cloth"))
+        {
+            for (int i = 0; i < modelCloths.Length; ++i)
+            {
+                if (PlayerPrefs.GetInt("Cloth") == i)
+                {
+                    modelCloths[i].SetActive(true);
+                }
+                else
+                {
+                    Destroy(modelCloths[i]);
+                }
+                modelCloths[i] = null;
+            }
+
+        }
+        else
+        {
+            modelCloths[0].SetActive(true);
+        }
+        if (PlayerPrefs.HasKey("Sword"))
+        {
+            int swordIdx = PlayerPrefs.GetInt("Sword");
+            for (int i = 0; i < modelSwords.Length; ++i)
+            {
+                if (swordIdx == i)
+                {
+                    modelSwords[i].obj.SetActive(true);
+                }
+                else
+                {
+                    Destroy(modelSwords[i].obj);
+                    modelSwords[i].obj = null;
+                    modelSwords[i].skillPt = null;
+                }
+
+            }
+
+            trail = modelSwords[swordIdx].obj.GetComponentInChildren<WeaponTrail>();
+            weapon = modelSwords[swordIdx].obj.GetComponent<MeleeWeapon>();
+
+
+            fireBallPt = modelSwords[swordIdx].skillPt;
+        }
+        else
+        {
+            trail = modelSwords[0].obj.GetComponentInChildren<WeaponTrail>();
+            weapon = modelSwords[0].obj.GetComponent<MeleeWeapon>();
+
+            fireBallPt = modelSwords[0].skillPt;
+            modelSwords[0].obj.SetActive(true);
+        }
+        if (PlayerPrefs.HasKey("ShoulderPad"))
+        {
+            for (int i = 0; i < modelShoulderPads.Length; ++i)
+            {
+                if (PlayerPrefs.GetInt("ShoulderPad") == i)
+                {
+                    modelShoulderPads[i].SetActive(true);
+                }
+                else
+                {
+                    Destroy(modelShoulderPads[i]);
+                }
+                modelShoulderPads[i] = null;
+            }
+        }
+        else
+        {
+            modelShoulderPads[0].SetActive(true);
+        }
+    }
+
     public void Init()
     {
         golemSkill1Button.gameObject.SetActive(true);
@@ -120,13 +223,13 @@ public class Player : Mob
     {
         if (trail)
             trail.StartTrail();
-        weapon.enabled = true;
+        weapon.StartAttack();
     }
     public override void AE_EndAttack()
     {
         if (trail)
             trail.EndTrail();
-        weapon.enabled = false;
+        weapon.EndAttack();
     }
     public void AE_FireBall()
     {
@@ -177,6 +280,10 @@ public class Player : Mob
         curTime = 0;
         rigid.velocity = Vector3.zero;
         rIndicator.gameObject.SetActive(false);
+
+
+        trail.EndTrail();
+        weapon.EndAttack();
 
         switch (behavior)
         {

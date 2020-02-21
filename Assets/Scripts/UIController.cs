@@ -4,11 +4,18 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-
+[System.Serializable]
+public enum ItemKind
+{
+    Hair,
+    Cloth,
+    Sword,
+    ShoulderPad
+}
 [System.Serializable]
 public struct SelectInfo
 {
-    public int kind;
+    public ItemKind kind;
     public RectTransform obj;
     public RectTransform content;
     public Image activeButtonImage;
@@ -25,14 +32,15 @@ public class UIController : MonoBehaviour
     public ScrollRect selectPanel;
     public SelectInfo[] selections;
 
+    [Header("Model")]
+    public GameObject[] modelHairs;
+    public GameObject[] modelCloths;
+    public GameObject[] modelSwords;
+    public GameObject[] modelShoulderPad;
+
     [Header("Scene Change")]
     public RawImage sceneChangeImageInside;
     public RawImage sceneChangeImageOutside;
-
-    const int HAIR_IDX = 0;
-    const int CLOTH_IDX = 1;
-    const int SWORD_IDX = 2;
-    const int SHOULDERPAD_IDX = 3;
 
     private Image[] hairImages;
     private Image[] clothImages;
@@ -54,26 +62,43 @@ public class UIController : MonoBehaviour
         {
             switch (item.kind)
             {
-                case HAIR_IDX:
-                    hairImages = item.content.GetComponentsInChildren<Image>();
+                case ItemKind.Hair:
+                    {
+                        hairImages = item.content.GetComponentsInChildren<Image>();
+                    }
                     break;
-                case CLOTH_IDX:
-                    clothImages = item.content.GetComponentsInChildren<Image>();
+                case ItemKind.Cloth:
+                    {
+                        clothImages = item.content.GetComponentsInChildren<Image>();
+                    }
                     break;
-                case SWORD_IDX:
-                    swordImages = item.content.GetComponentsInChildren<Image>();
+                case ItemKind.Sword:
+                    {
+                        swordImages = item.content.GetComponentsInChildren<Image>();
+                    }
                     break;
-                case SHOULDERPAD_IDX:
-                    shoulderPadImages = item.content.GetComponentsInChildren<Image>();
+                case ItemKind.ShoulderPad:
+                    {
+                        shoulderPadImages = item.content.GetComponentsInChildren<Image>();
+                    }
                     break;
             }
         }
 
+        foreach (var item in modelHairs)
+            item.SetActive(false);
+        foreach (var item in modelCloths)
+            item.SetActive(false);
+        foreach (var item in modelSwords)
+            item.SetActive(false);
+        foreach (var item in modelShoulderPad)
+            item.SetActive(false);
+
         SetNewSelect(curSelectIdx);
-        //SetNewItem(HAIR_IDX, curHairIdx);
-        //SetNewItem(CLOTH_IDX, curClothIdx);
-        //SetNewItem(SWORD_IDX, curSwordIdx);
-        //SetNewItem(SHOULDERPAD_IDX, curShoulderPadIdx);
+        SetHairItem(curHairIdx);
+        SetClothItem(curClothIdx);
+        SetSwordItem(curSwordIdx);
+        SetShoulderPadItem(curShoulderPadIdx);
     }
 
     public void SetNewSelect(int idx)
@@ -90,32 +115,41 @@ public class UIController : MonoBehaviour
         selections[curSelectIdx].obj.gameObject.SetActive(true);
         selections[curSelectIdx].activeButtonImage.sprite = activeButtonSprite;
     }
-    public void SetNewItem(int itemKind)
+    public void SetHairItem(int i)
     {
-        int i= 0;
-        switch (itemKind)
-        {
-            case HAIR_IDX:
-                hairImages[curHairIdx].sprite = unequipButtonSprite;
-                curHairIdx = i;
-                hairImages[i].sprite = equipButtonSprite;
-                break;
-            case CLOTH_IDX:
-                clothImages[curClothIdx].sprite = unequipButtonSprite;
-                curClothIdx = i;
-                clothImages[i].sprite = equipButtonSprite;
-                break;
-            case SWORD_IDX:
-                swordImages[curSwordIdx].sprite = unequipButtonSprite;
-                curSwordIdx = i;
-                swordImages[i].sprite = equipButtonSprite;
-                break;
-            case SHOULDERPAD_IDX:
-                shoulderPadImages[curShoulderPadIdx].sprite = unequipButtonSprite;
-                curShoulderPadIdx = i;
-                shoulderPadImages[i].sprite = equipButtonSprite;
-                break;
-        }
+        modelHairs[curHairIdx].SetActive(false);
+
+        hairImages[curHairIdx].sprite = unequipButtonSprite;
+        curHairIdx = i;
+        hairImages[i].sprite = equipButtonSprite;
+        modelHairs[curHairIdx].SetActive(true);
+    }
+    public void SetClothItem(int i)
+    {
+        modelCloths[curClothIdx].SetActive(false);
+
+        clothImages[curClothIdx].sprite = unequipButtonSprite;
+        curClothIdx = i;
+        clothImages[i].sprite = equipButtonSprite;
+        modelCloths[curClothIdx].SetActive(true);
+    }
+    public void SetSwordItem(int i)
+    {
+        modelSwords[curSwordIdx].SetActive(false);
+
+        swordImages[curSwordIdx].sprite = unequipButtonSprite;
+        curSwordIdx = i;
+        swordImages[i].sprite = equipButtonSprite;
+        modelSwords[curSwordIdx].SetActive(true);
+    }
+    public void SetShoulderPadItem(int i)
+    {
+        modelShoulderPad[curShoulderPadIdx].SetActive(false);
+
+        shoulderPadImages[curShoulderPadIdx].sprite = unequipButtonSprite;
+        curShoulderPadIdx = i;
+        shoulderPadImages[i].sprite = equipButtonSprite;
+        modelShoulderPad[curShoulderPadIdx].SetActive(true);
     }
 
     public void Exit()
@@ -126,7 +160,6 @@ public class UIController : MonoBehaviour
     public void Play()
     {
         StartCoroutine(IE_SceneChange());
-
     }
 
     private IEnumerator IE_SceneChange()
@@ -157,5 +190,10 @@ public class UIController : MonoBehaviour
     private void OnDestroy()
     {
         PlayerPrefs.DeleteAll();
+
+        PlayerPrefs.SetInt("Hair", curHairIdx);
+        PlayerPrefs.SetInt("Cloth", curClothIdx);
+        PlayerPrefs.SetInt("Sword", curSwordIdx);
+        PlayerPrefs.SetInt("ShoulderPad", curShoulderPadIdx);
     }
 }

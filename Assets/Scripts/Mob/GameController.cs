@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour
     public Vector3 wayPoint=new Vector3(0,0,0);
     public Vector3 triggerBoxRad = new Vector3(2, 1, 1);
 
+
     [Header("Scene Change")]
     public RawImage sceneChangeInsideImage;
     public RawImage sceneChangeOutsideImage;
@@ -16,7 +17,7 @@ public class GameController : MonoBehaviour
     private bool isTriggered = false;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         player = FindObjectOfType<Player>();
 
@@ -25,6 +26,9 @@ public class GameController : MonoBehaviour
 
     private IEnumerator IE_FadeIn()
     {
+        sceneChangeInsideImage.gameObject.SetActive(true);
+        sceneChangeOutsideImage.gameObject.SetActive(true);
+
         float alpha = 1;
         while (alpha > 0.0f)
         {

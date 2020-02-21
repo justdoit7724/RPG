@@ -32,27 +32,15 @@ public class MeleeWeapon : MonoBehaviour
                 break;
         }
 
-        enabled = false;
         weaponCollider.enabled = false;
     }
 
-    private IEnumerator IE_Disable()
-    {
-        yield return new WaitForSeconds(1.0f);
-
-        enabled = false;
-        weaponCollider.enabled = false;
-    }
-
-
-    private void OnEnable()
+    public void StartAttack()
     {
         if(weaponCollider)
             weaponCollider.enabled = true;
-
-        StartCoroutine(IE_Disable());
     }
-    private void OnDisable()
+    public void EndAttack()
     {
         weaponCollider.enabled = false;
     }
