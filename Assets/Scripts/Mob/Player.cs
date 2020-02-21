@@ -100,14 +100,20 @@ public class Player : Mob
         rIndicator.gameObject.SetActive(false);
 
         followCamera.transform.Rotate(camRotOffset);
+        camFollowPt = transform.position + camPosOffset;
+        followCamera.transform.position = camFollowPt;
 
         golemSkill1Button.gameObject.SetActive(false);
         golemSkill2Button.gameObject.SetActive(false);
+
+        enabled = false;
     }
 
     public void Init()
     {
         golemSkill1Button.gameObject.SetActive(true);
+
+        enabled = true;
     }
 
     public override void AE_StartAttack()
