@@ -317,7 +317,7 @@ public class Player : Mob
                 trail.SetColor(Color.red);
                 break;
             case PlayerBehavior.Sk_SpawnGolem:
-                anim.SetTrigger("sk_spawnGolem1");
+                anim.SetTrigger("sk_spawnGolem");
                 curSpawnTime = 0;
                 rIndicator.SetPosition(transform.position);
                 rIndicator.SetMaxRad(rIndicatorMaxRad.y);
