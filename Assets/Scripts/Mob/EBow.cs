@@ -42,9 +42,6 @@ public class EBow : NPC
 
     void Update()
     {
-        if (IsDeath())
-            return;
-
         UpdateHPBar();
         UpdateTarget("Alley", ref target);
 

@@ -106,9 +106,6 @@ public class Golem : NPC
 
     private void Update()
     {
-        if (IsDeath())
-            return;
-
         UpdateHPBar();
         UpdateTarget("Enemy", ref target);
 
@@ -123,7 +120,8 @@ public class Golem : NPC
         }
         else
         {
-            Vector3 subVec = transform.position - target.transform.position;
+            Vector3 subVec = target.transform.position-transform.position;
+            subVec.y = 0;
             if (subVec.sqrMagnitude <= sqrAttRad)
             {
                 if (!fsm.ContainBehavior(Type.GetType("AnimEventBehavior")))

@@ -17,6 +17,9 @@ public class DieBehavior : BaseBehavior
             coll.enabled = false;
 
         mob.enabled = false;
+
+        MobMgr.Instance.SendMessage(mob, MobMessage.Die);
+        MobMgr.Instance.RemoveMob(mob);
     }
 
     public override bool UpdateBehavior(Mob mob)

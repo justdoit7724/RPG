@@ -509,7 +509,7 @@ ModelImporter:
       name: Combo01_SingleTwohandSword
       takeName: Take 001
       internalID: 0
-      firstFrame: 0
+      firstFrame: 2
       lastFrame: 12
       wrapMode: 0
       orientationOffsetY: 0

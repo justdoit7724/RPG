@@ -49,15 +49,17 @@ public class Player : Mob
     private Vector3 camFollowPt;
     private Golem golem = null;
     private Transform fireBallPt;
+    private NPC autoTarget=null;
 
     private float curTime = 0;
     private float curSpawnTime = 0;
     private const float att1Damage = 45;
     private const float att2Damage = 50;
     private const float att3Damage = 65;
-    private const float att1Time = 0.4f;
-    private const float att2Time = 0.4f;
+    private const float att1Time = 0.6f;
+    private const float att2Time = 0.6f;
     private const float att3Time = 1.0f;
+    private const float nextAttTime = 0.3f;
     private const float skBallTime = 0.6f;
     private const float rollTime = 0.5f;
     private const float rollSpeed = 13.0f;
@@ -96,6 +98,17 @@ public class Player : Mob
         }
 
         curHP -= amount;
+    }
+
+    public override void GetMessage(Mob sender, MobMessage msg)
+    {
+        switch (msg)
+        {
+            case MobMessage.Die:
+                if (autoTarget == sender)
+                    autoTarget = null;
+                break;
+        }
     }
 
     public override void Start()
@@ -298,16 +311,19 @@ public class Player : Mob
                 Instantiate(rollEffectPrefab, transform);
                 break;
             case PlayerBehavior.Att1:
+                AutoTargetting();
                 anim.SetTrigger("att1");
                 weapon.SetDamage(att1Damage);
                 isSequenceAtt = false;
                 break;
             case PlayerBehavior.Att2:
+                AutoTargetting();
                 anim.SetTrigger("att2");
                 weapon.SetDamage(att2Damage);
                 isSequenceAtt = false;
                 break;
             case PlayerBehavior.Att3:
+                AutoTargetting();
                 anim.SetTrigger("att3");
                 weapon.SetDamage(att3Damage);
                 isSequenceAtt = false;
@@ -338,6 +354,71 @@ public class Player : Mob
         }
 
         curBehavior = behavior;
+    }
+
+    private void AutoTargetting()
+    {
+        const float attRad = 1.5f;
+        const float sqrAttRad = attRad* attRad;
+
+        if (autoTarget) // target & close enough to melee attack
+        {
+            Vector3 subVec = autoTarget.transform.position - transform.position;
+            subVec.y = 0;
+
+            if (subVec.sqrMagnitude <= sqrAttRad)
+            {
+                transform.forward = subVec.normalized;
+                return;
+            }
+        }
+
+        Collider[] colls = Physics.OverlapSphere(transform.position, 5.0f, LayerMask.GetMask("Enemy"));
+        float closestDist = float.MaxValue;
+        autoTarget = null;
+        foreach (var item in colls)
+        {
+            NPC curMob = item.GetComponent<NPC>();
+            if (curMob)
+            {
+                Vector3 subVec = item.transform.position - transform.position;
+                float sqrDist = subVec.sqrMagnitude;
+                if (sqrDist < closestDist)
+                {
+                    closestDist = sqrDist;
+                    autoTarget = curMob;
+                }
+            }
+        }
+
+        if (autoTarget)
+        {
+            Vector3 subVec = autoTarget.transform.position - transform.position;
+            subVec.y = 0;
+            if(subVec.sqrMagnitude > sqrAttRad)
+                StartCoroutine(IE_AttackMoving());
+            transform.forward = subVec.normalized;
+        }
+    }
+
+    private IEnumerator IE_AttackMoving()
+    {
+        const float dist = 1.25f;
+        const float time = 0.25f;
+        float curTime = 0;
+        float t = 0;
+        while(t < 1)
+        {
+            t = curTime / time;
+            Func<float, float> func = x => (1 + Mathf.Pow(x - 1, 3));
+            float calculusHeightDiff = (func(t)-func(t-Time.deltaTime))*dist;
+
+            transform.position += transform.forward * calculusHeightDiff;
+
+            curTime += Time.deltaTime;
+
+            yield return null;
+        }
     }
 
     void Update()
@@ -439,7 +520,7 @@ public class Player : Mob
                         StartNewState(isRunning ? PlayerBehavior.Run : PlayerBehavior.Idle);
                     }
                 }
-                else if(Input.GetKeyDown(KeyCode.Space) && (curTime > 0.2f))
+                else if(Input.GetKeyDown(KeyCode.Space) && ((att1Time - curTime) < nextAttTime))
                 {
                     isSequenceAtt = true;
                 }
@@ -465,7 +546,7 @@ public class Player : Mob
                         StartNewState(isRunning ? PlayerBehavior.Run : PlayerBehavior.Idle);
                     }
                 }
-                else if (Input.GetKeyDown(KeyCode.Space) && (curTime > 0.2f))
+                else if (Input.GetKeyDown(KeyCode.Space) && ((att2Time - curTime) < nextAttTime))
                 {
                     isSequenceAtt = true;
                 }
@@ -571,12 +652,9 @@ public class Player : Mob
         followCamera.transform.position = Vector3.Lerp(followCamera.transform.position, camFollowPt, 0.1f);
     }
 
-    private void OnGUI()
+    private void OnDrawGizmos()
     {
-        Vector2 scn = Camera.main.WorldToScreenPoint(transform.position);
-        scn.y = Screen.height - scn.y;
-       
-        GUI.Label(new Rect(scn, new Vector2(150, 30)), curBehavior.ToString());
+        Gizmos.DrawWireSphere(transform.position, 5.0f);
     }
 }
 

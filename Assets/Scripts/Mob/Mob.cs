@@ -28,8 +28,11 @@ public abstract class Mob : MonoBehaviour
     public virtual void AE_StartAttack() { }
     public virtual void AE_EndAttack() { }
 
+    public virtual void GetMessage(Mob sender, MobMessage msg) { }
     public virtual void Start()
     {
+        MobMgr.Instance.RegisterMob(this);
+
         mainCollider = GetComponent<Collider>();
         rigid = GetComponent<Rigidbody>();
         nav = GetComponent<NavMeshAgent>();

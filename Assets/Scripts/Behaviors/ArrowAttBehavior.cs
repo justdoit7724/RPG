@@ -26,7 +26,7 @@ public class ArrowAttBehavior : BaseBehavior
         Vector3 lookDir = target.position - mob.transform.position;
         lookDir.y = 0;
         lookDir.Normalize();
-        mob.transform.LookAt(target, Vector3.up);
+        mob.transform.forward = lookDir;
 
         return true;
     }

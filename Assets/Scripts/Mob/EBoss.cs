@@ -219,10 +219,6 @@ public class EBoss : NPC
 
     private void Update()
     {
-
-        if (IsDeath())
-            return;
-
         UpdateHPBar();
 
         if (fsm.Count == 0)
@@ -262,9 +258,10 @@ public class EBoss : NPC
                         if(colls.Length>0)
                         {
                             Vector3 subVec = colls[0].transform.position - transform.position;
-                            if(subVec.sqrMagnitude <= sqrAttRad)
+                            subVec.y = 0;
+                            if (subVec.sqrMagnitude <= sqrAttRad)
                             {
-                                transform.LookAt(colls[0].transform.position, Vector3.up);
+                                transform.forward = subVec.normalized;
                                 BaseBehavior attBehavior = ScriptableObject.CreateInstance<AnimEventBehavior>() as BaseBehavior;
                                 attBehavior.Init(BehaviorPriority.Att, "att", false, 2.0f);
                                 fsm.DirectAddBehavior(attBehavior);
@@ -297,7 +294,9 @@ public class EBoss : NPC
 
                         if(target)
                         {
-                            transform.LookAt(target.transform.position, Vector3.up);
+                            Vector3 subVec = target.transform.position - transform.position;
+                            subVec.y = 0;
+                            transform.forward = subVec.normalized;
                             AnimEventBehavior laserStartBehavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
                             laserStartBehavior.Init(BehaviorPriority.Skill, "laser", true);
                             fsm.DirectAddBehavior(laserStartBehavior);

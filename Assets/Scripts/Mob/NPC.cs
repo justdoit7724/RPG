@@ -29,6 +29,20 @@ public class NPC : Mob
     private float curUpdateTargetTime = 0;
     private float updateTargetInterval = 3.0f;
 
+
+    public override void GetMessage(Mob sender, MobMessage msg)
+    {
+        switch (msg)
+        {
+            case MobMessage.Die:
+                if (target == sender)
+                {
+                    target = null;
+                }
+                break;
+        }
+    }
+
     public override void Start()
     {
         base.Start();

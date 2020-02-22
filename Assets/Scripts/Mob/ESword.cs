@@ -14,6 +14,7 @@ public class ESword : NPC
 
     public Mob Target { get { return target; } }
 
+
     public override void Start()
     {
         base.Start();
@@ -41,9 +42,6 @@ public class ESword : NPC
     // Update is called once per frame
     void Update()
     {
-        if (IsDeath())
-            return;
-
         UpdateHPBar();
         UpdateTarget("Alley", ref target);
 
@@ -58,12 +56,13 @@ public class ESword : NPC
         }
         else
         {
-            Vector3 subVec = transform.position - target.transform.position;
+            Vector3 subVec = target.transform.position-transform.position;
+            subVec.y = 0;
             if (subVec.sqrMagnitude <= sqrAttRad)
             {
                 if (!fsm.ContainBehavior(Type.GetType("AnimEventBehavior")))
                 {
-                    transform.LookAt(target.transform.position, Vector3.up);
+                    transform.forward = subVec.normalized;
 
                     if (UnityEngine.Random.Range(0, 2) == 0)
                     {
