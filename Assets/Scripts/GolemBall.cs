@@ -38,7 +38,7 @@ public class GolemBall : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Ground"))
+        if (other.gameObject.layer != LayerMask.NameToLayer("PlayGround"))
             return;
 
         Collider[] colls = Physics.OverlapSphere(transform.position, mSplashRad, LayerMask.GetMask("Enemy"));

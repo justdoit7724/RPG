@@ -235,8 +235,8 @@ public class EBoss : NPC
                                 0,
                                 UnityEngine.Random.Range(-1.0f,1.0f)*zMoveOffset);
 
-                            Collider[] colls = Physics.OverlapSphere(rPos, colliderRad+0.5f, LayerMask.GetMask("Ground", "Wall"));
-                            if(colls.Length==1 && colls[0].gameObject.layer == LayerMask.NameToLayer("Ground"))
+                            Collider[] colls = Physics.OverlapSphere(rPos, colliderRad+0.5f, LayerMask.GetMask("PlayGround", "Wall"));
+                            if(colls.Length==1 && colls[0].gameObject.layer == LayerMask.NameToLayer("PlayGround"))
                             {
                                 runBehaviorData.dest = rPos;
                                 Debug.Log(rPos);

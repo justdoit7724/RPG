@@ -85,10 +85,17 @@ public class GameController : MonoBehaviour
     {
         if(!isTriggered)
         {
-            if(Physics.OverlapBox(wayPoint, triggerBoxRad, Quaternion.identity, LayerMask.GetMask("Alley")).Length>0)
+            RaycastHit hit;
+            Collider[] colls = Physics.OverlapBox(wayPoint, triggerBoxRad, Quaternion.identity, LayerMask.GetMask("Alley"));
+            foreach(var item in colls)
             {
-                WaveStart();
-                isTriggered = true;
+                Mob iMob = item.GetComponent<Mob>();
+                if (iMob)
+                {
+                    WaveStart();
+                    isTriggered = true;
+                    break;
+                }
             }
         }
     }

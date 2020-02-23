@@ -41,7 +41,6 @@ public class Player : Mob
     [SerializeField] private GameObject golemSpawnFinishPrefab;
     [SerializeField] private GameObject golemBallPrefab;
 
-
     private RangeIndicator rIndicator=null;
     private GameObject golemSpawnBodyEffect;
     private WeaponTrail trail;
@@ -69,7 +68,6 @@ public class Player : Mob
     private const float camMaxDist = 11.0f;
 
     private bool isSequenceAtt = false;
-    private bool isRunning = false;
 
     private enum PlayerBehavior
     {
@@ -138,7 +136,7 @@ public class Player : Mob
         sk3Button.gameObject.SetActive(false);
 
         enabled = false;
-    }
+}
 
     private void SetupModels()
     {
@@ -437,23 +435,46 @@ public class Player : Mob
 
         curTime += Time.deltaTime;
 
-#if UNITY_EDITOR
-        isRunning = Input.GetKey(KeyCode.A) ||
-                    Input.GetKey(KeyCode.D) ||
-                    Input.GetKey(KeyCode.W) ||
-                    Input.GetKey(KeyCode.S);
-
         Vector3 newDir = transform.forward;
-        if (isRunning)
+        bool isRunning = false;
+
+#if UNITY_EDITOR
+        //isRunning = Input.GetKey(KeyCode.A) ||
+        //            Input.GetKey(KeyCode.D) ||
+        //            Input.GetKey(KeyCode.W) ||
+        //            Input.GetKey(KeyCode.S);
+
+        //if (isRunning)
+        //{
+        //    Vector3 camRight = Camera.main.transform.right;
+        //    camRight.y = 0;
+        //    Vector3 camForward = Camera.main.transform.forward;
+        //    camForward.y = 0;
+        //    Vector3 moveDir =
+        //        Input.GetAxisRaw("Horizontal") * camRight +
+        //        Input.GetAxisRaw("Vertical") * camForward;
+        //    newDir = moveDir.normalized;
+        //}
+
+        if (MobileTouch.Instance.IsOn)
         {
-            Vector3 camRight = Camera.main.transform.right;
-            camRight.y = 0;
-            Vector3 camForward = Camera.main.transform.forward;
-            camForward.y = 0;
-            Vector3 moveDir =
-                Input.GetAxisRaw("Horizontal") * camRight +
-                Input.GetAxisRaw("Vertical") * camForward;
-            newDir = moveDir.normalized;
+            Vector3 pixelPt = MobileTouch.Instance.GetCurPt;
+            Ray camRay = Camera.main.ScreenPointToRay(pixelPt);
+            RaycastHit hit;
+            if(Physics.Raycast(camRay, out hit, float.MaxValue, LayerMask.GetMask("TouchGround")))
+            {
+                if (MobileTouch.Instance.SqrFirstDragDist() > 20000)
+                {
+                    Vector3 subVec = hit.point - transform.position;
+                    subVec.y = 0;
+                    isRunning = true;
+                    newDir = subVec.normalized;
+                }
+            }
+            else
+            {
+                Debug.LogError("TouchGround is not wide enough to cover screen");
+            }
         }
 #elif UNITY_ANDROID
 #endif
@@ -462,18 +483,39 @@ public class Player : Mob
         {
             case PlayerBehavior.Idle:
 #if UNITY_EDITOR
-                if(Input.GetKeyDown(KeyCode.C))
+                //if(Input.GetKeyDown(KeyCode.C))
+                //{
+                //    transform.LookAt(transform.position + newDir, Vector3.up);
+                //    StartNewState(PlayerBehavior.Roll);
+                //}
+                //else if (Input.GetKeyDown(KeyCode.Space))
+                //{
+                //    StartNewState(PlayerBehavior.Att1);
+                //}
+                //else if (isRunning)
+                //{
+                //    StartNewState(PlayerBehavior.Run);
+                //}
+
+
+                if (MobileTouch.Instance.IsOn)
                 {
-                    transform.LookAt(transform.position + newDir, Vector3.up);
-                    StartNewState(PlayerBehavior.Roll);
-                }
-                else if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    StartNewState(PlayerBehavior.Att1);
-                }
-                else if (isRunning)
-                {
-                    StartNewState(PlayerBehavior.Run);
+                    if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
+                    {
+                        if (MobileTouch.Instance.SqrStationaryDragDist() > 80000.0f && MobileTouch.Instance.StationaryDragTime() < 0.3f)// roll
+                        {
+                            transform.LookAt(transform.position + newDir, Vector3.up);
+                            StartNewState(PlayerBehavior.Roll);
+                        }
+                        else if(MobileTouch.Instance.SqrFirstDragDist() < 1000.0f)
+                        {
+                            StartNewState(PlayerBehavior.Att1);
+                        }
+                    }
+                    if (isRunning)
+                    {
+                        StartNewState(PlayerBehavior.Run);
+                    }
                 }
 #elif UNITY_ANDROID
 #endif
@@ -591,7 +633,7 @@ public class Player : Mob
                 {
                     curSpawnTime += Time.deltaTime;
                     RaycastHit hit;
-                    if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, float.MaxValue, LayerMask.GetMask("Ground")))
+                    if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, float.MaxValue, LayerMask.GetMask("PlayGround")))
                     {
                         rIndicator.gameObject.SetActive(true);
                         float growRate = Mathf.Clamp01(curSpawnTime / spawnChargeTime);
@@ -629,7 +671,7 @@ public class Player : Mob
                         camFollowPt = transform.position + camPosOffset - followCamera.transform.forward * camMaxDist * 0.5f * camT;
 
                         RaycastHit hit;
-                        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, float.MaxValue, LayerMask.GetMask("Ground")))
+                        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, float.MaxValue, LayerMask.GetMask("PlayGround")))
                         {
                             rIndicator.SetPosition(hit.point);
 
