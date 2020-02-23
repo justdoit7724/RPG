@@ -68,12 +68,16 @@ public class GameController : MonoBehaviour
                 player.Init();
                 isInitPlayer = true;
             }
+            if(t>1)
+            {
+                Destroy(sceneChangeInsideImage.gameObject);
+                Destroy(sceneChangeOutsideImage.gameObject);
+                break;
+            }
 
             yield return null;
         }
 
-        Destroy(sceneChangeInsideImage.gameObject);
-        Destroy(sceneChangeOutsideImage.gameObject);
     }
 
     // Update is called once per frame

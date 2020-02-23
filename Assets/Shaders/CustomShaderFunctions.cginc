@@ -1,6 +1,7 @@
 #ifndef __CUSTOM_SHADER_FUNCTIONS__
 #define __CUSTOM_SHADER_FUNCTIONS__
 
+#define PI 3.141592f
 
 float Circle(float3 worldPos, float3 center, float rad)
 {

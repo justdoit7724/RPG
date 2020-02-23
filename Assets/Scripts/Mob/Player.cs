@@ -26,9 +26,9 @@ public class Player : Mob
     public GameObject[] modelShoulderPads;
 
     [Header("UI")]
-    [SerializeField] private SkillButton fireBallSkButton;
-    [SerializeField] private SkillButton golemSkill1Button;
-    [SerializeField] private SkillButton golemSkill2Button;
+    [SerializeField] private SkillButton sk1Button;
+    [SerializeField] private SkillButton sk2Button;
+    [SerializeField] private SkillButton sk3Button;
     [Header("Camera")]
     [SerializeField] private GameObject followCamera;
     [SerializeField] private Vector3 camPosOffset=new Vector3(0,5,-3);
@@ -86,6 +86,15 @@ public class Player : Mob
     }
     PlayerBehavior curBehavior= PlayerBehavior.Idle;
 
+    public void SingleTouch(Vector2 scnPos)
+    {
+
+    }
+    public void SlideTouch(Vector2 scnDir)
+    {
+
+    }
+
     public override void GetDamaged(float amount)
     {
         base.GetDamaged(amount);
@@ -125,8 +134,8 @@ public class Player : Mob
         camFollowPt = transform.position + camPosOffset;
         followCamera.transform.position = camFollowPt;
 
-        golemSkill1Button.gameObject.SetActive(false);
-        golemSkill2Button.gameObject.SetActive(false);
+        sk2Button.gameObject.SetActive(false);
+        sk3Button.gameObject.SetActive(false);
 
         enabled = false;
     }
@@ -227,7 +236,7 @@ public class Player : Mob
 
     public void Init()
     {
-        golemSkill1Button.gameObject.SetActive(true);
+        sk2Button.gameObject.SetActive(true);
 
         enabled = true;
     }
@@ -254,38 +263,38 @@ public class Player : Mob
 
     public void BT_Skill1()
     {
-        if((curBehavior == PlayerBehavior.Idle || curBehavior == PlayerBehavior.Run) && fireBallSkButton.IsReady)
+        if((curBehavior == PlayerBehavior.Idle || curBehavior == PlayerBehavior.Run) && sk1Button.IsReady)
         {
             StartNewState(PlayerBehavior.Sk_FireBall);
-            fireBallSkButton.StartCooldown();
+            sk1Button.StartCooldown();
         }
     }
     public void BT_Skill2()
     {
-        if ((curBehavior == PlayerBehavior.Idle || curBehavior == PlayerBehavior.Run) && golemSkill1Button.IsReady)
+        if ((curBehavior == PlayerBehavior.Idle || curBehavior == PlayerBehavior.Run) && sk2Button.IsReady)
         {
             StartNewState(PlayerBehavior.Sk_SpawnGolem);
         }
     }
     public void BT_Skill2_2()
     {
-        if(golemSkill2Button.IsReady)
+        if(sk3Button.IsReady)
             StartNewState(PlayerBehavior.Sk_JumpGolem);
     }
     public void SpawnGolem(Golem golem)
     {
         this.golem = golem;
 
-        golemSkill1Button.gameObject.SetActive(false);
-        golemSkill2Button.gameObject.SetActive(true);
+        sk2Button.gameObject.SetActive(false);
+        sk3Button.gameObject.SetActive(true);
     }
     public void DieGolem()
     {
-        golemSkill1Button.StartCooldown();
+        sk2Button.StartCooldown();
         golem = null;
 
-        golemSkill1Button.gameObject.SetActive(true);
-        golemSkill2Button.gameObject.SetActive(false);
+        sk2Button.gameObject.SetActive(true);
+        sk3Button.gameObject.SetActive(false);
     }
 
     private void StartNewState(PlayerBehavior behavior)
@@ -338,14 +347,14 @@ public class Player : Mob
                 rIndicator.SetPosition(transform.position);
                 rIndicator.SetMaxRad(rIndicatorMaxRad.y);
                 golemSpawnBodyEffect = Instantiate(golemSpawnBodyPrefab, transform.position, Quaternion.identity);
-                golemSkill1Button.StartCooldown();
-                golemSkill2Button.StartCooldown();
+                sk2Button.StartCooldown();
+                sk3Button.StartCooldown();
                 break;
             case PlayerBehavior.Sk_JumpGolem:
                 anim.SetTrigger("idle");
                 rIndicator.gameObject.SetActive(true);
                 rIndicator.SetMaxRad(4.0f);
-                golemSkill2Button.StartCooldown();
+                sk3Button.StartCooldown();
                 break;
             case PlayerBehavior.Die:
                 anim.SetTrigger("die");
