@@ -32,6 +32,7 @@ public class EBow : NPC
     {
         weapon.FireArrow();
         visualArrow.SetActive(false);
+        PlayMainSound("BowAtt", 0.5f);
     }
     public override void AE_EndAttack()
     {

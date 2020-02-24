@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class MeleeWeapon : MonoBehaviour
 {
+    public GameObject hitEffectPrefab;
+
     private float damage=0;
 
     private Collider weaponCollider;
@@ -53,6 +55,29 @@ public class MeleeWeapon : MonoBehaviour
             if(hitMob)
             {
                 hitMob.GetDamaged(damage);
+
+                string soundKey="";
+                float volume=0;
+                switch (UnityEngine.Random.Range(0, 3))
+                {
+                    case 0:
+                        soundKey = "Hit1";
+                        volume=0.3f;
+                        break;
+                    case 1:
+                        soundKey = "Hit2";
+                        volume = 0.4f;
+                        break;
+                    case 2:
+                        soundKey = "Hit3";
+                        volume = 0.4f;
+                        break;
+                }
+
+                if(hitMob.PlayHitSound(soundKey, volume))
+                {
+                    Instantiate(hitEffectPrefab, hitMob.transform.position, Quaternion.identity);
+                }
             }
         }
     }

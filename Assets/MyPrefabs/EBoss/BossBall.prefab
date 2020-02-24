@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4436954520052724847}
   - component: {fileID: 4556863728162596295}
   - component: {fileID: 4558114862249396465}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BeamAB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4849,7 +4849,7 @@ GameObject:
   - component: {fileID: 4434956351184174693}
   - component: {fileID: 4558429103015455491}
   - component: {fileID: 4559772004707133263}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: CircleOutterAB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9687,7 +9687,7 @@ GameObject:
   - component: {fileID: 4436811740545744143}
   - component: {fileID: 4558235937046970097}
   - component: {fileID: 4559482165147012245}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BallAB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14525,7 +14525,7 @@ GameObject:
   - component: {fileID: 4436883827184924907}
   - component: {fileID: 4556879481103548221}
   - component: {fileID: 4559666396358091645}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ParticlesWhite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19287,7 +19287,7 @@ GameObject:
   - component: {fileID: 4436745669597099095}
   - component: {fileID: 4558658405994188835}
   - component: {fileID: 4559420253500673299}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24063,7 +24063,7 @@ GameObject:
   - component: {fileID: 4425002569437634827}
   - component: {fileID: 4414418889649096921}
   - component: {fileID: 3419226210517258977}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BossBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24135,6 +24135,8 @@ MonoBehaviour:
   HitEffectPrefab: {fileID: 4738893073469175008, guid: de58b4b4c7da1c143bc3fe50b9f38f62,
     type: 3}
   damage: 50
+  speed: 5
+  lifeTime: 4
 --- !u!1 &4433636614395826135
 GameObject:
   m_ObjectHideFlags: 0
@@ -24146,7 +24148,7 @@ GameObject:
   - component: {fileID: 4435303254657711223}
   - component: {fileID: 4558385976292237977}
   - component: {fileID: 4559884903228390091}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Beam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28984,7 +28986,7 @@ GameObject:
   - component: {fileID: 4437081922926601585}
   - component: {fileID: 4557838599532777225}
   - component: {fileID: 4559523072237700713}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: CircleOutterAdd
   m_TagString: Untagged
   m_Icon: {fileID: 0}

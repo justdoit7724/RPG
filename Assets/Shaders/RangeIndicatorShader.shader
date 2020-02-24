@@ -61,14 +61,15 @@
 				i.wPos.y = 0;
 			_Center.y = 0;
 
-			float outShape = Circle(i.wPos, _Center.xyz, _MaxRad) * 0.4f;
-			float inShape = Circle(i.wPos, _Center.xyz, _MaxRad* saturate(_Value)) * 0.15f;
+			float outShape = Circle(i.wPos, _Center.xyz, _MaxRad) * 0.3f;
+			float inShape = Circle(i.wPos, _Center.xyz, _MaxRad* saturate(_Value)) * 0.2f;
 
 			float3 pixelDir = normalize(i.wPos - _Center.xyz);
 			float offset = 0.1f;
 			float viewShape = saturate(ceil((_ViewAngle*0.5f)-AngleBetweenDir(pixelDir, _ViewDir)));
 
 			float totalShape = (outShape + inShape) * viewShape;
+			clip(totalShape);
 
 			fixed4 col = float4(_Color.xyz, totalShape);
 

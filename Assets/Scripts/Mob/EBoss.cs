@@ -78,7 +78,7 @@ public class EBoss : NPC
     private float sqrAttRad;
     private MobSpawnPt[] mobSpawnPts;
 
-    private const float laserDuration = 8.0f;
+    private const float laserDuration = 7.0f;
     private const float xMoveOffset= 20.0f;
     private const float zMoveOffset= 20.0f;
 
@@ -99,22 +99,22 @@ public class EBoss : NPC
         mobSpawnPts = FindObjectsOfType<MobSpawnPt>();
 
         selector = new Selector();
-        selector.Add("RunBehavior", 6);
+        selector.Add("RunBehavior", 9);
         selector.Add("CloseAtt", 10);
-        selector.Add("LaserBehavior", 5);
-        selector.Add("BallBehavior", 8);
+        selector.Add("LaserBehavior", 10);
+        selector.Add("BallBehavior", 10);
         selector.Add("SpawnBehavior", 3);
     }
 
     public override void AE_StartAttack()
     {
         trail.StartTrail();
-        wand.enabled = true;
+        wand.StartAttack();
     }
     public override void AE_EndAttack()
     {
         trail.EndTrail();
-        wand.enabled = false;
+        wand.EndAttack();
     }
     public void AE_StartLaser()
     {
@@ -127,6 +127,8 @@ public class EBoss : NPC
         IdleBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
         idleBehavior.Init(BehaviorPriority.Basic, null, false, 2.0f);
         fsm.DirectAddBehavior(idleBehavior);
+
+        PlayMainSound("Laser", 0.8f);
     }
     public void EndLaser()
     {
@@ -171,14 +173,17 @@ public class EBoss : NPC
 
     private IEnumerator IE_Balls()
     {
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(1.5f);
 
         const float height = 1.0f;
         const int ballNumPer = 12;
         float intvRad = (Mathf.PI*2.0f) / ballNumPer;
         float startRad = 0;
-        for(int i=0; i<ballNumPer; ++i)
+        const float volumeDownT =  1.0f/ (ballNumPer*2.0f);
+        for (int i=0; i<ballNumPer; ++i)
         {
+            mainSoundPlayer.volume -= volumeDownT;
+
             Vector3 dir = new Vector3(
                 Mathf.Cos(startRad+intvRad * i),
                 0,
@@ -194,6 +199,8 @@ public class EBoss : NPC
         startRad += Mathf.PI / 12.0f;
         for (int i = 0; i < ballNumPer; ++i)
         {
+            mainSoundPlayer.volume -= volumeDownT;
+
             Vector3 dir = new Vector3(
                 Mathf.Cos(startRad+intvRad * i),
                 0,
@@ -239,7 +246,6 @@ public class EBoss : NPC
                             if(colls.Length==1 && colls[0].gameObject.layer == LayerMask.NameToLayer("PlayGround"))
                             {
                                 runBehaviorData.dest = rPos;
-                                Debug.Log(rPos);
                                 BaseBehavior runBehavior = ScriptableObject.CreateInstance<RunBehavior>();
                                 runBehavior.Init(BehaviorPriority.Basic, runBehaviorData, false, 5.0f);
                                 fsm.DirectAddBehavior(runBehavior);
@@ -304,7 +310,9 @@ public class EBoss : NPC
                             RangeIndicator rIndicator = Instantiate(rangeIndicatorPrefab, transform.position, Quaternion.identity).GetComponent<RangeIndicator>();
                             rIndicator.Init(laserLength, Color.blue, 10);
                             rIndicator.SetDir(transform.forward);
-                            rIndicator.StartProgress(1.0f, true);
+                            rIndicator.StartProgress(1.5f, true);
+
+                            PlayMainSound("LaserCharge",1.0f);
                         }
                     }
                     break;
@@ -316,17 +324,22 @@ public class EBoss : NPC
                         IdleBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
                         idleBehavior.Init(BehaviorPriority.Basic, null, false, 2.0f);
                         fsm.DirectAddBehavior(idleBehavior);
+
+                        PlayMainSound("BossBallAura");
                     }
 
                     break;
                 case "SpawnBehavior":
                     {
                         AnimEventBehavior animBehavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
-                        animBehavior.Init(BehaviorPriority.Skill, "spawn", false, 2.0f);
+                        animBehavior.Init(BehaviorPriority.Skill, "spawn", false, 3.0f);
                         fsm.DirectAddBehavior(animBehavior);
                         IdleBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
-                        idleBehavior.Init(BehaviorPriority.Basic, null, false, 2.0f);
+                        idleBehavior.Init(BehaviorPriority.Basic, null, false, 1.0f);
                         fsm.DirectAddBehavior(idleBehavior);
+
+                        PlayMainSound("BossSpawnAura1");
+                        PlayMainSound("BossSpawnAura2");
                     }
                     break;
             }

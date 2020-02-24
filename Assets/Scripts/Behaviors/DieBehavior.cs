@@ -20,6 +20,8 @@ public class DieBehavior : BaseBehavior
 
         MobMgr.Instance.SendMessage(mob, MobMessage.Die);
         MobMgr.Instance.RemoveMob(mob);
+
+        mob.RemoveSounds();
     }
 
     public override bool UpdateBehavior(Mob mob)

@@ -5,8 +5,8 @@
         _MainTex ("Texture", 2D) = "white" {}
 		_StartPt("StartPt", Vector) = (0,0,0,0)
 		_EndPt("EndPt", Vector) = (0,0,0,0)
-		_StartRad("StartRad", Range(0.2,2.0)) = 0.4
-		_EndRad("EndRad", Range(0.1,1.2)) = 0.2
+		_StartRad("StartRad", Range(20,100)) = 30
+		_EndRad("EndRad", Range(10,60)) = 20
     }
     SubShader
     {
@@ -55,19 +55,17 @@
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed4 col = tex2D(_MainTex, i.uv);
-
 			float3 subLineVec = _EndPt - _StartPt;
 			float t = saturate(dot(subLineVec, i.wPos - _StartPt) / dot(subLineVec, subLineVec));
 			float3 closestPt = Lerp(_StartPt, _EndPt, t);
 
 			float rad = lerp(_StartRad, _EndRad, t);
 			float tempShape = Circle(i.wPos, closestPt, rad);
+			clip(tempShape);
 			float radT = length(i.wPos - closestPt) / rad;
 			float mRadT = (cos((radT * 1.8 + 1) * PI) + 1) / 2;
-			float alpha = mRadT;
-			return float4(tempShape* mRadT.xxx, 1);
-                return col;
+			float alpha = mRadT * tempShape;
+			return float4(1,1,1, alpha);
             }
             ENDCG
         }

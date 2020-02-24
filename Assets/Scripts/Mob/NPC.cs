@@ -56,6 +56,12 @@ public class NPC : Mob
         runBehaviorData = new RunBehaviorData(transform.position);
 
         enabled = false;
+
+        if (UnityEngine.Random.Range(0, 2) == 0)
+        {
+            PlayMainSound((UnityEngine.Random.Range(0, 2) == 0 ? "BossSpawnMobAura1" : "BossSpawnMobAura2"), 0.3f);
+        }
+
     }
 
     public void Init(float delayTime)

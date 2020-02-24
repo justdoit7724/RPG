@@ -58,7 +58,7 @@ public class GolemBall : MonoBehaviour
         Vector3 spawnPos = transform.position;
         spawnPos.y = 0;
         Golem golem = Instantiate(golemPrefab, spawnPos, Quaternion.identity).GetComponent<Golem>();
-        golem.Init(growRate);
+        golem.InitGolem(growRate);
         Instantiate(golemHitEffectPrefab, rIndicator.transform.position, Quaternion.identity).transform.localScale = Vector3.one * Mathf.Lerp(hitScaleRange.x, hitScaleRange.y, growRate);
 
         Destroy(rIndicator.gameObject);

@@ -21,6 +21,8 @@ public class GameController : MonoBehaviour
     {
         player = FindObjectOfType<Player>();
 
+        MobileTouch.Instance.FindIndicator();
+
         StartCoroutine(IE_FadeIn());
     }
 

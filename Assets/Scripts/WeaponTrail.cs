@@ -47,6 +47,8 @@ public class WeaponTrail : MonoBehaviour
         {
             colors[i] = new Color(1, 1, 1, 0.2f);
         }
+
+        SetColor(Color.white);
     }
     public void StartTrail()
     {

@@ -26,14 +26,17 @@ public class BossBall : MonoBehaviour
     {
         if(other.gameObject.layer == LayerMask.NameToLayer("Alley") || other.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
-            NPC hitMob = other.GetComponent<NPC>();
+            Mob hitMob = other.GetComponent<Mob>();
             if(hitMob)
             {
                 hitMob.GetDamaged(damage);
+
+                hitMob.PlayHitSound("BossBallHit");
+
+                Destroy(gameObject);
+                Instantiate(HitEffectPrefab, transform.position, Quaternion.identity);
             }
 
-            Destroy(gameObject);
-            Instantiate(HitEffectPrefab, transform.position, Quaternion.identity);
         }
     }
 }

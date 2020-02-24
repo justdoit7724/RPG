@@ -30,13 +30,13 @@ public class ESword : NPC
     {
         if (trail)
             trail.StartTrail();
-        weapon.enabled = true;
+        weapon.StartAttack();
     }
     public override void AE_EndAttack()
     {
         if (trail)
             trail.EndTrail();
-        weapon.enabled = false;
+        weapon.EndAttack();
     }
 
     // Update is called once per frame
@@ -69,12 +69,15 @@ public class ESword : NPC
                         BaseBehavior att1Behavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
                         att1Behavior.Init(BehaviorPriority.Att, "att1", false, 2.0f);
                         fsm.CheckAndAddBehavior(att1Behavior);
+                        PlayMainSound("EnemyAtt");
+
                     }
                     else
                     {
                         BaseBehavior att2Behavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
                         att2Behavior.Init(BehaviorPriority.Att, "att2", false, 2.0f);
                         fsm.CheckAndAddBehavior(att2Behavior);
+                        PlayMainSound("EnemyAttDouble",0.25f);
                     }
                 }
             }

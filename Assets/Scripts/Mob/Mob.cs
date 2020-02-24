@@ -5,16 +5,29 @@ using UnityEngine.AI;
 
 public abstract class Mob : MonoBehaviour
 {
-    [SerializeField] protected float maxHP=1000;
-    [SerializeField] protected Material mainMat;
+    public float maxHP=1000;
+    public Material mainMat;
     protected float curHP=0;
 
     protected Collider mainCollider;
     protected Rigidbody rigid;
     protected NavMeshAgent nav;
     protected Animator anim;
+    protected AudioSource mainSoundPlayer;
+    protected AudioSource[] hitSoundPlayers = new AudioSource[2];
 
     private float curDamageEffectTime=0;
+
+    public void RemoveSounds()
+    {
+        mainSoundPlayer.Stop();
+        mainSoundPlayer.enabled = false;
+        foreach(var item in hitSoundPlayers)
+        {
+            item.Stop();
+            item.enabled = false;
+        }
+    }
 
     public virtual void GetDamaged(float amount)
     {
@@ -37,6 +50,11 @@ public abstract class Mob : MonoBehaviour
         rigid = GetComponent<Rigidbody>();
         nav = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
+        mainSoundPlayer = gameObject.AddComponent<AudioSource>();
+        for (int i = 0; i < 2; ++i)
+        {
+            hitSoundPlayers[i] = gameObject.AddComponent<AudioSource>();
+        }
 
         mainMat = new Material(mainMat);
 
@@ -47,6 +65,28 @@ public abstract class Mob : MonoBehaviour
         }
 
         curHP = maxHP;
+    }
+
+    public void PlayMainSound(string key, float volume=1.0f)
+    {
+        mainSoundPlayer.clip = SoundMgr.Instance.Get(key);
+        mainSoundPlayer.volume = volume;
+        mainSoundPlayer.Play();
+    }
+    public bool PlayHitSound(string key, float volume = 1.0f)
+    {
+        foreach (var player in hitSoundPlayers)
+        {
+            if (!player.isPlaying)
+            {
+                player.clip = SoundMgr.Instance.Get(key);
+                player.volume = volume;
+                player.Play();
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void DamageEffect()

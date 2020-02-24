@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MobileTouch : MonoBehaviour
 {
@@ -13,6 +14,16 @@ public class MobileTouch : MonoBehaviour
             }
             return instance;
         }
+    }
+
+    private Material indicatorMat = null;
+    private Vector2 scnOffset = new Vector2(540, 1140);
+
+    public void FindIndicator()
+    {
+        indicatorMat = GameObject.FindWithTag("TouchIndicator").GetComponent<RawImage>().material;
+        indicatorMat.SetVector("_StartPt", new Vector4(-10000, 0, 0, 0));
+        indicatorMat.SetVector("_EndPt", new Vector4(-10000, 0, 0, 0));
     }
 
     public TouchPhase GetTouchPhase
@@ -48,6 +59,12 @@ public class MobileTouch : MonoBehaviour
     {
         return Time.time - firstTouchTime;
     }
+    //drag direction in pixel space
+    public Vector3 DragDir()
+    {
+        Vector3 subVec = GetCurPt - firstTouchPt;
+        return subVec.normalized;
+    }
     public bool IsOn {
         get {
             return (Input.touchCount > 0);
@@ -82,14 +99,32 @@ public class MobileTouch : MonoBehaviour
                 firstTouchPt= Input.touches[0].position;
                 stationaryTouchTime = Time.time;
                 stationaryTouchPt = Input.touches[0].position;
+                if (indicatorMat)
+                {
+                    indicatorMat.SetVector("_StartPt", new Vector4(firstTouchPt.x - scnOffset.x, firstTouchPt.y - scnOffset.y, 0, 0));
+                    indicatorMat.SetVector("_EndPt", new Vector4(firstTouchPt.x - scnOffset.x, firstTouchPt.y - scnOffset.y, 0, 0));
+                }
                 break;
             case TouchPhase.Ended:
+                if (indicatorMat)
+                {
+                    indicatorMat.SetVector("_StartPt", new Vector4(-100 - scnOffset.x, -scnOffset.y, 0, 0));
+                    indicatorMat.SetVector("_EndPt", new Vector4(-100 - scnOffset.x, -scnOffset.y, 0, 0));
+                }
                 break;
             case TouchPhase.Moved:
+                if (indicatorMat)
+                {
+                    indicatorMat.SetVector("_EndPt", new Vector4(Input.touches[0].position.x - scnOffset.x, Input.touches[0].position.y - scnOffset.y, 0, 0));
+                }
                 break;
             case TouchPhase.Stationary:
                 stationaryTouchTime = Time.time;
                 stationaryTouchPt = Input.touches[0].position;
+                if (indicatorMat)
+                {
+                    indicatorMat.SetVector("_EndPt", new Vector4(stationaryTouchPt.x - scnOffset.x, stationaryTouchPt.y - scnOffset.y, 0, 0));
+                }
                 break;
         }
         phase = Input.touches[0].phase;

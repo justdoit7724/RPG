@@ -24,6 +24,7 @@ public struct SelectInfo
 
 public class UIController : MonoBehaviour
 {
+
     [Header("UI")]
     public Sprite activeButtonSprite;
     public Sprite unactiveButtonSprite;
@@ -37,11 +38,13 @@ public class UIController : MonoBehaviour
     public GameObject[] modelCloths;
     public GameObject[] modelSwords;
     public GameObject[] modelShoulderPad;
+    public Transform modelObj;
 
     [Header("Scene Change")]
     public RawImage sceneChangeImageInside;
     public RawImage sceneChangeImageOutside;
 
+    private AudioSource sfxPlayer;
     private Image[] hairImages;
     private Image[] clothImages;
     private Image[] swordImages;
@@ -51,10 +54,14 @@ public class UIController : MonoBehaviour
     private int curSwordIdx = 0;
     private int curShoulderPadIdx = 0;
 
+    private float modelPrevYaw = 180;
     private int curSelectIdx = 0;
+    private Vector3 mouseFirstPt = new Vector3(0, 0, 0);
 
     void Start()
     {
+        sfxPlayer=GetComponent<AudioSource>();
+
         sceneChangeImageInside.gameObject.SetActive(false);
         sceneChangeImageOutside.gameObject.SetActive(false);
 
@@ -99,6 +106,54 @@ public class UIController : MonoBehaviour
         SetClothItem(curClothIdx);
         SetSwordItem(curSwordIdx);
         SetShoulderPadItem(curShoulderPadIdx);
+    }
+
+    private void Update()
+    {
+
+#if UNITY_EDITOR
+        if(Input.GetMouseButtonDown(0))
+        {
+            mouseFirstPt = Input.mousePosition;
+        }
+        else if(Input.GetMouseButton(0))
+        {
+            Vector3 dragSubVec =  mouseFirstPt- Input.mousePosition;
+
+            float dragAmount = dragSubVec.x * 0.1f;
+            modelObj.eulerAngles = new Vector3(0, dragAmount + modelPrevYaw, 0);
+        }
+        else if(Input.GetMouseButtonUp(0))
+        {
+            Vector3 dragSubVec = mouseFirstPt-Input.mousePosition;
+
+            float dragAmount = dragSubVec.x * 0.1f;
+            modelPrevYaw = dragAmount + modelPrevYaw;
+        }
+#elif UNITY_ANDROID
+        if (MobileTouch.Instance.IsOn)
+        {
+            Vector3 dragSubVec = MobileTouch.Instance.GetCurPt - MobileTouch.Instance.GetFirstPt;
+
+            float dragAmount = dragSubVec.x * Time.deltaTime*15;
+            modelObj.eulerAngles = new Vector3(0, dragAmount + modelPrevYaw, 0);
+        }
+        else
+        {
+            Vector3 dragSubVec = MobileTouch.Instance.GetCurPt - MobileTouch.Instance.GetFirstPt;
+
+            float dragAmount = dragSubVec.x * Time.deltaTime*15;
+            modelPrevYaw = dragAmount + modelPrevYaw;
+        }
+#endif
+
+    }
+
+    public void BT_ButtonSound()
+    {
+        sfxPlayer.clip = SoundMgr.Instance.Get("Button");
+        sfxPlayer.volume = 0.5f;
+        sfxPlayer.Play();
     }
 
     public void SetNewSelect(int idx)
@@ -164,6 +219,7 @@ public class UIController : MonoBehaviour
 
     private IEnumerator IE_SceneChange()
     {
+        AudioSource bgmPlayer = Camera.main.GetComponent<AudioSource>();
 
         sceneChangeImageInside.gameObject.SetActive(true);
         sceneChangeImageOutside.gameObject.SetActive(true);
@@ -175,6 +231,8 @@ public class UIController : MonoBehaviour
             Color mOutsideCol = sceneChangeImageOutside.color;
             mInsideCol.a = alpha;
             mOutsideCol.a = alpha;
+
+            bgmPlayer.volume = 1.0f - alpha;
 
             sceneChangeImageInside.color = mInsideCol;
             sceneChangeImageOutside.color = mOutsideCol;

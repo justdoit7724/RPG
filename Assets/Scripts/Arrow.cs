@@ -44,6 +44,19 @@ public class Arrow : MonoBehaviour
             {
                 hitMob.GetDamaged(damage);
 
+                switch(UnityEngine.Random.Range(0,3))
+                {
+                    case 0:
+                        hitMob.PlayHitSound("Hit1",0.3f);
+                        break;
+                    case 1:
+                        hitMob.PlayHitSound("Hit2",0.4f);
+                        break;
+                    case 2:
+                        hitMob.PlayHitSound("Hit3",0.4f);
+                        break;
+                }
+
                 Destroy(gameObject, 0.02f);
             }
         }

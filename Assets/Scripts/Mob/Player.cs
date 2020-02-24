@@ -321,17 +321,20 @@ public class Player : Mob
                 AutoTargetting();
                 anim.SetTrigger("att1");
                 weapon.SetDamage(att1Damage);
+                PlayMainSound("PlayerAtt1",0.5f);
                 isSequenceAtt = false;
                 break;
             case PlayerBehavior.Att2:
                 AutoTargetting();
                 anim.SetTrigger("att2");
+                PlayMainSound("PlayerAtt2",0.3f);
                 weapon.SetDamage(att2Damage);
                 isSequenceAtt = false;
                 break;
             case PlayerBehavior.Att3:
                 AutoTargetting();
                 anim.SetTrigger("att3");
+                PlayMainSound("PlayerAtt1",0.75f);
                 weapon.SetDamage(att3Damage);
                 isSequenceAtt = false;
                 break;
@@ -439,70 +442,77 @@ public class Player : Mob
         bool isRunning = false;
 
 #if UNITY_EDITOR
-        //isRunning = Input.GetKey(KeyCode.A) ||
-        //            Input.GetKey(KeyCode.D) ||
-        //            Input.GetKey(KeyCode.W) ||
-        //            Input.GetKey(KeyCode.S);
+        isRunning =
+            Input.GetKey(KeyCode.A)||
+            Input.GetKey(KeyCode.D) ||
+        Input.GetKey(KeyCode.W) ||
+        Input.GetKey(KeyCode.S);
 
-        //if (isRunning)
-        //{
-        //    Vector3 camRight = Camera.main.transform.right;
-        //    camRight.y = 0;
-        //    Vector3 camForward = Camera.main.transform.forward;
-        //    camForward.y = 0;
-        //    Vector3 moveDir =
-        //        Input.GetAxisRaw("Horizontal") * camRight +
-        //        Input.GetAxisRaw("Vertical") * camForward;
-        //    newDir = moveDir.normalized;
-        //}
+        if (isRunning)
+        {
+            Vector3 camRight = Camera.main.transform.right;
+            camRight.y = 0;
+            Vector3 camForward = Camera.main.transform.forward;
+            camForward.y = 0;
+            Vector3 moveDir =
+                Input.GetAxisRaw("Horizontal") * camRight +
+                Input.GetAxisRaw("Vertical") * camForward;
+            newDir = moveDir.normalized;
+        }
 
+#elif UNITY_ANDROID
         if (MobileTouch.Instance.IsOn)
         {
-            Vector3 pixelPt = MobileTouch.Instance.GetCurPt;
-            Ray camRay = Camera.main.ScreenPointToRay(pixelPt);
-            RaycastHit hit;
-            if(Physics.Raycast(camRay, out hit, float.MaxValue, LayerMask.GetMask("TouchGround")))
+            if (MobileTouch.Instance.SqrFirstDragDist() > 6000)
             {
-                if (MobileTouch.Instance.SqrFirstDragDist() > 20000)
-                {
-                    Vector3 subVec = hit.point - transform.position;
-                    subVec.y = 0;
-                    isRunning = true;
-                    newDir = subVec.normalized;
-                }
-            }
-            else
-            {
-                Debug.LogError("TouchGround is not wide enough to cover screen");
+                isRunning = true;
+                Vector3 dragDirScnPt = MobileTouch.Instance.DragDir();
+                dragDirScnPt.z = dragDirScnPt.y;
+                dragDirScnPt.y = 0;
+
+                Vector3 camVerticalForward = Camera.main.transform.forward;
+                camVerticalForward.y = 0;
+                camVerticalForward.Normalize();
+                Vector3 yAxis = Vector3.up;
+                Vector3 zAxiz = camVerticalForward;
+                Vector3 xAxis = Vector3.Cross(yAxis, zAxiz);
+                Matrix4x4 mat = new Matrix4x4(
+                    xAxis,
+                    yAxis,
+                    zAxiz,
+                    new Vector4(0, 0, 0, 1)
+                    );
+
+                newDir = mat.MultiplyVector(dragDirScnPt);
             }
         }
-#elif UNITY_ANDROID
 #endif
 
         switch (curBehavior)
         {
             case PlayerBehavior.Idle:
 #if UNITY_EDITOR
-                //if(Input.GetKeyDown(KeyCode.C))
-                //{
-                //    transform.LookAt(transform.position + newDir, Vector3.up);
-                //    StartNewState(PlayerBehavior.Roll);
-                //}
-                //else if (Input.GetKeyDown(KeyCode.Space))
-                //{
-                //    StartNewState(PlayerBehavior.Att1);
-                //}
-                //else if (isRunning)
-                //{
-                //    StartNewState(PlayerBehavior.Run);
-                //}
+                if(Input.GetKeyDown(KeyCode.C))
+                {
+                    transform.LookAt(transform.position + newDir, Vector3.up);
+                    StartNewState(PlayerBehavior.Roll);
+                }
+                else if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    StartNewState(PlayerBehavior.Att1);
+                }
+                else if (isRunning)
+                {
+                    StartNewState(PlayerBehavior.Run);
+                }
 
 
+#elif UNITY_ANDROID
                 if (MobileTouch.Instance.IsOn)
                 {
                     if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
                     {
-                        if (MobileTouch.Instance.SqrStationaryDragDist() > 80000.0f && MobileTouch.Instance.StationaryDragTime() < 0.3f)// roll
+                        if (MobileTouch.Instance.SqrStationaryDragDist() > 50000.0f && MobileTouch.Instance.StationaryDragTime() < 0.3f)// roll
                         {
                             transform.LookAt(transform.position + newDir, Vector3.up);
                             StartNewState(PlayerBehavior.Roll);
@@ -512,34 +522,66 @@ public class Player : Mob
                             StartNewState(PlayerBehavior.Att1);
                         }
                     }
-                    if (isRunning)
+                    else if (isRunning)
                     {
                         StartNewState(PlayerBehavior.Run);
                     }
                 }
-#elif UNITY_ANDROID
 #endif
                 break;
             case PlayerBehavior.Run:
+                {
+#if UNITY_EDITOR
+                    if (Input.GetKeyDown(KeyCode.C))
+                    {
+                        transform.LookAt(transform.position + newDir, Vector3.up);
+                        StartNewState(PlayerBehavior.Roll);
+                    }
+                    else if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        StartNewState(PlayerBehavior.Att1);
+                    }
+                    else if (!isRunning)
+                    {
+                        StartNewState(PlayerBehavior.Idle);
+                    }
+                    else
+                    {
+                        transform.position += newDir * speed * Time.deltaTime;
 
-                if (Input.GetKeyDown(KeyCode.C))
-                {
-                    transform.LookAt(transform.position + newDir, Vector3.up);
-                    StartNewState(PlayerBehavior.Roll);
-                }
-                else if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    StartNewState(PlayerBehavior.Att1);
-                }
-                else if (!isRunning)
-                {
-                    StartNewState(PlayerBehavior.Idle);
-                }
-                else
-                {
-                    transform.position += newDir * speed * Time.deltaTime;
+                        transform.LookAt(transform.position + newDir, Vector3.up);
+                    }
 
-                    transform.LookAt(transform.position + newDir, Vector3.up);
+#elif UNITY_ANDROID
+                    if (MobileTouch.Instance.IsOn)
+                    {
+                        if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
+                        {
+                            if (MobileTouch.Instance.SqrStationaryDragDist() > 50000.0f && MobileTouch.Instance.StationaryDragTime() < 0.3f)// roll
+                            {
+                                transform.LookAt(transform.position + newDir, Vector3.up);
+                                StartNewState(PlayerBehavior.Roll);
+                                break;
+                            }
+                            else if (MobileTouch.Instance.SqrFirstDragDist() < 1000.0f)
+                            {
+                                StartNewState(PlayerBehavior.Att1);
+                                break;
+                            }
+                        }
+                    }
+
+                    if(!isRunning)
+                    {
+                        StartNewState(PlayerBehavior.Idle);
+                    }
+                    else
+                    {
+                        transform.position += newDir * speed * Time.deltaTime;
+
+                        transform.LookAt(transform.position + newDir, Vector3.up);
+                    }
+#endif
                 }
                 break;
 
@@ -575,8 +617,38 @@ public class Player : Mob
                 {
                     isSequenceAtt = true;
                 }
-#elif UNITY_ANDROID
 
+#elif UNITY_ANDROID
+                if (MobileTouch.Instance.IsOn)
+                {
+                    if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
+                    {
+                        if (MobileTouch.Instance.SqrStationaryDragDist() > 50000.0f && MobileTouch.Instance.StationaryDragTime() < 0.3f)// roll
+                        {
+                            transform.LookAt(transform.position + newDir, Vector3.up);
+                            {
+                                StartNewState(PlayerBehavior.Roll);
+                                break;
+                            }
+                        }
+                        else if (MobileTouch.Instance.SqrFirstDragDist() < 1000.0f && ((att1Time - curTime) < nextAttTime))
+                        {
+                            isSequenceAtt = true;
+                        }
+                    }
+                }
+
+                if(curTime>=att1Time)
+                {
+                    if (isSequenceAtt)
+                    {
+                        StartNewState(PlayerBehavior.Att2);
+                    }
+                    else
+                    {
+                        StartNewState(isRunning ? PlayerBehavior.Run : PlayerBehavior.Idle);
+                    }
+                }
 #endif
                 break;
             case PlayerBehavior.Att2://----------------------------------------------------------------------ATT2---------------------------------------
@@ -705,7 +777,7 @@ public class Player : Mob
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(transform.position, 5.0f);
+        //Gizmos.DrawLine(transform.position, transform.position +)
     }
 }
 

@@ -21,7 +21,7 @@ public class Golem : NPC
     private float mStompDamage;
     private float jumpSplash;
 
-    public void Init(float growRate)
+    public void InitGolem(float growRate)
     {
         float mAttRad = Mathf.Lerp(attRad.x, attRad.y, growRate);
         sqrAttRad = mAttRad * mAttRad;
@@ -40,7 +40,6 @@ public class Golem : NPC
             player.SpawnGolem(this);
         }
 
-        enabled = false;
         StartCoroutine(IE_Enable());
     }
 
@@ -52,11 +51,11 @@ public class Golem : NPC
     }
     public override void AE_StartAttack()
     {
-        fist.enabled = true;
+        fist.StartAttack();
     }
     public override void AE_EndAttack()
     {
-        fist.enabled = false;
+        fist.EndAttack();
     }
     public void AE_StartJump()
     {
