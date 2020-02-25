@@ -54,14 +54,6 @@ public class NPC : Mob
         fsm = GetComponent<FSM>();
 
         runBehaviorData = new RunBehaviorData(transform.position);
-
-        enabled = false;
-
-        if (UnityEngine.Random.Range(0, 2) == 0)
-        {
-            PlayMainSound((UnityEngine.Random.Range(0, 2) == 0 ? "BossSpawnMobAura1" : "BossSpawnMobAura2"), 0.3f);
-        }
-
     }
 
     public void Init(float delayTime)
@@ -73,7 +65,7 @@ public class NPC : Mob
     {
         yield return new WaitForSeconds(d);
 
-        enabled = true;
+        isUpdating = true;
     }
 
     public override void GetDamaged(float amount)

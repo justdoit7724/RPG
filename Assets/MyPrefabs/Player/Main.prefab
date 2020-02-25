@@ -4515,7 +4515,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98405d58f508ac142bb29292d1cee5a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitEffectPrefab: {fileID: 0}
+  hitEffectPrefab: {fileID: 3264435456661722092, guid: ac79f57b7cda11d4d9b9faf49b41b62c,
+    type: 3}
 --- !u!1 &1703113104434406
 GameObject:
   m_ObjectHideFlags: 0
@@ -5180,7 +5181,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98405d58f508ac142bb29292d1cee5a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitEffectPrefab: {fileID: 0}
+  hitEffectPrefab: {fileID: 3264435456661722092, guid: ac79f57b7cda11d4d9b9faf49b41b62c,
+    type: 3}
 --- !u!1 &1899535429569518
 GameObject:
   m_ObjectHideFlags: 0
@@ -5699,7 +5701,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98405d58f508ac142bb29292d1cee5a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitEffectPrefab: {fileID: 0}
+  hitEffectPrefab: {fileID: 3264435456661722092, guid: ac79f57b7cda11d4d9b9faf49b41b62c,
+    type: 3}
 --- !u!1 &1972364279847066
 GameObject:
   m_ObjectHideFlags: 0

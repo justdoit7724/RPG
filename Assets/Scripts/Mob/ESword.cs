@@ -42,6 +42,9 @@ public class ESword : NPC
     // Update is called once per frame
     void Update()
     {
+        if (IsDeath() || !isUpdating)
+            return;
+
         UpdateHPBar();
         UpdateTarget("Alley", ref target);
 

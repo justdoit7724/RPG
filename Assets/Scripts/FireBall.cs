@@ -13,6 +13,8 @@ public class FireBall : MonoBehaviour
     public Vector2 splashRad = new Vector2(0.3f, 1.5f);
     public Vector2 damage = new Vector2(10, 150);
     public Vector2 scaleRange = new Vector2(0.6f, 1.0f);
+    public Collider mainCollider;
+    public AudioSource audioSource;
 
     private float curTime = 0;
 
@@ -42,6 +44,9 @@ public class FireBall : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") || other.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
+            if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") && other.GetComponent<Mob>() == null)
+                return;
+
             float t = curTime / maxGrowTime;
 
             float curSplashRad = Mathf.Lerp(splashRad.x, splashRad.y, t);
@@ -57,6 +62,9 @@ public class FireBall : MonoBehaviour
             }
 
             Instantiate(hitPrefab, transform.position, Quaternion.identity).transform.localScale= Mathf.Lerp(scaleRange.x, scaleRange.y, t) * Vector3.one;
+
+            SoundMgr.Instance.PlayInstanceFadeOut(transform.position, "PlayerBallSpawnAndHit", 1.0f, 1.0f);
+            mainCollider.enabled = false;
 
             Destroy(gameObject);
         }

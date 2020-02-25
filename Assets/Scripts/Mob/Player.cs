@@ -40,18 +40,19 @@ public class Player : Mob
     [SerializeField] private GameObject golemSpawnBodyPrefab;
     [SerializeField] private GameObject golemSpawnFinishPrefab;
     [SerializeField] private GameObject golemBallPrefab;
+    [SerializeField] private Golem golem = null;
 
     private RangeIndicator rIndicator=null;
     private GameObject golemSpawnBodyEffect;
     private WeaponTrail trail;
     private MeleeWeapon weapon;
     private Vector3 camFollowPt;
-    private Golem golem = null;
     private Transform fireBallPt;
     private NPC autoTarget=null;
 
     private float curTime = 0;
     private float curSpawnTime = 0;
+    private float golemGrowRate = 0;
     private const float att1Damage = 45;
     private const float att2Damage = 50;
     private const float att3Damage = 65;
@@ -84,14 +85,6 @@ public class Player : Mob
     }
     PlayerBehavior curBehavior= PlayerBehavior.Idle;
 
-    public void SingleTouch(Vector2 scnPos)
-    {
-
-    }
-    public void SlideTouch(Vector2 scnDir)
-    {
-
-    }
 
     public override void GetDamaged(float amount)
     {
@@ -132,11 +125,9 @@ public class Player : Mob
         camFollowPt = transform.position + camPosOffset;
         followCamera.transform.position = camFollowPt;
 
-        sk2Button.gameObject.SetActive(false);
-        sk3Button.gameObject.SetActive(false);
-
-        enabled = false;
-}
+        sk2Button.Active(false);
+        sk3Button.Active(false);
+    }
 
     private void SetupModels()
     {
@@ -234,9 +225,10 @@ public class Player : Mob
 
     public void Init()
     {
-        sk2Button.gameObject.SetActive(true);
+        sk2Button.Active(true);
+        sk3Button.Active(false);
 
-        enabled = true;
+        isUpdating = true;
     }
 
     public override void AE_StartAttack()
@@ -279,20 +271,23 @@ public class Player : Mob
         if(sk3Button.IsReady)
             StartNewState(PlayerBehavior.Sk_JumpGolem);
     }
-    public void SpawnGolem(Golem golem)
+    public void SpawnGolem(Vector3 pos)
     {
-        this.golem = golem;
+        golem.gameObject.SetActive(true);
+        golem.transform.position=pos;
+        golem.InitGolem(this, golemGrowRate);
 
-        sk2Button.gameObject.SetActive(false);
-        sk3Button.gameObject.SetActive(true);
+        sk2Button.StartCooldown();
+        sk2Button.Active(false);
+    }
+    public void ReadyToGolemJump()
+    {
+        sk3Button.Active(true);
     }
     public void DieGolem()
     {
-        sk2Button.StartCooldown();
-        golem = null;
-
-        sk2Button.gameObject.SetActive(true);
-        sk3Button.gameObject.SetActive(false);
+        sk2Button.Active(true);
+        sk3Button.Active(false);
     }
 
     private void StartNewState(PlayerBehavior behavior)
@@ -316,6 +311,7 @@ public class Player : Mob
             case PlayerBehavior.Roll:
                 anim.SetTrigger("roll");
                 Instantiate(rollEffectPrefab, transform);
+                SoundMgr.Instance.Play(mainSoundPlayer, "Sliding", 1.0f);
                 break;
             case PlayerBehavior.Att1:
                 AutoTargetting();
@@ -341,6 +337,7 @@ public class Player : Mob
             case PlayerBehavior.Sk_FireBall:
                 anim.SetTrigger("sk_fireball");
                 trail.SetColor(Color.red);
+                SoundMgr.Instance.Play(mainSoundPlayer, "PlayerBallSwing", 1.0f);
                 break;
             case PlayerBehavior.Sk_SpawnGolem:
                 anim.SetTrigger("sk_spawnGolem");
@@ -348,8 +345,6 @@ public class Player : Mob
                 rIndicator.SetPosition(transform.position);
                 rIndicator.SetMaxRad(rIndicatorMaxRad.y);
                 golemSpawnBodyEffect = Instantiate(golemSpawnBodyPrefab, transform.position, Quaternion.identity);
-                sk2Button.StartCooldown();
-                sk3Button.StartCooldown();
                 break;
             case PlayerBehavior.Sk_JumpGolem:
                 anim.SetTrigger("idle");
@@ -433,6 +428,9 @@ public class Player : Mob
 
     void Update()
     {
+        if (IsDeath() || !isUpdating)
+            return;
+
         hpBar.value = curHP / maxHP;
         hpAmount.text = curHP.ToString();
 
@@ -726,8 +724,9 @@ public class Player : Mob
                     Vector3 ballDir = (new Vector3(1,-1,0)).normalized;
                     float growRate = Mathf.Clamp01(curSpawnTime / spawnChargeTime);
                     float ballDist = Mathf.Lerp(30,50, growRate);
+                    golemGrowRate = growRate;
                     GolemBall golemBall = Instantiate(golemBallPrefab, rIndicator.transform.position - ballDir * ballDist, Quaternion.LookRotation(ballDir)).GetComponent<GolemBall>();
-                    golemBall.Init(growRate, rIndicator.transform.position);
+                    golemBall.Init(this, growRate, rIndicator.transform.position);
 
                     StartNewState(PlayerBehavior.Idle);
                 }

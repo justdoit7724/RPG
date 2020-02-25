@@ -36,16 +36,82 @@ public class SoundMgr : MonoBehaviour
         audios.Add("Hit2", Resources.Load("Audios/Hit2") as AudioClip);
         audios.Add("Hit3", Resources.Load("Audios/Hit3") as AudioClip);
         audios.Add("BossBallHit", Resources.Load("Audios/BossBallHit") as AudioClip);
+        audios.Add("GolemHit", Resources.Load("Audios/GolemHit") as AudioClip);
+        audios.Add("GolemHit2", Resources.Load("Audios/GolemHit2") as AudioClip);
+        audios.Add("GolemHit3", Resources.Load("Audios/GolemHit3") as AudioClip);
+        audios.Add("Sliding", Resources.Load("Audios/Sliding") as AudioClip);
+        audios.Add("PlayerBallSpawnAndHit", Resources.Load("Audios/PlayerBallSpawnAndHit") as AudioClip);
+        audios.Add("PlayerBallSwing", Resources.Load("Audios/PlayerBallSwing") as AudioClip);
 
         DontDestroyOnLoad(gameObject);
     }
 
-    public void Add(string name, AudioClip clip)
+    public void PlayInstance(Vector3 pos, string key, float volume, float lifeTime)
     {
-        audios.Add(name, clip);
+        AudioSource obj = new GameObject("SoundInstance").AddComponent< AudioSource>();
+        obj.transform.position = pos;
+        obj.clip = audios[key];
+        obj.volume = volume;
+        obj.Play();
+
+        Destroy(obj.gameObject, lifeTime);
     }
-    public AudioClip Get(string name)
+    public void PlayInstanceFadeOut(Vector3 pos, string key, float firstVolume, float lifeTime)
     {
-        return audios[name];
+        AudioSource obj = new GameObject("SoundInstance").AddComponent<AudioSource>();
+        obj.transform.position = pos;
+        obj.clip = audios[key];
+        obj.volume = firstVolume;
+        obj.Play();
+
+        StartCoroutine(IE_PlayFadeOut(obj, firstVolume, lifeTime,true));
+    }
+    public void Play(AudioSource player, string key, float volume)
+    {
+        if (!audios.ContainsKey(key))
+        {
+            Debug.LogError(key + "'sound is not exist");
+        }
+        else
+        {
+            if(player.enabled==false)
+            {
+                int a = 0;
+                a++;
+            }
+            player.clip = audios[key];
+            player.volume = volume;
+            player.Play();
+        }
+    }
+
+    private static float CurveT(float x)
+    {
+        return (-Mathf.Pow(x, 4) + 1);
+    }
+
+    public void PlayFadeOut(AudioSource player, string key, float firstVolume, float time)
+    {
+        player.clip = audios[key];
+        player.volume = firstVolume;
+        player.Play();
+        StartCoroutine(IE_PlayFadeOut(player, firstVolume, time,false));
+    }
+    private IEnumerator IE_PlayFadeOut(AudioSource player, float firstVolume, float time, bool isDestroyOwner)
+    {
+        float mt = 0;
+        float curTime = 0;
+        while(mt<1.0f)
+        {
+            curTime += Time.deltaTime;
+            mt = CurveT(curTime / time);
+
+            player.volume = mt * firstVolume;
+
+            yield return null;
+        }
+
+        if (isDestroyOwner)
+            Destroy(player.gameObject);
     }
 }

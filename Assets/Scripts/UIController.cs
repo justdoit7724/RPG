@@ -151,9 +151,7 @@ public class UIController : MonoBehaviour
 
     public void BT_ButtonSound()
     {
-        sfxPlayer.clip = SoundMgr.Instance.Get("Button");
-        sfxPlayer.volume = 0.5f;
-        sfxPlayer.Play();
+        SoundMgr.Instance.Play(sfxPlayer, "Button", 0.5f);
     }
 
     public void SetNewSelect(int idx)

@@ -16,7 +16,7 @@ public class DieBehavior : BaseBehavior
         if (coll)
             coll.enabled = false;
 
-        mob.enabled = false;
+        mob.StopUpdate();
 
         MobMgr.Instance.SendMessage(mob, MobMessage.Die);
         MobMgr.Instance.RemoveMob(mob);

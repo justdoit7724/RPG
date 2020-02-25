@@ -8,6 +8,7 @@ public abstract class Mob : MonoBehaviour
     public float maxHP=1000;
     public Material mainMat;
     protected float curHP=0;
+    protected bool isUpdating = false;
 
     protected Collider mainCollider;
     protected Rigidbody rigid;
@@ -29,6 +30,16 @@ public abstract class Mob : MonoBehaviour
         }
     }
 
+    public void StopUpdate()
+    {
+        isUpdating = false;
+    }
+
+    private void OnEnable()
+    {
+        MobMgr.Instance.RegisterMob(this);
+    }
+
     public virtual void GetDamaged(float amount)
     {
         DamageEffect();
@@ -44,8 +55,6 @@ public abstract class Mob : MonoBehaviour
     public virtual void GetMessage(Mob sender, MobMessage msg) { }
     public virtual void Start()
     {
-        MobMgr.Instance.RegisterMob(this);
-
         mainCollider = GetComponent<Collider>();
         rigid = GetComponent<Rigidbody>();
         nav = GetComponent<NavMeshAgent>();
@@ -69,9 +78,7 @@ public abstract class Mob : MonoBehaviour
 
     public void PlayMainSound(string key, float volume=1.0f)
     {
-        mainSoundPlayer.clip = SoundMgr.Instance.Get(key);
-        mainSoundPlayer.volume = volume;
-        mainSoundPlayer.Play();
+        SoundMgr.Instance.Play(mainSoundPlayer, key, volume);
     }
     public bool PlayHitSound(string key, float volume = 1.0f)
     {
@@ -79,9 +86,7 @@ public abstract class Mob : MonoBehaviour
         {
             if (!player.isPlaying)
             {
-                player.clip = SoundMgr.Instance.Get(key);
-                player.volume = volume;
-                player.Play();
+                SoundMgr.Instance.Play(player, key, volume);
                 return true;
             }
         }
@@ -89,7 +94,7 @@ public abstract class Mob : MonoBehaviour
         return false;
     }
 
-    private void DamageEffect()
+    public void DamageEffect()
     {
         if (curDamageEffectTime > 0)
             curDamageEffectTime = 0;

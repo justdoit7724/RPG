@@ -21,8 +21,11 @@ public class Golem : NPC
     private float mStompDamage;
     private float jumpSplash;
 
-    public void InitGolem(float growRate)
+
+    public void InitGolem(Player player, float growRate)
     {
+        this.player = player;
+
         float mAttRad = Mathf.Lerp(attRad.x, attRad.y, growRate);
         sqrAttRad = mAttRad * mAttRad;
         float mScale = Mathf.Lerp(bodyScale.x, bodyScale.y, growRate);
@@ -34,18 +37,49 @@ public class Golem : NPC
         fist = GetComponentInChildren<MeleeWeapon>();
         fist.SetDamage(Mathf.Lerp(attDamage.x, attDamage.y, growRate));
 
-        player = FindObjectOfType<Player>();
-        if(player)
+        StartCoroutine(IE_Enable());
+    }
+
+    public override void GetDamaged(float amount)
+    {
+        DamageEffect();
+
+        // die this time
+        if (curHP > 0 && curHP <= amount)
         {
-            player.SpawnGolem(this);
+            hpBar.transform.gameObject.SetActive(false);
+
+            anim.SetTrigger("die");
+            nav.enabled = false;
+            mainCollider.enabled = false;
+            StartCoroutine(IE_Disappear());
+            StopUpdate();
+
+            MobMgr.Instance.RemoveMob(this);
+            MobMgr.Instance.SendMessage(this, MobMessage.Die);
         }
 
-        StartCoroutine(IE_Enable());
+        curHP -= amount;
+    }
+    private IEnumerator IE_Disappear()
+    {
+        yield return new WaitForSeconds(3.0f);
+
+        for(int i=0; i<300; ++i)
+        {
+            transform.position = transform.position + Vector3.down * 0.25f * Time.deltaTime;
+
+            yield return null;
+        }
+
+        gameObject.SetActive(false);
     }
 
     private IEnumerator IE_Enable()
     {
         yield return new WaitForSeconds(1.5f);
+
+        player.ReadyToGolemJump();
 
         enabled = true;
     }
@@ -93,18 +127,11 @@ public class Golem : NPC
         }
     }
 
-    public override void GetDamaged(float amount)
-    {
-        base.GetDamaged(amount);
-
-        if(IsDeath())
-        {
-            player.DieGolem();
-        }
-    }
-
     private void Update()
     {
+        if (IsDeath() || !isUpdating)
+            return;
+
         UpdateHPBar();
         UpdateTarget("Enemy", ref target);
 

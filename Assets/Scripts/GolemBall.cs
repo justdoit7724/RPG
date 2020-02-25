@@ -12,14 +12,16 @@ public class GolemBall : MonoBehaviour
     public Vector2 splashRad = new Vector2(3.5f, 7.0f);
     public Vector2 hitScaleRange = new Vector2(0.4f, 0.65f);
 
+    private Player player;
     private RangeIndicator rIndicator;
     private float mDamage;
     private float mSplashRad;
     private float growRate;
     private float spawnHeight;
 
-    public void Init(float growRate, Vector3 expPt)
+    public void Init(Player player, float growRate, Vector3 expPt)
     {
+        this.player = player;
         this.growRate = growRate;
         mDamage = Mathf.Lerp(damage.x, damage.y, growRate);
         mSplashRad = Mathf.Lerp(splashRad.x, splashRad.y, growRate);
@@ -27,6 +29,15 @@ public class GolemBall : MonoBehaviour
         spawnHeight = transform.position.y;
         rIndicator = Instantiate(rangeIndicatorPrefab, expPt, Quaternion.identity).GetComponent<RangeIndicator>();
         rIndicator.Init(mSplashRad, Color.red, 360);
+
+        StartCoroutine(IE_PlayFallingSound(Mathf.Lerp(0, 2.0f, growRate)));
+    }
+
+    private IEnumerator IE_PlayFallingSound(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        GetComponent<AudioSource>().Play();
     }
 
     void Update()
@@ -57,9 +68,12 @@ public class GolemBall : MonoBehaviour
 
         Vector3 spawnPos = transform.position;
         spawnPos.y = 0;
-        Golem golem = Instantiate(golemPrefab, spawnPos, Quaternion.identity).GetComponent<Golem>();
-        golem.InitGolem(growRate);
-        Instantiate(golemHitEffectPrefab, rIndicator.transform.position, Quaternion.identity).transform.localScale = Vector3.one * Mathf.Lerp(hitScaleRange.x, hitScaleRange.y, growRate);
+        player.SpawnGolem(spawnPos);
+        GameObject ballObj = Instantiate(golemHitEffectPrefab, rIndicator.transform.position, Quaternion.identity);
+        ballObj.transform.localScale = Vector3.one * Mathf.Lerp(hitScaleRange.x, hitScaleRange.y, growRate);
+        SoundMgr.Instance.Play(ballObj.AddComponent<AudioSource>(), "GolemHit", 1.0f);
+        SoundMgr.Instance.Play(ballObj.AddComponent<AudioSource>(), "GolemHit2", 1.0f);
+        SoundMgr.Instance.Play(ballObj.AddComponent<AudioSource>(), "GolemHit3", 1.0f);
 
         Destroy(rIndicator.gameObject);
         Destroy(gameObject);

@@ -153,22 +153,33 @@ public class EBoss : NPC
         yield return new WaitForSeconds(delay);
 
         int spawnPtIdx = 0;
+        NPC mob1 = null;
+        NPC mob2 = null;
         for(int i=0; i<4; ++i)
         {
             Vector3 rPt = mobSpawnPts[spawnPtIdx++].transform.position;
-            Instantiate(swordMobPrefab, rPt, Quaternion.identity).GetComponent<NPC>().Init(0.75f);
+            mob1 = Instantiate(swordMobPrefab, rPt, Quaternion.identity).GetComponent<NPC>();
+            mob1.Init(0.75f);
             Instantiate(mobSpawnPtEffectPrefab, rPt, Quaternion.identity);
+
 
             yield return null;
         }
+        
+        mob1.PlayMainSound("BossSpawnMobAura1", 0.3f);
+            
         for (int i = 0; i < 3; ++i)
         {
             Vector3 rPt = mobSpawnPts[spawnPtIdx++].transform.position;
-            Instantiate(bowMobPrefab, rPt, Quaternion.identity).GetComponent<NPC>().Init(0.75f);
+            mob2 = Instantiate(bowMobPrefab, rPt, Quaternion.identity).GetComponent<NPC>();
+            mob2.Init(0.75f);
             Instantiate(mobSpawnPtEffectPrefab, rPt, Quaternion.identity);
+
 
             yield return null;
         }
+
+        mob2.PlayMainSound("BossSpawnMobAura2", 0.3f);
     }
 
     private IEnumerator IE_Balls()
@@ -226,6 +237,10 @@ public class EBoss : NPC
 
     private void Update()
     {
+        if (IsDeath() || !isUpdating)
+            return;
+
+
         UpdateHPBar();
 
         if (fsm.Count == 0)
