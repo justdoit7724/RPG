@@ -41,9 +41,8 @@ Shader "Custom/CustomMainShader"
             {
                 float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
-				float3 lDiffuse : TEXCOORD1;
-				float3 lSpec : TEXCOORD2;
-				float2 pUV : TEXCOORD3;
+				float3 wPos :TEXCOORD1;
+				float3 normal : NORMAL;
             };
 
 
@@ -66,18 +65,11 @@ Shader "Custom/CustomMainShader"
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = v.uv;
-				float3 wPos = mul(unity_ObjectToWorld, v.vertex).xyz;
-				//투영 텍스쳐 계산
-				float4 pPos = mul(UNITY_MATRIX_VP, float4(wPos,1));
-				o.pUV = pPos.xy / pPos.w;
-				o.pUV.y *= -1;
+				o.wPos = mul(unity_ObjectToWorld, v.vertex).xyz;
 
 				//로컬 노멀 -> 월드 노멀
-				float3 wNormal = mul((float3x3)transpose(unity_WorldToObject), v.normal);
+				o.normal = mul((float3x3)transpose(unity_WorldToObject), v.normal);
 
-				//로우 폴리 특성을 살려서, 버텍스 쉐이더에서 빛 연산 진행
-				float3 lookDir = wPos - _WorldSpaceCameraPos;
-				ComputeDirectionalLight(_LightDir, wNormal, -lookDir, o.lDiffuse, o.lSpec);
 
                 return o;
             }
@@ -96,12 +88,22 @@ Shader "Custom/CustomMainShader"
 			float4 lerpResult4 = lerp(tex2DNode16 , ((saturate((blendOpSrc22 * blendOpDest22))) * 2.0) , (tex2DNode13.r + tex2DNode13.g + tex2DNode13.b));
 			float3 Albedo = lerpResult4.rgb;
 			float3 Ambient = Lerp(0,lerpResult4.rgb, _Emission) + _HitFlash.xxx;
-			Albedo *= i.lDiffuse;
 
-			float curDepth = tex2D(_Depth, i.pUV);
 
-			return float4(i.pUV,0, 1);
-			return float4(Albedo + i.lSpec + Ambient, 1);
+
+			//투영 텍스쳐 계산 (정확도를 위해 픽셀쉐이더에서 계산)
+			float4 pPos = mul(UNITY_MATRIX_VP, float4(i.wPos, 1));
+			float2 pUV = Proj2UV(pPos);
+
+			float3 lDiffuse, lSpec;
+			float3 lookDir = i.wPos - _WorldSpaceCameraPos;
+			ComputeDirectionalLight(_LightDir, i.normal, -lookDir, lDiffuse, lSpec);
+
+			float curDepth = tex2D(_Depth, pUV);
+			Albedo *= lDiffuse;
+			lSpec *= 0.1f;
+
+			return float4(Albedo + lSpec + Ambient, 1);
             }
             ENDCG
         }
