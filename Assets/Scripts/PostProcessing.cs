@@ -9,9 +9,7 @@ public class PostProcessing : MonoBehaviour
     public RenderTexture rtexture;
 
     void Start()
-    {
-        Camera.main.depthTextureMode = Camera.main.depthTextureMode | DepthTextureMode.Depth;
-    }
+    {}
 
     private void LateUpdate()
     {

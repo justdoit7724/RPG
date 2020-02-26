@@ -1,10 +1,9 @@
-﻿Shader "Hidden/DepthShader"
+﻿Shader "Custom/DepthShader"
 {
     SubShader
     {
-        // No culling or depth
-        Cull Back ZWrite Off ZTest Always
-	
+		Tags{"RenderType" = "Opaque"  "Queue" = "Geometry+0" }
+        Cull Back 
 
         Pass
         {
@@ -37,10 +36,10 @@
                 return o;
             }
 
-			float frag(v2f i) : SV_Target
+			float4 frag(v2f i) : SV_Target
 			{
 				float4 pPos = mul(UNITY_MATRIX_VP, float4(i.wPos, 1));
-				return (pPos.z / pPos.w);
+				return float4(pPos.z / pPos.w,0,0,0);
             }
             ENDCG
         }

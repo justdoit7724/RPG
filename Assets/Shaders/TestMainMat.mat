@@ -32,9 +32,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Emission: 0
+    - _Emission: 0.379
     - _HitFlash: 0
     m_Colors:
     - _Color01: {r: 1, g: 0, b: 0, a: 0}
     - _Color02: {r: 1, g: 0, b: 0, a: 0}
     - _Color03: {r: 1, g: 0, b: 0, a: 0}
+    - _LightDir: {r: 0.707, g: -0.707, b: 0, a: 0}
