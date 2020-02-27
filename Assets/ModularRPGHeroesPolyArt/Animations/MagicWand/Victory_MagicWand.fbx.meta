@@ -893,7 +893,7 @@ ModelImporter:
       curves: []
       events:
       - time: 0.47002512
-        functionName: AE_StartCurse
+        functionName: AE_Curse
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

@@ -90,11 +90,15 @@ public class EBoss : NPC
     private WeaponTrail trail;
     private float colliderRad;
     private float sqrAttRad;
+    private BossMovePt[] movePts;
     private MobSpawnPt[] mobSpawnPts;
 
     private const float laserDuration = 7.0f;
     private const float xMoveOffset= 20.0f;
     private const float zMoveOffset= 20.0f;
+
+    private bool isCurseOn = false;
+
 
     private delegate void BossBehaviorFunc();
     private BossBehaviorFunc[] behaviorFunc = new BossBehaviorFunc[6];
@@ -122,14 +126,17 @@ public class EBoss : NPC
         colliderRad = GetComponent<CapsuleCollider>().radius;
 
         mobSpawnPts = FindObjectsOfType<MobSpawnPt>();
+        movePts = FindObjectsOfType<BossMovePt>();
 
         selector = new Selector();
-        selector.Add(BossBehaviorKind.Run, 9);
+        selector.Add(BossBehaviorKind.Run, /*9*/4);
         selector.Add(BossBehaviorKind.MeleeAttack, 10);
         selector.Add(BossBehaviorKind.Laser, 5);
-        selector.Add(BossBehaviorKind.Ball, 7);
+        selector.Add(BossBehaviorKind.Ball, /*7*/3);
         selector.Add(BossBehaviorKind.Spawn, 3);
-        selector.Add(BossBehaviorKind.Curse, 2);
+        selector.Add(BossBehaviorKind.Curse, 10);
+
+        postprocessingMat.SetFloat("_Value", 0);
     }
 
     public override void AE_StartAttack()
@@ -150,7 +157,7 @@ public class EBoss : NPC
             laser.Init(laserLength, laserDamage, 0.4f);
 
             LaserBehavior laserStayBehavior = ScriptableObject.CreateInstance<LaserBehavior>();
-            laserStayBehavior.Init(BehaviorPriority.Skill, target.transform, false, laserDuration);
+            laserStayBehavior.Init(BehaviorPriority.Skill, target, false, laserDuration);
             PlayMainSound("Laser", 0.3f);
             fsm.CheckAndAddBehavior(laserStayBehavior);
         }
@@ -161,8 +168,11 @@ public class EBoss : NPC
     }
     public void EndLaser()
     {
-        laser.Destroy(2.0f);
-        laser = null;
+        if (laser)
+        {
+            laser.Destroy(2.0f);
+            laser = null;
+        }
     }
     public void AE_SpawnBall()
     {
@@ -251,6 +261,38 @@ public class EBoss : NPC
             yield return null;
         }
     }
+
+    private void AE_Curse()
+    {
+        StartCoroutine(IE_CurseChange());
+    }
+    private IEnumerator IE_CurseChange()
+    {
+        if(!isCurseOn)
+        {
+            float t = 0;
+            while(t<1)
+            {
+                t += 0.3f * Time.deltaTime;
+                postprocessingMat.SetFloat("_Value", t);
+                yield return null;
+            }
+        }
+        else
+        {
+            float t = 1;
+            while(t>0)
+            {
+                t -= 0.3f * Time.deltaTime;
+                postprocessingMat.SetFloat("_Value", t);
+                yield return null;
+            }
+        }
+
+
+        isCurseOn = !isCurseOn;
+    }
+
     private void ShuffleSpawnPts()
     {
         for(int i=0; i<5; ++i)
@@ -280,27 +322,13 @@ public class EBoss : NPC
 
     private void Run()
     {
-        Vector3 rPos = transform.position;
-        for (int i = 0; i < 2; ++i)
-        {
-            rPos += new Vector3(
-                UnityEngine.Random.Range(-1.0f, 1.0f) * xMoveOffset,
-                0,
-                UnityEngine.Random.Range(-1.0f, 1.0f) * zMoveOffset);
-
-            Collider[] colls = Physics.OverlapSphere(rPos, colliderRad + 0.5f, LayerMask.GetMask("PlayGround", "Wall"));
-            if (colls.Length == 1 && colls[0].gameObject.layer == LayerMask.NameToLayer("PlayGround"))
-            {
-                runBehaviorData.dest = rPos;
-                BaseBehavior runBehavior = ScriptableObject.CreateInstance<RunBehavior>();
-                runBehavior.Init(BehaviorPriority.Basic, runBehaviorData, false, 5.0f);
-                fsm.DirectAddBehavior(runBehavior);
-                BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
-                idleBehavior.Init(BehaviorPriority.Basic, null, false, 2.0f);
-                fsm.DirectAddBehavior(idleBehavior);
-                break;
-            }
-        }
+        runBehaviorData.dest = movePts[UnityEngine.Random.Range(0, movePts.Length)].transform.position;
+        BaseBehavior runBehavior = ScriptableObject.CreateInstance<RunBehavior>();
+        runBehavior.Init(BehaviorPriority.Basic, runBehaviorData, false, 5.0f);
+        fsm.DirectAddBehavior(runBehavior);
+        BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
+        idleBehavior.Init(BehaviorPriority.Basic, null, false, 2.0f);
+        fsm.DirectAddBehavior(idleBehavior);
     }
     private void MeleeAttack()
     {
@@ -384,11 +412,44 @@ public class EBoss : NPC
     }
     private void CursePlayer()
     {
+        if(target==null)
+        {
+            Collider[] colls = Physics.OverlapSphere(transform.position, laserLength, LayerMask.GetMask("Alley"));
+            float closestDist = float.MaxValue;
+            foreach (var item in colls)
+            {
+                Mob itemMob = item.GetComponent<Mob>();
+                if (itemMob)
+                {
+                    Vector3 subVec = item.transform.position - transform.position;
+                    float sqrDist = subVec.sqrMagnitude;
+                    if (sqrDist <= closestDist)
+                    {
+                        closestDist = sqrDist;
+                        target = itemMob;
+                    }
+                }
+            }
+        }
 
-    }
-
-    private void OnDrawGizmos()
-    {
+        if (!isCurseOn && target)
+        {
+            CurseBehavior curseBehavior = ScriptableObject.CreateInstance<CurseBehavior>();
+            int r1 = UnityEngine.Random.Range(0, movePts.Length);
+            int r2 = UnityEngine.Random.Range(0, movePts.Length);
+            while (r1 == r2)
+            {
+                r2 = UnityEngine.Random.Range(0, movePts.Length);
+            }
+            curseBehavior.Init(movePts[r1].transform.position, movePts[r2].transform.position, target, laserDuration, BehaviorPriority.Skill);
+            fsm.DirectAddBehavior(curseBehavior);
+        }
+        else if(isCurseOn)
+        {
+            BaseBehavior cancelCurseBehavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
+            cancelCurseBehavior.Init(BehaviorPriority.Skill, "curse", false, 1.0f);
+            fsm.DirectAddBehavior(cancelCurseBehavior);
+        }
     }
 }
 

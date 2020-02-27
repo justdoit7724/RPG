@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class LaserBehavior : BaseBehavior
 {
-    private Transform target=null;
+    private Mob target=null;
 
     public override void StartBehavior(Mob mob)
     {
@@ -13,7 +13,7 @@ public class LaserBehavior : BaseBehavior
 
         if (data!=null)
         {
-            target = (Transform)data;
+            target = (Mob)data;
         }
     }
 
@@ -23,9 +23,9 @@ public class LaserBehavior : BaseBehavior
         if (lifeTime <= 0)
             return false;
 
-        if (target)
+        if (target && !target.IsDeath())
         {
-            Vector3 targetDir = (target.position - mob.transform.position).normalized;
+            Vector3 targetDir = (target.transform.position - mob.transform.position).normalized;
             float dotV = Vector3.Dot(targetDir, mob.transform.forward);
             float cosRad = Mathf.Acos(dotV);
             if (cosRad < (Mathf.PI * 0.25f))
