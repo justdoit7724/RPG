@@ -26,12 +26,18 @@ public class Golem : NPC
     {
         this.player = player;
 
+        if(nav)
+            nav.enabled = true;
+        if (mainCollider)
+            mainCollider.enabled = true;
+
         float mAttRad = Mathf.Lerp(attRad.x, attRad.y, growRate);
         sqrAttRad = mAttRad * mAttRad;
         float mScale = Mathf.Lerp(bodyScale.x, bodyScale.y, growRate);
         transform.localScale = new Vector3(mScale, mScale, mScale);
         mStompDamage = Mathf.Lerp(stompDamage.x, stompDamage.y, growRate);
         maxHP = Mathf.Lerp(maxHPRange.x, maxHPRange.y, growRate);
+        curHP = maxHP;
         jumpSplash = Mathf.Lerp(jumpSplashRange.x, jumpSplashRange.y, growRate);
         GetComponent<CapsuleCollider>().radius = Mathf.Lerp(colliderSizeRange.x, colliderSizeRange.y, growRate);
         fist = GetComponentInChildren<MeleeWeapon>();
@@ -54,7 +60,10 @@ public class Golem : NPC
             mainCollider.enabled = false;
             StartCoroutine(IE_Disappear());
             StopUpdate();
-
+            player.DieGolem();
+            isUpdating = false;
+            fsm.Clear();
+            
             MobMgr.Instance.RemoveMob(this);
             MobMgr.Instance.SendMessage(this, MobMessage.Die);
         }
@@ -63,6 +72,10 @@ public class Golem : NPC
     }
     private IEnumerator IE_Disappear()
     {
+        Vector3 curPos = transform.position;
+        curPos.y = 0;
+        transform.position = curPos;
+
         yield return new WaitForSeconds(3.0f);
 
         for(int i=0; i<300; ++i)
@@ -81,7 +94,7 @@ public class Golem : NPC
 
         player.ReadyToGolemJump();
 
-        enabled = true;
+        isUpdating = true;
     }
     public override void AE_StartAttack()
     {
@@ -115,6 +128,9 @@ public class Golem : NPC
                 target.Rigid.AddForce(subVec.normalized * distRate * 150.0f);
             }
         }
+
+
+        SoundMgr.Instance.Play(mainSoundPlayer, "GolemHit", 1.0f);
     }
     public void Jump(Vector3 dest)
     {

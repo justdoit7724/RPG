@@ -5,22 +5,10 @@ using UnityEngine;
 public class PostProcessing : MonoBehaviour
 {
     public Material postProcessingMat;
-    public Camera renderCam;
-    public RenderTexture rtexture;
 
-    void Start()
-    {}
 
-    private void LateUpdate()
+    private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
-        renderCam.targetTexture = rtexture;
-        renderCam.Render();
+        Graphics.Blit(source, destination, postProcessingMat);
     }
-
-    //private void OnRenderImage(RenderTexture source, RenderTexture destination)
-    //{
-    //    Graphics.Blit(source, rtexture, postProcessingMat);
-
-    //    Graphics.Blit(source, destination);
-    //}
 }

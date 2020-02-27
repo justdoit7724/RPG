@@ -104,8 +104,6 @@ public class GameController : MonoBehaviour
 
     public void WaveStart()
     {
-        FindObjectOfType<Player>().Init();
-
         NPC[] enemies = FindObjectsOfType<NPC>();
         foreach(var elem in enemies)
         {

@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Hidden_DepthShader
-  m_Shader: {fileID: 4800000, guid: 78fe82696c7be3a41be1c7664fea8801, type: 3}
+  m_Name: PostProcessingMat
+  m_Shader: {fileID: 4800000, guid: 836a4e9442837bd4882536fd9dd36f10, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0

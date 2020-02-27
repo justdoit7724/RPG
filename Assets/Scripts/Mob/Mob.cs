@@ -19,6 +19,12 @@ public abstract class Mob : MonoBehaviour
 
     private float curDamageEffectTime=0;
 
+    public Collider MainCollider {
+        get {
+            return mainCollider;
+        }
+    }
+
     public void RemoveSounds()
     {
         mainSoundPlayer.Stop();
@@ -76,8 +82,9 @@ public abstract class Mob : MonoBehaviour
         curHP = maxHP;
     }
 
-    public void PlayMainSound(string key, float volume=1.0f)
+    public void PlayMainSound(string key, float volume=1.0f, bool isLoop=false)
     {
+        mainSoundPlayer.loop = isLoop;
         SoundMgr.Instance.Play(mainSoundPlayer, key, volume);
     }
     public bool PlayHitSound(string key, float volume = 1.0f)

@@ -63,10 +63,10 @@ public class Player : Mob
     private const float skBallTime = 0.6f;
     private const float rollTime = 0.5f;
     private const float rollSpeed = 13.0f;
-    private Vector2 rIndicatorMaxRad = new Vector2(2.5f, 5.0f);
-    private const float spawnChargeTime = 6.0f;
-    private const float camZoonOutTime = 6.0f;
-    private const float camMaxDist = 11.0f;
+    private Vector2 rIndicatorMaxRad = new Vector2(2.0f, 4.0f);
+    private const float spawnChargeTime = 5.0f;
+    private const float camZoonOutTime = 5.0f;
+    private const float camMaxDist = 12.0f;
 
     private bool isSequenceAtt = false;
 
@@ -277,7 +277,6 @@ public class Player : Mob
         golem.transform.position=pos;
         golem.InitGolem(this, golemGrowRate);
 
-        sk2Button.StartCooldown();
         sk2Button.Active(false);
     }
     public void ReadyToGolemJump()
@@ -317,20 +316,20 @@ public class Player : Mob
                 AutoTargetting();
                 anim.SetTrigger("att1");
                 weapon.SetDamage(att1Damage);
-                PlayMainSound("PlayerAtt1",0.5f);
+                PlayMainSound("PlayerAtt1",0.4f);
                 isSequenceAtt = false;
                 break;
             case PlayerBehavior.Att2:
                 AutoTargetting();
                 anim.SetTrigger("att2");
-                PlayMainSound("PlayerAtt2",0.3f);
+                PlayMainSound("PlayerAtt2",0.2f);
                 weapon.SetDamage(att2Damage);
                 isSequenceAtt = false;
                 break;
             case PlayerBehavior.Att3:
                 AutoTargetting();
                 anim.SetTrigger("att3");
-                PlayMainSound("PlayerAtt1",0.75f);
+                PlayMainSound("PlayerAtt1",0.5f);
                 weapon.SetDamage(att3Damage);
                 isSequenceAtt = false;
                 break;
@@ -344,7 +343,9 @@ public class Player : Mob
                 curSpawnTime = 0;
                 rIndicator.SetPosition(transform.position);
                 rIndicator.SetMaxRad(rIndicatorMaxRad.y);
+                sk2Button.StartCooldown();
                 golemSpawnBodyEffect = Instantiate(golemSpawnBodyPrefab, transform.position, Quaternion.identity);
+                PlayMainSound("LaserCharge",0.5f, true);
                 break;
             case PlayerBehavior.Sk_JumpGolem:
                 anim.SetTrigger("idle");
@@ -729,6 +730,7 @@ public class Player : Mob
                     golemBall.Init(this, growRate, rIndicator.transform.position);
 
                     StartNewState(PlayerBehavior.Idle);
+                    PlayMainSound("GolemHit2", 0.5f);
                 }
 
                 break;

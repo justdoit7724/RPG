@@ -13,6 +13,11 @@ public class FSM : MonoBehaviour
 
     public int Count { get { return behaviors.Count; } }
 
+    public void Clear()
+    {
+        behaviors.Clear();
+        behaviorKinds.Clear();
+    }
     public bool ContainBehavior(Type type)
     {
         return behaviorKinds.ContainsKey(type);

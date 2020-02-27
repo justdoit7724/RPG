@@ -6742,14 +6742,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1d4f017e4e2e6849b7bcc9386748c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitEffectPrefab: {fileID: 3264435456661722092, guid: ac79f57b7cda11d4d9b9faf49b41b62c,
-    type: 3}
   maxHP: 150
   mainMat: {fileID: 2100000, guid: 1c569ef19bc3bfd419c8cf99c7793706, type: 2}
   detectRad: 25
   hpBarPrefab: {fileID: 7630893359727299938, guid: a4e17527930a9934db4179e7d5ce4117,
     type: 3}
-  attRad: 12.5
+  attRad: 11
   visualArrow: {fileID: 1385905041924122}
   bowDamage: 30
 --- !u!195 &59609688
@@ -6762,7 +6760,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 2
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120

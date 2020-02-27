@@ -72,7 +72,7 @@ public class ESword : NPC
                         BaseBehavior att1Behavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
                         att1Behavior.Init(BehaviorPriority.Att, "att1", false, 2.0f);
                         fsm.CheckAndAddBehavior(att1Behavior);
-                        PlayMainSound("EnemyAtt");
+                        PlayMainSound("EnemyAtt",0.5f);
 
                     }
                     else
@@ -80,7 +80,7 @@ public class ESword : NPC
                         BaseBehavior att2Behavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
                         att2Behavior.Init(BehaviorPriority.Att, "att2", false, 2.0f);
                         fsm.CheckAndAddBehavior(att2Behavior);
-                        PlayMainSound("EnemyAttDouble",0.25f);
+                        PlayMainSound("EnemyAttDouble",0.2f);
                     }
                 }
             }

@@ -1,5 +1,5 @@
 
-Shader "Custom/MainShader"
+Shader "Custom/EnemyBody"
 {
 	Properties
 	{

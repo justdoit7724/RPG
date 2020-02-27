@@ -6,7 +6,7 @@ using System;
 
 public class GolemJumpBehavior : CompositeBehavior
 {
-    private const float jumpMaxDist = 5.0f;
+    private const float jumpMaxDist = 4.0f;
 
     public void Init(Vector3 dest, Vector3 curPos, BehaviorPriority p)
     {

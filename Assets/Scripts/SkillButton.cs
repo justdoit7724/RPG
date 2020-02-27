@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class SkillButton : MonoBehaviour
 {
     public float cooltime = 15;
-    
+
+    private Button button;
     private RawImage image;
     private RectTransform rTransform;
     private float curTime = 0;
@@ -15,6 +16,7 @@ public class SkillButton : MonoBehaviour
 
     void Awake()
     {
+        button = GetComponent<Button>();
         image = GetComponent<RawImage>();
         image.material.SetFloat("_Value", 0);
 
@@ -30,7 +32,10 @@ public class SkillButton : MonoBehaviour
             image.material.SetFloat("_Value", (cooltime - curTime) / cooltime);
 
             if (curTime >= cooltime)
+            {
+                button.interactable = true;
                 isReady = true;
+            }
         }
     }
 
@@ -41,6 +46,7 @@ public class SkillButton : MonoBehaviour
 
     public void StartCooldown()
     {
+        button.interactable = false;
         isReady = false;
         curTime = 0;
     }

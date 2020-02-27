@@ -1,6 +1,6 @@
 ﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-Shader "Custom/CustomMainShader"
+Shader "Custom/PlayerBody"
 {
     Properties
     {
@@ -12,17 +12,16 @@ Shader "Custom/CustomMainShader"
 		_PolyArtMask("PolyArtMask", 2D) = "white" {}
 		_Emission("Emission", Range(0,1)) = 0
 		_LightDir("LightDir", Vector) = (1,0,0,0)
+		_HideColor("HideColor", Color) = (0,1,1,0)
     }
     SubShader
     {
+		Tags{"RenderType" = "Opaque"  "Queue" = "Geometry" }
+
 
 		Pass
 		{
-		Tags{"Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
-
-		Blend SrcAlpha OneMinusSrcAlpha
-
-			Cull Off
+			Cull Back
 			ZWrite Off
 			ZTest Always
 
@@ -42,6 +41,8 @@ Shader "Custom/CustomMainShader"
 				float4 vertex : SV_POSITION;
 			};	
 
+			uniform float4 _HideColor;
+
 			v2f vert(appdata v)
 			{
 				v2f o;
@@ -51,14 +52,12 @@ Shader "Custom/CustomMainShader"
 
 			float4 frag(v2f i) : SV_Target
 			{
-				return float4(0, 0, 1, 1.0f);
+				return float4(_HideColor.xyz, 1.0f);
 			}
 			ENDCG
 		}
         Pass
         {
-		Tags{"RenderType" = "Opaque"  "Queue" = "Geometry+0" }
-
 			Cull Back
 			Lighting Off
             CGPROGRAM
@@ -94,6 +93,8 @@ Shader "Custom/CustomMainShader"
 			uniform float4 _Color02;
 			uniform float4 _Color03;
 			uniform float _HitFlash;
+
+
 			uniform float _Metallic;
 			uniform float _Smoothness;
 			uniform float _Emission;

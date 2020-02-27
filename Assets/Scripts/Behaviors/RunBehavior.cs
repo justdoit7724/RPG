@@ -42,8 +42,12 @@ public class RunBehavior : BaseBehavior
     public override void EndBehavior(Mob mob)
     {
         base.EndBehavior(mob);
-        mob.Nav.isStopped = true;
-        mob.Nav.destination = mob.transform.position;
+
+        if (!mob.IsDeath())
+        {
+            mob.Nav.isStopped = true;
+            mob.Nav.destination = mob.transform.position;
+        }
     }
 
 }

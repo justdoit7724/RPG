@@ -62,15 +62,15 @@ public class MeleeWeapon : MonoBehaviour
                 {
                     case 0:
                         soundKey = "Hit1";
-                        volume=0.3f;
+                        volume=0.1f;
                         break;
                     case 1:
                         soundKey = "Hit2";
-                        volume = 0.4f;
+                        volume = 0.1f;
                         break;
                     case 2:
                         soundKey = "Hit3";
-                        volume = 0.4f;
+                        volume = 0.1f;
                         break;
                 }
 
