@@ -53,7 +53,7 @@ public class ESword : NPC
             if(!fsm.ContainBehavior(Type.GetType("IdleBehavior")))
             {
                 BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
-                idleBehavior.Init(BehaviorPriority.Basic, null, true);
+                idleBehavior.Init(BehaviorPriority.Basic, null, 0);
                 fsm.CheckAndAddBehavior(idleBehavior);
             }
         }
@@ -67,21 +67,21 @@ public class ESword : NPC
                 {
                     transform.forward = subVec.normalized;
 
+                    string animTrigger = "";
+                    string soundKey = "";
                     if (UnityEngine.Random.Range(0, 2) == 0)
                     {
-                        BaseBehavior att1Behavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
-                        att1Behavior.Init(BehaviorPriority.Att, "att1", false, 2.0f);
-                        fsm.CheckAndAddBehavior(att1Behavior);
-                        PlayMainSound("EnemyAtt",0.5f);
-
+                        animTrigger = "att1";
+                        soundKey = "EnemyAtt";
                     }
                     else
                     {
-                        BaseBehavior att2Behavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
-                        att2Behavior.Init(BehaviorPriority.Att, "att2", false, 2.0f);
-                        fsm.CheckAndAddBehavior(att2Behavior);
-                        PlayMainSound("EnemyAttDouble",0.2f);
+                        animTrigger = "att2";
+                        soundKey = "EnemyAttDouble";
                     }
+                    BaseBehavior attBehavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
+                    attBehavior.Init(BehaviorPriority.Att, new AnimEventBData("att1", mainSoundPlayer, "EnemyAtt", 0.2f), 2.0f);
+                    fsm.CheckAndAddBehavior(attBehavior);
                 }
             }
             else
@@ -90,7 +90,7 @@ public class ESword : NPC
                 if (!fsm.ContainBehavior(Type.GetType("RunBehavior")))
                 {
                     BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
-                    walkBehavior.Init(BehaviorPriority.Basic, runBehaviorData,true);
+                    walkBehavior.Init(BehaviorPriority.Basic, runBehaviorData,0);
                     fsm.CheckAndAddBehavior(walkBehavior);
                 }
             }

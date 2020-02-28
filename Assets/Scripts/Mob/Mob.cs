@@ -46,6 +46,7 @@ public abstract class Mob : MonoBehaviour
         MobMgr.Instance.RegisterMob(this);
     }
 
+    public virtual void Die() { }
     public virtual void GetDamaged(float amount)
     {
         DamageEffect();

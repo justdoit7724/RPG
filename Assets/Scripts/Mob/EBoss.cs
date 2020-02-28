@@ -76,13 +76,16 @@ public class EBoss : NPC
     public GameObject mobSpawnPtEffectPrefab;
     public GameObject swordMobPrefab;
     public GameObject bowMobPrefab;
-    public GameObject rangeIndicatorPrefab;
 
     [Header("Info")]
     public float attRad = 2.5f;
     public float damage = 60;
     public float laserDamage = 10.0f;
     public float laserLength = 15.0f;
+
+    [Header("Component")]
+    public RangeIndicator rIndicator;
+    public Transform wavePt;
 
     private Lazer laser=null;
     private MeleeWeapon wand;
@@ -92,12 +95,14 @@ public class EBoss : NPC
     private float sqrAttRad;
     private BossMovePt[] movePts;
     private MobSpawnPt[] mobSpawnPts;
+    private bool isCurseOn = false;
+    private bool isCurseChanging = false;
+    private float waveTime = 0;
 
     private const float laserDuration = 7.0f;
     private const float xMoveOffset= 20.0f;
     private const float zMoveOffset= 20.0f;
-
-    private bool isCurseOn = false;
+    private const float laserChargeTime = 1.7f;
 
 
     private delegate void BossBehaviorFunc();
@@ -129,14 +134,39 @@ public class EBoss : NPC
         movePts = FindObjectsOfType<BossMovePt>();
 
         selector = new Selector();
-        selector.Add(BossBehaviorKind.Run, /*9*/4);
-        selector.Add(BossBehaviorKind.MeleeAttack, 10);
-        selector.Add(BossBehaviorKind.Laser, 5);
-        selector.Add(BossBehaviorKind.Ball, /*7*/3);
-        selector.Add(BossBehaviorKind.Spawn, 3);
+        selector.Add(BossBehaviorKind.Run, 9);
+        //selector.Add(BossBehaviorKind.MeleeAttack, 10);
+        //selector.Add(BossBehaviorKind.Laser, 10);
+        //selector.Add(BossBehaviorKind.Ball, /*7*/3);
+        //selector.Add(BossBehaviorKind.Spawn, 3);
         selector.Add(BossBehaviorKind.Curse, 10);
 
+        InitPostProcessing();
+
+        rIndicator.Init(laserLength, Color.blue, 15);
+    }
+
+    private void InitPostProcessing()
+    {
         postprocessingMat.SetFloat("_Value", 0);
+        postprocessingMat.SetFloat("_WaveValue", 0);
+        postprocessingMat.SetVector("_WaveCenter", new Vector4(-1,-1,-1,-1));
+    }
+
+    public override void Die()
+    {
+        base.Die();
+        DeleteLaser();
+    }
+
+    public void CreateLaser()
+    {
+        laser = Instantiate(laserPrefab, laserPt).GetComponent<Lazer>();
+        laser.Init(laserLength, laserDamage, 0.35f);
+    }
+    public void DeleteLaser()
+    {
+        laser.Destroy(2.0f);
     }
 
     public override void AE_StartAttack()
@@ -149,31 +179,6 @@ public class EBoss : NPC
         trail.EndTrail();
         wand.EndAttack();
     }
-    public void AE_StartLaser()
-    {
-        if (target)
-        {
-            laser = Instantiate(laserPrefab, laserPt).GetComponent<Lazer>();
-            laser.Init(laserLength, laserDamage, 0.4f);
-
-            LaserBehavior laserStayBehavior = ScriptableObject.CreateInstance<LaserBehavior>();
-            laserStayBehavior.Init(BehaviorPriority.Skill, target, false, laserDuration);
-            PlayMainSound("Laser", 0.3f);
-            fsm.CheckAndAddBehavior(laserStayBehavior);
-        }
-        IdleBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
-        idleBehavior.Init(BehaviorPriority.Basic, null, false, 2.0f);
-        fsm.DirectAddBehavior(idleBehavior);
-
-    }
-    public void EndLaser()
-    {
-        if (laser)
-        {
-            laser.Destroy(2.0f);
-            laser = null;
-        }
-    }
     public void AE_SpawnBall()
     {
         Instantiate(ballSpawnEffectPrefab, transform.position, Quaternion.identity);
@@ -185,6 +190,16 @@ public class EBoss : NPC
         Instantiate(mobSpawnEffectPrefab, transform.position, Quaternion.identity);
 
         StartCoroutine(IE_Spawn(2.0f));
+    }
+
+    public void AE_StartLaserRangeIndicator()
+    {
+        Vector3 subVec = target.transform.position - transform.position;
+        subVec.y = 0;
+        transform.forward = subVec.normalized;
+        rIndicator.SetPosition(transform.position);
+        rIndicator.SetDir(transform.forward);
+        rIndicator.StartProgress(laserChargeTime, false);
     }
 
     private IEnumerator IE_Spawn(float delay)
@@ -268,7 +283,8 @@ public class EBoss : NPC
     }
     private IEnumerator IE_CurseChange()
     {
-        if(!isCurseOn)
+        isCurseChanging = true;
+        if (!isCurseOn)
         {
             float t = 0;
             while(t<1)
@@ -289,7 +305,7 @@ public class EBoss : NPC
             }
         }
 
-
+        isCurseChanging = false;
         isCurseOn = !isCurseOn;
     }
 
@@ -306,12 +322,48 @@ public class EBoss : NPC
         }
     }
 
+    private Vector4 World2UV()
+    {
+        Vector4 scnPos = Camera.main.WorldToScreenPoint(wavePt.position);
+
+        scnPos.x /= Screen.width;
+        scnPos.y /= Screen.height;
+        return scnPos;
+    }
+    private void UpdateWave()
+    {
+        postprocessingMat.SetVector("_WaveCenter", World2UV());
+    }
+    private IEnumerator IE_Wave()
+    {
+        float curTime = 0;
+        float t = 0;
+
+        for (int i = 0; i < 5; ++i)
+        {
+            while (t < 1.0f)
+            {
+                curTime += Time.deltaTime;
+                t = curTime / 0.5f;
+
+                postprocessingMat.SetFloat("_WaveValue", t);
+
+                yield return null;
+            }
+
+            t = 0;
+            curTime = 0;
+        }
+
+        postprocessingMat.SetFloat("_WaveValue", 0);
+    }
+
     private void Update()
     {
         if (IsDeath() || !isUpdating)
             return;
 
-
+        UpdateWave();
         UpdateHPBar();
 
         if (fsm.Count == 0)
@@ -324,10 +376,10 @@ public class EBoss : NPC
     {
         runBehaviorData.dest = movePts[UnityEngine.Random.Range(0, movePts.Length)].transform.position;
         BaseBehavior runBehavior = ScriptableObject.CreateInstance<RunBehavior>();
-        runBehavior.Init(BehaviorPriority.Basic, runBehaviorData, false, 5.0f);
+        runBehavior.Init(BehaviorPriority.Basic, runBehaviorData, 5.0f);
         fsm.DirectAddBehavior(runBehavior);
         BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
-        idleBehavior.Init(BehaviorPriority.Basic, null, false, 2.0f);
+        idleBehavior.Init(BehaviorPriority.Basic, null, 2.0f);
         fsm.DirectAddBehavior(idleBehavior);
     }
     private void MeleeAttack()
@@ -341,10 +393,10 @@ public class EBoss : NPC
             {
                 transform.forward = subVec.normalized;
                 BaseBehavior attBehavior = ScriptableObject.CreateInstance<AnimEventBehavior>() as BaseBehavior;
-                attBehavior.Init(BehaviorPriority.Att, "att", false, 2.0f);
+                attBehavior.Init(BehaviorPriority.Att, new AnimEventBData("att"), 2.0f);
                 fsm.DirectAddBehavior(attBehavior);
                 IdleBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
-                idleBehavior.Init(BehaviorPriority.Basic, null, false, 0.2f);
+                idleBehavior.Init(BehaviorPriority.Basic, null, 0.2f);
                 fsm.DirectAddBehavior(idleBehavior);
             }
         }
@@ -371,48 +423,42 @@ public class EBoss : NPC
 
         if (target)
         {
-            Vector3 subVec = target.transform.position - transform.position;
-            subVec.y = 0;
-            transform.forward = subVec.normalized;
             AnimEventBehavior laserStartBehavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
-            laserStartBehavior.Init(BehaviorPriority.Skill, "laser", true);
+            laserStartBehavior.Init(BehaviorPriority.Skill, new AnimEventBData("laser", mainSoundPlayer, "LaserCharge", 1.0f), laserChargeTime);
             fsm.DirectAddBehavior(laserStartBehavior);
-
-            RangeIndicator rIndicator = Instantiate(rangeIndicatorPrefab, transform.position, Quaternion.identity).GetComponent<RangeIndicator>();
-            rIndicator.Init(laserLength, Color.blue, 10);
-            rIndicator.SetDir(transform.forward);
-            rIndicator.StartProgress(1.5f, true);
-
-            PlayMainSound("LaserCharge", 1.0f);
+           
+            LaserBehavior laserStayBehavior = ScriptableObject.CreateInstance<LaserBehavior>();
+            laserStayBehavior.Init(BehaviorPriority.Skill, new LaserBData(target, mainSoundPlayer, "Laser", 0.5f), laserDuration);
+            fsm.DirectAddBehavior(laserStayBehavior);
+            IdleBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
+            idleBehavior.Init(BehaviorPriority.Basic, null, 2.5f);
+            fsm.DirectAddBehavior(idleBehavior);
         }
     }
     private void FireBalls()
     {
-
-        AnimEventBehavior animBehavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
-        animBehavior.Init(BehaviorPriority.Skill, "ball", false, 2.0f);
+        BaseBehavior animBehavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
+        animBehavior.Init(BehaviorPriority.Skill, new AnimEventBData("ball", mainSoundPlayer, "BossBallAura", 0.5f), 2.0f);
         fsm.DirectAddBehavior(animBehavior);
         IdleBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
-        idleBehavior.Init(BehaviorPriority.Basic, null, false, 2.0f);
+        idleBehavior.Init(BehaviorPriority.Basic, null, 2.0f);
         fsm.DirectAddBehavior(idleBehavior);
-
-        PlayMainSound("BossBallAura", 0.6f);
     }
     private void SpawnMobs()
     {
         AnimEventBehavior animBehavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
-        animBehavior.Init(BehaviorPriority.Skill, "spawn", false, 3.0f);
+        animBehavior.Init(BehaviorPriority.Skill, new AnimEventBData("spawn", mainSoundPlayer, "BossSpawnAura2", 1.0f), 3.0f);
         fsm.DirectAddBehavior(animBehavior);
         IdleBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
-        idleBehavior.Init(BehaviorPriority.Basic, null, false, 1.0f);
+        idleBehavior.Init(BehaviorPriority.Basic, null, 1.0f);
         fsm.DirectAddBehavior(idleBehavior);
-
-        PlayMainSound("BossSpawnAura1");
-        PlayMainSound("BossSpawnAura2");
     }
     private void CursePlayer()
     {
-        if(target==null)
+        if (isCurseChanging)
+            return;
+
+        if (target==null)
         {
             Collider[] colls = Physics.OverlapSphere(transform.position, laserLength, LayerMask.GetMask("Alley"));
             float closestDist = float.MaxValue;
@@ -432,7 +478,7 @@ public class EBoss : NPC
             }
         }
 
-        if (!isCurseOn && target)
+        if (target)
         {
             CurseBehavior curseBehavior = ScriptableObject.CreateInstance<CurseBehavior>();
             int r1 = UnityEngine.Random.Range(0, movePts.Length);
@@ -441,14 +487,10 @@ public class EBoss : NPC
             {
                 r2 = UnityEngine.Random.Range(0, movePts.Length);
             }
-            curseBehavior.Init(movePts[r1].transform.position, movePts[r2].transform.position, target, laserDuration, BehaviorPriority.Skill);
+            curseBehavior.Init(laserPrefab, laserPt, laserLength, laserDamage, movePts[r1].transform.position, movePts[r2].transform.position,mainSoundPlayer, target, laserDuration, laserChargeTime, BehaviorPriority.Skill);
             fsm.DirectAddBehavior(curseBehavior);
-        }
-        else if(isCurseOn)
-        {
-            BaseBehavior cancelCurseBehavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
-            cancelCurseBehavior.Init(BehaviorPriority.Skill, "curse", false, 1.0f);
-            fsm.DirectAddBehavior(cancelCurseBehavior);
+
+            StartCoroutine(IE_Wave());
         }
     }
 }

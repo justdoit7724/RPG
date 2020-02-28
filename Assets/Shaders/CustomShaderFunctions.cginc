@@ -33,4 +33,12 @@ float2 Proj2UV(float4 pPos)
     
     return pPos.xy;
 }
+
+float Range01(float t, float f1, float f2)
+{
+    float m = (f1 + f2) * 0.5f;
+    float hw = abs(f1 - f2) * 0.5f;
+    
+    return saturate(ceil((hw - abs(t - m)) / hw));
+}
 #endif

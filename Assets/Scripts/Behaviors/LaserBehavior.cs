@@ -3,18 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+public class LaserBData
+{
+    public GameObject laserPrefab;
+    public Transform laserPt;
+    public Mob target;
+    public AudioSource soundPlayer;
+    public string soundKey;
+    public float volume;
+    public float length;
+    public float damage;
+
+    public LaserBData(Mob target, AudioSource soundPlayer, string soundKey, float volume)
+    {
+        this.target = target;
+        this.soundKey = soundKey;
+        this.soundPlayer = soundPlayer;
+        this.volume = volume;
+    }
+}
+
 public class LaserBehavior : BaseBehavior
 {
-    private Mob target=null;
+    private LaserBData mData;
+    private Lazer laser;
 
     public override void StartBehavior(Mob mob)
     {
         base.StartBehavior(mob);
 
-        if (data!=null)
-        {
-            target = (Mob)data;
-        }
+        mData = (LaserBData)data;
+
+        SoundMgr.Instance.Play(mData.soundPlayer, mData.soundKey, mData.volume);
+
+        (mob as EBoss).CreateLaser();
     }
 
     public override bool UpdateBehavior(Mob mob)
@@ -23,9 +45,9 @@ public class LaserBehavior : BaseBehavior
         if (lifeTime <= 0)
             return false;
 
-        if (target && !target.IsDeath())
+        if (mData.target && !mData.target.IsDeath())
         {
-            Vector3 targetDir = (target.transform.position - mob.transform.position).normalized;
+            Vector3 targetDir = (mData.target.transform.position - mob.transform.position).normalized;
             float dotV = Vector3.Dot(targetDir, mob.transform.forward);
             float cosRad = Mathf.Acos(dotV);
             if (cosRad < (Mathf.PI * 0.25f))
@@ -47,7 +69,6 @@ public class LaserBehavior : BaseBehavior
     {
         base.EndBehavior(mob);
 
-        EBoss boss = mob as EBoss;
-        boss.EndLaser();
+        (mob as EBoss).DeleteLaser();
     }
 }

@@ -28,13 +28,11 @@ public abstract class BaseBehavior : ScriptableObject
     public BehaviorPriority Priority { get { return priority; } }
     public BehaviorState State { get { return state; } }
 
-    public virtual void Init(BehaviorPriority p, System.Object data, bool noTime, float lifeTime=2.0f)
+    public virtual void Init(BehaviorPriority p, System.Object data, float lifeTime)
     {
         this.priority = p;
         this.data = data;
-        // forever if negative
-        this.lifeTime = lifeTime;
-        this.isNoTime = noTime;
+        this.lifeTime = (lifeTime <= 0) ? float.MaxValue : lifeTime;
     }
 
 

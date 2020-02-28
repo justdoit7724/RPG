@@ -17,6 +17,8 @@ public class RangeIndicator : MonoBehaviour
         mat.SetVector("_Center", transform.position+transform.up * 0.2f);
         mat.SetFloat("_MaxRad", maxRad);
         mat.SetFloat("_ViewAngle", viewAngle);
+
+        gameObject.SetActive(false);
     }
 
     public void SetMaxRad(float r)
@@ -39,6 +41,8 @@ public class RangeIndicator : MonoBehaviour
 
     public void StartProgress(float time, bool destroy)
     {
+        gameObject.SetActive(true);
+
         if(!isProgressing)
             StartCoroutine(IE_Progress(time, destroy));
     }
@@ -62,5 +66,9 @@ public class RangeIndicator : MonoBehaviour
 
         if (destroy)
             Destroy(gameObject);
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

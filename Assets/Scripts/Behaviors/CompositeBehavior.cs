@@ -33,12 +33,12 @@ public class CompositeBehavior : BaseBehavior
         return false;
     }
 
-    protected void Add(Type type, System.Object data, BehaviorPriority priority, bool noTime, float lifeTime)
+    protected void Add(Type type, System.Object data, BehaviorPriority priority, float lifeTime)
     {
         this.priority = priority;
 
         BaseBehavior newBehavior = ScriptableObject.CreateInstance(type) as BaseBehavior;
-        newBehavior.Init(priority, data, noTime, lifeTime);
+        newBehavior.Init(priority, data, lifeTime);
         behaviors.AddLast(newBehavior);
     }
 

@@ -5,7 +5,9 @@
 		[HideInInspector] _MainTex("MainTex", 2D) = "white" {}
 		_Noise("Noise", 2D) = "white" {}
 		_Value("Value", Range(0,1)) = 0
-		_Interval("Interval", Range(0.001, 0.2)) = 0.01
+		_WaveValue("WaveValue", Range(0,1))=0
+		_WaveCenter("WaveCenter", Vector) = (0,0,0,0)
+		_WaveHWidth("WaveHWidth", Range(0.001,0.2)) = 0.005
     }
     SubShader
     {
@@ -30,6 +32,7 @@
 			{
 				float2 uv : TEXCOORD0;
 				float4 vertex : SV_POSITION;
+				float3 wPos : TEXCOORD1;
 			};
 
 			v2f vert(appdata v)
@@ -37,45 +40,70 @@
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.uv = v.uv;
+				o.wPos = mul(unity_ObjectToWorld, v.vertex).xyz;
 				return o;
 			}
 
 			sampler2D _MainTex;
 			sampler2D _Noise;
 			uniform float _Value;
-			uniform float _Interval;
+			uniform float _WaveValue;
+			uniform float4 _WaveCenter;
+			uniform float _WaveHWidth;
 
 			fixed4 frag(v2f i) : SV_Target
 			{
 				float noise = tex2D(_Noise, i.uv).x;
 				float t = (cos((_Value + 1) * PI) + 1) * 0.5f;
-				float noiseT = noise + t;
-				float finalT = saturate(ceil(noiseT - 0.999f));
+				float noiseT = saturate(ceil(noise + t - 0.999f));
 
 				float3 col = 0;
+				float2 UV = i.uv;
+
+				//-------------------------------------------------------
+				// 저주(좌우반대) 효과와 결합 - 웨이브도 반대로 적용
+				UV -= 0.5f;
+				UV.x *= 1 - 2 * noiseT;
+				UV += 0.5f;
+				float waveRad = lerp(0, 0.7f, _WaveValue);
+				float2 waveCenterSubVec = UV - _WaveCenter.xy;
+				waveCenterSubVec.y *= 2280.0f/1080.0f;
+				float2 waveCenterDir = normalize(waveCenterSubVec);
+
+				float waveDist = length(waveCenterSubVec);
+				float maskT = Range01(waveDist, waveRad - _WaveHWidth, waveRad + _WaveHWidth);
+				float distT = maskT * abs(waveDist-waveRad)/ _WaveHWidth;
+				float waveT = abs(sin(distT * PI)) + 1; // f(x) = (1 - cos(x * PI)) * 0.5f 의 미분값 사용 for 빛 왜곡 세기
+				
+				float curveIntensity = (1-_WaveValue)*0.3f;
+
+				
+				// 웨이브 적용
+				UV -= _WaveCenter.xy;
+				UV *= ((waveT - 1) * curveIntensity * maskT + 1);
+				UV += _WaveCenter.xy;
+
+				// 웨이브 적용 후, 좌우 반전 재배치
+				UV -= 0.5f;
+				UV.x *= 1 - 2 * noiseT;
+				UV += 0.5f;
+				
+				//-------------------------------------------------------
 
 				//쉐이더에서 조건문 최대한 자제 (최적화)
-				//if(finalT==0)
-				//{
-					col = tex2D(_MainTex, i.uv).xyz * (1 - finalT);
-				//}
-				//else
-				//{
-					float hInterval = _Interval * 0.5f;
+				col = tex2D(_MainTex, UV).xyz * (1 - noiseT);
+				float intervalT = pow((cos(_Time * 180.0f) + 1) * 0.5f, 7);
+				float hInterval = lerp(0.01f, 0.0225f, intervalT) * 0.5f;
+				UV -= 0.5f;
+				UV.x *= -1.0f;
+				UV += 0.5f;
+				col += noiseT * tex2D(_MainTex, UV + float2(-hInterval, 0));
+				col += noiseT * tex2D(_MainTex, UV + float2(hInterval, 0));
+				col += noiseT * tex2D(_MainTex, UV + float2(0, -hInterval));
+				col += noiseT * tex2D(_MainTex, UV + float2(0, hInterval));
+				col = col * (0.25f + 0.75f * (1.0f - noiseT));
+				col = dot(col, float3(0.450, 0.86, 0.16)) * noiseT + col * (1 - noiseT);
 
-					float2 mUV = i.uv;
-					mUV -= 0.5f;
-					mUV.x *= -1.0f;
-					mUV += 0.5f;
-
-					col += finalT*tex2D(_MainTex, mUV + float2(-hInterval, 0));
-					col += finalT*tex2D(_MainTex, mUV + float2(hInterval, 0));
-					col += finalT*tex2D(_MainTex, mUV + float2(0, -hInterval));
-					col += finalT*tex2D(_MainTex, mUV + float2(0, hInterval));
-
-					col = col * (0.25f+0.75f*(1.0f-finalT));
-					col = dot(col, float3(0.450, 0.86, 0.16)) * finalT + col*(1- finalT);
-				//}
 
 				return float4(col,1);
 			}

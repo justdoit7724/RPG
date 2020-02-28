@@ -156,7 +156,7 @@ public class Golem : NPC
             if (!fsm.ContainBehavior(Type.GetType("IdleBehavior")))
             {
                 BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
-                idleBehavior.Init(BehaviorPriority.Basic, null, true);
+                idleBehavior.Init(BehaviorPriority.Basic, null, 0);
                 fsm.CheckAndAddBehavior(idleBehavior);
             }
         }
@@ -171,7 +171,7 @@ public class Golem : NPC
                     transform.LookAt(target.transform.position, Vector3.up);
 
                     BaseBehavior att1Behavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
-                    att1Behavior.Init(BehaviorPriority.Att, "att",false, 4.0f);
+                    att1Behavior.Init(BehaviorPriority.Att, new AnimEventBData("att"), 4.0f);
                     fsm.CheckAndAddBehavior(att1Behavior);
                 }
             }
@@ -181,7 +181,7 @@ public class Golem : NPC
                 if (!fsm.ContainBehavior(Type.GetType("RunBehavior")))
                 {
                     BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
-                    walkBehavior.Init(BehaviorPriority.Basic, runBehaviorData,false, 1.0f);
+                    walkBehavior.Init(BehaviorPriority.Basic, runBehaviorData, 1.0f);
                     fsm.CheckAndAddBehavior(walkBehavior);
                 }
             }

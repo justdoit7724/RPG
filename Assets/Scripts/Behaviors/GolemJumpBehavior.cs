@@ -15,9 +15,9 @@ public class GolemJumpBehavior : CompositeBehavior
         if(subPos.sqrMagnitude> sqrJumpMaxDist)
         {
             Vector3 jumpStartPt = dest - subPos.normalized * jumpMaxDist;
-            Add(Type.GetType("RunBehavior"), new RunBehaviorData(jumpStartPt), p, false, 5.0f);
+            Add(Type.GetType("RunBehavior"), new RunBehaviorData(jumpStartPt), p, 5.0f);
         }
-        Add(Type.GetType("JumpBehavior"), new JumpBehaviorData(dest, 1), p, true, 0);
-        Add(Type.GetType("IdleBehavior"), null, p, false, 3.0f);
+        Add(Type.GetType("JumpBehavior"), new JumpBehaviorData(dest, 1), p, 0);
+        Add(Type.GetType("IdleBehavior"), null, p, 3.0f);
     }
 }

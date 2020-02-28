@@ -29,5 +29,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Interval: 0.05
-    - _Value: -0.002684615
-    m_Colors: []
+    - _MaxInterval: 0.05
+    - _Value: -0.00027965364
+    - _WaveHWidth: 0.136
+    - _WaveRad: 0.221
+    - _WaveTime: 0.43
+    - _WaveValue: 0.7354674
+    m_Colors:
+    - _WaveCenter: {r: 0.5645169, g: 0.82308507, b: 12.020447, a: 0}

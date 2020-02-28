@@ -68,6 +68,14 @@ public class NPC : Mob
         isUpdating = true;
     }
 
+    public override void Die()
+    {
+        Destroy(hpBar.transform.gameObject);
+        BaseBehavior deathBehavior = ScriptableObject.CreateInstance<DieBehavior>();
+        deathBehavior.Init(BehaviorPriority.Vital, null, 0);
+        fsm.CheckAndAddBehavior(deathBehavior);
+    }
+
     public override void GetDamaged(float amount)
     {
         base.GetDamaged(amount);
@@ -75,10 +83,7 @@ public class NPC : Mob
         // die this time
         if (curHP > 0 && curHP <= amount)
         {
-            Destroy(hpBar.transform.gameObject);
-            BaseBehavior deathBehavior = ScriptableObject.CreateInstance<DieBehavior>();
-            deathBehavior.Init(BehaviorPriority.Vital, null, true);
-            fsm.CheckAndAddBehavior(deathBehavior);
+            Die();
         }
 
         curHP -= amount;

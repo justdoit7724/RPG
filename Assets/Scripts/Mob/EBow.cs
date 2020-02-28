@@ -55,7 +55,7 @@ public class EBow : NPC
             if(!fsm.ContainBehavior(Type.GetType("IdleBehavior")))
             {
                 BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
-                idleBehavior.Init(BehaviorPriority.Basic, null, true);
+                idleBehavior.Init(BehaviorPriority.Basic, null, 0);
                 fsm.CheckAndAddBehavior(idleBehavior);
             }
         }
@@ -67,7 +67,7 @@ public class EBow : NPC
                 if (!fsm.ContainBehavior(Type.GetType("ArrowAttBehavior")))
                 {
                     BaseBehavior attBehavior = ScriptableObject.CreateInstance<ArrowAttBehavior>();
-                    attBehavior.Init(BehaviorPriority.Att, target.transform, false, 4.0f);
+                    attBehavior.Init(BehaviorPriority.Att, target.transform, 4.0f);
 
                     fsm.CheckAndAddBehavior(attBehavior);
                 }
@@ -78,7 +78,7 @@ public class EBow : NPC
                 if (!fsm.ContainBehavior(Type.GetType("RunBehavior")))
                 {
                     BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
-                    walkBehavior.Init(BehaviorPriority.Basic, runBehaviorData,true);
+                    walkBehavior.Init(BehaviorPriority.Basic, runBehaviorData,0);
                     fsm.CheckAndAddBehavior(walkBehavior);
                 }
             }
