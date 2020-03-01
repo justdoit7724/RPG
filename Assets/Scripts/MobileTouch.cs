@@ -19,7 +19,7 @@ public class MobileTouch : MonoBehaviour
     private Material indicatorMat = null;
     private Vector2 scnOffset = new Vector2(540, 1140);
 
-    public void FindIndicator()
+public void FindIndicator()
     {
         indicatorMat = GameObject.FindWithTag("TouchIndicator").GetComponent<RawImage>().material;
         indicatorMat.SetVector("_StartPt", new Vector4(-10000, 0, 0, 0));
@@ -34,7 +34,7 @@ public class MobileTouch : MonoBehaviour
     }
     public Vector3 GetFirstPt {
         get {
-            return stationaryTouchPt;
+            return firstTouchPt;
         }
     }
     public Vector3 GetCurPt {
@@ -65,9 +65,19 @@ public class MobileTouch : MonoBehaviour
         Vector3 subVec = GetCurPt - firstTouchPt;
         return subVec.normalized;
     }
-    public bool IsOn {
+    public bool IsOnLobby {
         get {
-            return (Input.touchCount > 0);
+            return (
+                Input.touchCount > 0 &&
+                Input.touches[0].position.y>450.0f);
+        }
+    }
+    public bool IsOnPlay {
+        get {
+            return (
+                Input.touchCount > 0 &&
+                (Input.touches[0].position.x > 500.0f ||
+                Input.touches[0].position.y > 265.0f));
         }
     }
     
@@ -86,13 +96,15 @@ public class MobileTouch : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+
     // Update is called once per frame
     void Update()
     {
         if (Input.touchCount == 0)
             return;
 
-        switch (Input.touches[0].phase)
+        phase = Input.touches[0].phase;
+        switch (phase)
         {
             case TouchPhase.Began:
                 firstTouchTime = Time.time;
@@ -127,6 +139,5 @@ public class MobileTouch : MonoBehaviour
                 }
                 break;
         }
-        phase = Input.touches[0].phase;
     }
 }

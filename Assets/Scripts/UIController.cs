@@ -110,48 +110,52 @@ public class UIController : MonoBehaviour
 
     private void Update()
     {
-
 #if UNITY_EDITOR
-        if(Input.GetMouseButtonDown(0))
+        if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
         {
-            mouseFirstPt = Input.mousePosition;
-        }
-        else if(Input.GetMouseButton(0))
-        {
-            Vector3 dragSubVec =  mouseFirstPt- Input.mousePosition;
+            if (Input.GetMouseButtonDown(0))
+            {
+                mouseFirstPt = Input.mousePosition;
+            }
+            else if (Input.GetMouseButton(0))
+            {
+                Vector3 dragSubVec = mouseFirstPt - Input.mousePosition;
 
-            float dragAmount = dragSubVec.x * 0.1f;
-            modelObj.eulerAngles = new Vector3(0, dragAmount + modelPrevYaw, 0);
-        }
-        else if(Input.GetMouseButtonUp(0))
-        {
-            Vector3 dragSubVec = mouseFirstPt-Input.mousePosition;
+                float dragAmount = dragSubVec.x * 0.1f;
+                modelObj.eulerAngles = new Vector3(0, dragAmount + modelPrevYaw, 0);
+            }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                Vector3 dragSubVec = mouseFirstPt - Input.mousePosition;
 
-            float dragAmount = dragSubVec.x * 0.1f;
-            modelPrevYaw = dragAmount + modelPrevYaw;
+                float dragAmount = dragSubVec.x * 0.1f;
+                modelPrevYaw = dragAmount + modelPrevYaw;
+            }
         }
 #elif UNITY_ANDROID
-        if (MobileTouch.Instance.IsOn)
+        if (MobileTouch.Instance.IsOnLobby)
         {
-            Vector3 dragSubVec = MobileTouch.Instance.GetCurPt - MobileTouch.Instance.GetFirstPt;
+            Vector3 dragSubVec = MobileTouch.Instance.GetFirstPt- MobileTouch.Instance.GetCurPt;
+            float dragAmount = dragSubVec.x * 0.2f;
 
-            float dragAmount = dragSubVec.x * Time.deltaTime*15;
-            modelObj.eulerAngles = new Vector3(0, dragAmount + modelPrevYaw, 0);
-        }
-        else
-        {
-            Vector3 dragSubVec = MobileTouch.Instance.GetCurPt - MobileTouch.Instance.GetFirstPt;
-
-            float dragAmount = dragSubVec.x * Time.deltaTime*15;
-            modelPrevYaw = dragAmount + modelPrevYaw;
+            switch(MobileTouch.Instance.GetTouchPhase)
+            {
+                case TouchPhase.Ended:
+                    modelPrevYaw = dragAmount + modelPrevYaw;
+                    break;
+                default:
+                    modelObj.eulerAngles = new Vector3(0, dragAmount + modelPrevYaw, 0);
+                    break;
+            }
         }
 #endif
+
 
     }
 
     public void BT_ButtonSound()
     {
-        SoundMgr.Instance.Play(sfxPlayer, "Button", 0.5f);
+        SoundMgr.Instance.Play(sfxPlayer, "Button", 0.35f);
     }
 
     public void SetNewSelect(int idx)
@@ -218,6 +222,7 @@ public class UIController : MonoBehaviour
     private IEnumerator IE_SceneChange()
     {
         AudioSource bgmPlayer = Camera.main.GetComponent<AudioSource>();
+        float firstBgmVolume = bgmPlayer.volume;
 
         sceneChangeImageInside.gameObject.SetActive(true);
         sceneChangeImageOutside.gameObject.SetActive(true);
@@ -230,7 +235,7 @@ public class UIController : MonoBehaviour
             mInsideCol.a = alpha;
             mOutsideCol.a = alpha;
 
-            bgmPlayer.volume = 1.0f - alpha;
+            bgmPlayer.volume = firstBgmVolume*(1.0f - alpha);
 
             sceneChangeImageInside.color = mInsideCol;
             sceneChangeImageOutside.color = mOutsideCol;

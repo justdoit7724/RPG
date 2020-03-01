@@ -33,7 +33,8 @@ public class AnimEventBehavior : BaseBehavior
 
         mData = (AnimEventBData)data;
 
-        mob.Anim.SetTrigger(mData.animName);
+            mob.Anim.SetTrigger(mData.animName);
+
         if(mData.soundPlayer)
         {
             SoundMgr.Instance.Play(mData.soundPlayer, mData.soundKey, mData.volume);
@@ -52,8 +53,6 @@ public class AnimEventBehavior : BaseBehavior
     public override void EndBehavior(Mob mob)
     {
         base.EndBehavior(mob);
-        //mob.Anim.ResetTrigger(attName);
-
         //ESword bMob = mob as ESword;
         //if (bMob && bMob.Target.IsDeath())
         //{

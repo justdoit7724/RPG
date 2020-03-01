@@ -25,7 +25,7 @@ public class FSM : MonoBehaviour
 
     public void CheckAndAddBehavior(BaseBehavior behavior)
     {
-        while(LastBehavior() && LastBehavior().Priority <= behavior.Priority)
+        while(LastBehavior() && (LastBehavior().Priority <= behavior.Priority))
         {
             RemoveLastBehavior();
         }
@@ -64,7 +64,13 @@ public class FSM : MonoBehaviour
     private void RemoveLastBehavior()
     {
         BaseBehavior lastBehavior = behaviors.Last.Value;
-        lastBehavior.EndBehavior(mob);
+        switch (lastBehavior.State)
+        {
+            case BehaviorState.InProcess:
+                lastBehavior.EndBehavior(mob);
+                break;
+        }
+
         behaviors.RemoveLast();
         behaviorKinds[lastBehavior.GetType()]--;
         if (behaviorKinds[lastBehavior.GetType()] == 0)
@@ -99,6 +105,12 @@ public class FSM : MonoBehaviour
 
     void Update()
     {
+        if(name =="Golem")
+        {
+            int a = 0;
+
+        }
+
         // check
         if (CurBehavior())
         {

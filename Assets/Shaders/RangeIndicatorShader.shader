@@ -16,6 +16,10 @@
 		Tags {"Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent"}
 
 		Blend SrcAlpha OneMinusSrcAlpha
+		Cull Back
+		ZWrite Off
+		ZTest LEqual
+
 
         Pass
         {

@@ -20,6 +20,7 @@ public class Golem : NPC
     private float sqrAttRad;
     private float mStompDamage;
     private float jumpSplash;
+    private CameraShakeSimpleScript camShaker;
 
 
     public void InitGolem(Player player, float growRate)
@@ -42,6 +43,9 @@ public class Golem : NPC
         GetComponent<CapsuleCollider>().radius = Mathf.Lerp(colliderSizeRange.x, colliderSizeRange.y, growRate);
         fist = GetComponentInChildren<MeleeWeapon>();
         fist.SetDamage(Mathf.Lerp(attDamage.x, attDamage.y, growRate));
+
+        camShaker = Camera.main.GetComponent<CameraShakeSimpleScript>();
+        camShaker.ShakeCaller(2.5f, 2.0f);
 
         StartCoroutine(IE_Enable());
     }
@@ -129,13 +133,23 @@ public class Golem : NPC
             }
         }
 
-
+        camShaker.ShakeCaller(1.5f, 1.0f);
         SoundMgr.Instance.Play(mainSoundPlayer, "GolemHit", 1.0f);
+    }
+    public void AE_Step()
+    {
+        if (!mainSoundPlayer.isPlaying || mainSoundPlayer.clip.name == "GolemStep")
+        {
+            SoundMgr.Instance.Play(mainSoundPlayer, "GolemStep", 0.25f);
+            camShaker.ShakeCaller(0.2f, 0.2f);
+        }
     }
     public void Jump(Vector3 dest)
     {
         if (!fsm.ContainBehavior(Type.GetType("GolemJumpBehavior")))
         {
+            target = null;
+
             GolemJumpBehavior jumpBehavior = ScriptableObject.CreateInstance<GolemJumpBehavior>();
             jumpBehavior.Init(dest, transform.position, BehaviorPriority.Skill);
 
@@ -148,41 +162,45 @@ public class Golem : NPC
         if (IsDeath() || !isUpdating)
             return;
 
-        UpdateHPBar();
-        UpdateTarget("Enemy", ref target);
+        hpBar.UpdateBar(curHP, maxHP, transform.position);
 
-        if (target == null)
+        if (!fsm.ContainBehavior(Type.GetType("GolemJumpBehavior")))
         {
-            if (!fsm.ContainBehavior(Type.GetType("IdleBehavior")))
+            UpdateTarget("Enemy", ref target);
+
+            if (target == null)
             {
-                BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
-                idleBehavior.Init(BehaviorPriority.Basic, null, 0);
-                fsm.CheckAndAddBehavior(idleBehavior);
-            }
-        }
-        else
-        {
-            Vector3 subVec = target.transform.position-transform.position;
-            subVec.y = 0;
-            if (subVec.sqrMagnitude <= sqrAttRad)
-            {
-                if (!fsm.ContainBehavior(Type.GetType("AnimEventBehavior")))
+                if (!fsm.ContainBehavior(Type.GetType("IdleBehavior")))
                 {
-                    transform.LookAt(target.transform.position, Vector3.up);
-
-                    BaseBehavior att1Behavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
-                    att1Behavior.Init(BehaviorPriority.Att, new AnimEventBData("att"), 4.0f);
-                    fsm.CheckAndAddBehavior(att1Behavior);
+                    BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
+                    idleBehavior.Init(BehaviorPriority.Basic, null, 0);
+                    fsm.CheckAndAddBehavior(idleBehavior);
                 }
             }
             else
             {
-                runBehaviorData.dest = target.transform.position;
-                if (!fsm.ContainBehavior(Type.GetType("RunBehavior")))
+                Vector3 subVec = target.transform.position - transform.position;
+                subVec.y = 0;
+                if (subVec.sqrMagnitude <= sqrAttRad)
                 {
-                    BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
-                    walkBehavior.Init(BehaviorPriority.Basic, runBehaviorData, 1.0f);
-                    fsm.CheckAndAddBehavior(walkBehavior);
+                    if (!fsm.ContainBehavior(Type.GetType("AnimEventBehavior")))
+                    {
+                        transform.LookAt(target.transform.position, Vector3.up);
+
+                        BaseBehavior att1Behavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
+                        att1Behavior.Init(BehaviorPriority.Att, new AnimEventBData("att"), 4.0f);
+                        fsm.CheckAndAddBehavior(att1Behavior);
+                    }
+                }
+                else
+                {
+                    runBehaviorData.dest = target.transform.position;
+                    if (!fsm.ContainBehavior(Type.GetType("RunBehavior")))
+                    {
+                        BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
+                        walkBehavior.Init(BehaviorPriority.Basic, runBehaviorData, 1.0f);
+                        fsm.CheckAndAddBehavior(walkBehavior);
+                    }
                 }
             }
         }

@@ -47,7 +47,7 @@ public class EBow : NPC
             return;
 
 
-        UpdateHPBar();
+        hpBar.UpdateBar(curHP, maxHP, transform.position);
         UpdateTarget("Alley", ref target);
 
         if (target == null)

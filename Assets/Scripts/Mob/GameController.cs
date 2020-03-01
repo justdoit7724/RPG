@@ -87,7 +87,6 @@ public class GameController : MonoBehaviour
     {
         if(!isTriggered)
         {
-            RaycastHit hit;
             Collider[] colls = Physics.OverlapBox(wayPoint, triggerBoxRad, Quaternion.identity, LayerMask.GetMask("Alley"));
             foreach(var item in colls)
             {

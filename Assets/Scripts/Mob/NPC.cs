@@ -8,20 +8,10 @@ public class NPC : Mob
     [SerializeField] protected float detectRad = 25;
     [SerializeField] private GameObject hpBarPrefab;
     protected Transform uiCanvas;
+    protected HPBar hpBar;
 
     protected RunBehaviorData runBehaviorData;
-    protected struct HPBarInfo
-    {
-        public Slider slider;
-        public RectTransform transform;
-
-        public HPBarInfo(GameObject instance)
-        {
-            slider = instance.GetComponent<Slider>();
-            transform = instance.GetComponent<RectTransform>();
-        }
-    }
-    protected HPBarInfo hpBar;
+    
     protected Mob target = null;
 
     protected FSM fsm;
@@ -40,6 +30,12 @@ public class NPC : Mob
                     target = null;
                 }
                 break;
+            case MobMessage.CurseOn:
+                hpBar.ShowUp(false);
+                break;
+            case MobMessage.CurseOff:
+                hpBar.ShowUp(true);
+                break;
         }
     }
 
@@ -49,7 +45,7 @@ public class NPC : Mob
 
         uiCanvas = FindObjectOfType<Canvas>().transform;
 
-        hpBar = new HPBarInfo(Instantiate(hpBarPrefab, uiCanvas));
+        hpBar = Instantiate(hpBarPrefab, uiCanvas).GetComponent<HPBar>();
 
         fsm = GetComponent<FSM>();
 
@@ -70,7 +66,7 @@ public class NPC : Mob
 
     public override void Die()
     {
-        Destroy(hpBar.transform.gameObject);
+        Destroy(hpBar.gameObject);
         BaseBehavior deathBehavior = ScriptableObject.CreateInstance<DieBehavior>();
         deathBehavior.Init(BehaviorPriority.Vital, null, 0);
         fsm.CheckAndAddBehavior(deathBehavior);
@@ -89,17 +85,6 @@ public class NPC : Mob
         curHP -= amount;
     }
 
-    protected void UpdateHPBar()
-    {
-        if (curHP < maxHP)
-        {
-            Vector3 hpBarWPos = transform.position + Vector3.up * 2.0f;
-            Vector3 scnPos = Camera.main.WorldToScreenPoint(hpBarWPos);
-            scnPos.y -= Screen.height;
-            hpBar.transform.anchoredPosition = scnPos;
-            hpBar.slider.value = curHP / maxHP;
-        }
-    }
     protected void UpdateTarget(string layerName, ref Mob curTarget)
     {
         if (curTarget && !curTarget.IsDeath())

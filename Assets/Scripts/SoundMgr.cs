@@ -42,6 +42,8 @@ public class SoundMgr : MonoBehaviour
         audios.Add("Sliding", Resources.Load("Audios/Sliding") as AudioClip);
         audios.Add("PlayerBallSpawnAndHit", Resources.Load("Audios/PlayerBallSpawnAndHit") as AudioClip);
         audios.Add("PlayerBallSwing", Resources.Load("Audios/PlayerBallSwing") as AudioClip);
+        audios.Add("FootStep", Resources.Load("Audios/FootStep") as AudioClip);
+        audios.Add("GolemStep", Resources.Load("Audios/GolemStep") as AudioClip);
 
         DontDestroyOnLoad(gameObject);
     }

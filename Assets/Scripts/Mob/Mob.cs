@@ -112,7 +112,7 @@ public abstract class Mob : MonoBehaviour
 
     private IEnumerator IE_DamageEffect()
     {
-        const float damageEffectTime = 0.3f;
+        const float damageEffectTime = 0.55f;
         curDamageEffectTime = 0;
 
         while (curDamageEffectTime < damageEffectTime)
@@ -120,7 +120,7 @@ public abstract class Mob : MonoBehaviour
             curDamageEffectTime += Time.deltaTime;
 
             float t = curDamageEffectTime / damageEffectTime;
-            float mt = Mathf.Pow(t - 1, 4);
+            float mt = Mathf.Pow(t - 1, 2);
             mainMat.SetFloat("_HitFlash", mt);
 
             yield return null;

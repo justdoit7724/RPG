@@ -2576,6 +2576,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 679916265124778678, guid: 26d74afefb5744b41a9ceaa3c95852c3,
+        type: 3}
+      propertyPath: attRad.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 679916265124778678, guid: 26d74afefb5744b41a9ceaa3c95852c3,
+        type: 3}
+      propertyPath: attRad.y
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1172486260101202217, guid: 26d74afefb5744b41a9ceaa3c95852c3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2635,11 +2645,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Golem
-      objectReference: {fileID: 0}
-    - target: {fileID: 1175773121570024621, guid: 26d74afefb5744b41a9ceaa3c95852c3,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 26d74afefb5744b41a9ceaa3c95852c3, type: 3}
@@ -2847,6 +2852,11 @@ PrefabInstance:
       propertyPath: mainMat
       value: 
       objectReference: {fileID: 2100000, guid: d466961312bfdef4e9f0e4787855fdb9, type: 2}
+    - target: {fileID: 8409344377584344783, guid: 61ad96d37b7797e4bba6c6138bf99768,
+        type: 3}
+      propertyPath: speed
+      value: 4.5
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7350718188056002948, guid: 61ad96d37b7797e4bba6c6138bf99768, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 61ad96d37b7797e4bba6c6138bf99768, type: 3}
@@ -3177,7 +3187,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 34e5205d0b49aa045b8eee51a95b72d7, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.3
+  m_Volume: 0.1
   m_Pitch: 1
   Loop: 1
   Mute: 0

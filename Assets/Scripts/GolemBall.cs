@@ -29,6 +29,7 @@ public class GolemBall : MonoBehaviour
         spawnHeight = transform.position.y;
         rIndicator = Instantiate(rangeIndicatorPrefab, expPt, Quaternion.identity).GetComponent<RangeIndicator>();
         rIndicator.Init(mSplashRad, Color.red, 360);
+        rIndicator.gameObject.SetActive(true);
 
         StartCoroutine(IE_PlayFallingSound(Mathf.Lerp(0, 2.0f, growRate)));
     }
@@ -53,6 +54,7 @@ public class GolemBall : MonoBehaviour
             return;
 
         Collider[] colls = Physics.OverlapSphere(transform.position, mSplashRad, LayerMask.GetMask("Enemy"));
+        float physicPower = Mathf.Lerp(350f, 500.0f, growRate);
         foreach (var item in colls)
         {
             NPC target = item.GetComponent<NPC>();
@@ -62,7 +64,7 @@ public class GolemBall : MonoBehaviour
                 float distRate = 1.0f - (subVec.magnitude / mSplashRad);
                 float curDamage = distRate * mDamage;
                 target.GetDamaged(curDamage);
-                target.Rigid.AddForce(subVec.normalized * distRate * 350.0f);
+                target.Rigid.AddForce(subVec.normalized * distRate * physicPower);
             }
         }
 

@@ -49,6 +49,7 @@ public class Player : Mob
     private Vector3 camFollowPt;
     private Transform fireBallPt;
     private NPC autoTarget=null;
+    private CameraShakeSimpleScript camShaker;
 
     private float curTime = 0;
     private float curSpawnTime = 0;
@@ -56,13 +57,13 @@ public class Player : Mob
     private const float att1Damage = 45;
     private const float att2Damage = 50;
     private const float att3Damage = 65;
-    private const float att1Time = 0.6f;
-    private const float att2Time = 0.6f;
-    private const float att3Time = 1.0f;
+    private const float att1Time = 0.5f;
+    private const float att2Time = 0.55f;
+    private const float att3Time = 0.85f;
     private const float nextAttTime = 0.3f;
     private const float skBallTime = 0.6f;
-    private const float rollTime = 0.5f;
-    private const float rollSpeed = 13.0f;
+    private const float rollTime = 0.45f;
+    private const float rollSpeed = 15.0f;
     private Vector2 rIndicatorMaxRad = new Vector2(2.0f, 4.0f);
     private const float spawnChargeTime = 5.0f;
     private const float camZoonOutTime = 5.0f;
@@ -120,6 +121,7 @@ public class Player : Mob
         rIndicator = GetComponentInChildren<RangeIndicator>();
         rIndicator.Init(rIndicatorMaxRad.x, Color.red, 360);
         rIndicator.gameObject.SetActive(false);
+        camShaker = Camera.main.GetComponent<CameraShakeSimpleScript>();
 
         followCamera.transform.Rotate(camRotOffset);
         camFollowPt = transform.position + camPosOffset;
@@ -236,6 +238,8 @@ public class Player : Mob
         if (trail)
             trail.StartTrail();
         weapon.StartAttack();
+
+        camShaker.ShakeCaller(0.1f, 0.2f);
     }
     public override void AE_EndAttack()
     {
@@ -250,10 +254,21 @@ public class Player : Mob
             Instantiate(fireBallPrefab, fireBallPt.position, transform.rotation);
         }
     }
+    public void AE_FootStep()
+    {
+        if(!mainSoundPlayer.isPlaying || mainSoundPlayer.clip.name == "FootStep")
+            SoundMgr.Instance.Play(mainSoundPlayer, "FootStep", 0.125f);
+    }
 
     public void BT_Skill1()
     {
-        if((curBehavior == PlayerBehavior.Idle || curBehavior == PlayerBehavior.Run) && sk1Button.IsReady)
+        if((
+            curBehavior == PlayerBehavior.Idle || 
+            curBehavior == PlayerBehavior.Run || 
+            curBehavior == PlayerBehavior.Att1 ||
+            curBehavior == PlayerBehavior.Att2 ||
+            curBehavior == PlayerBehavior.Att3) && 
+            sk1Button.IsReady)
         {
             StartNewState(PlayerBehavior.Sk_FireBall);
             sk1Button.StartCooldown();
@@ -427,6 +442,11 @@ public class Player : Mob
         }
     }
 
+    private bool IsTouchArea(Vector2 clickPt)
+    {
+        return (clickPt.x > 500.0f || clickPt.y > 265.0f);
+    }
+
     void Update()
     {
         if (IsDeath() || !isUpdating)
@@ -460,7 +480,7 @@ public class Player : Mob
         }
 
 #elif UNITY_ANDROID
-        if (MobileTouch.Instance.IsOn)
+        if (MobileTouch.Instance.IsOnPlay)
         {
             if (MobileTouch.Instance.SqrFirstDragDist() > 6000)
             {
@@ -507,11 +527,11 @@ public class Player : Mob
 
 
 #elif UNITY_ANDROID
-                if (MobileTouch.Instance.IsOn)
+                if (MobileTouch.Instance.IsOnPlay)
                 {
                     if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
                     {
-                        if (MobileTouch.Instance.SqrStationaryDragDist() > 50000.0f && MobileTouch.Instance.StationaryDragTime() < 0.3f)// roll
+                        if (MobileTouch.Instance.SqrStationaryDragDist() > 45000.0f && MobileTouch.Instance.StationaryDragTime() < 0.4f)// roll
                         {
                             transform.LookAt(transform.position + newDir, Vector3.up);
                             StartNewState(PlayerBehavior.Roll);
@@ -552,11 +572,11 @@ public class Player : Mob
                     }
 
 #elif UNITY_ANDROID
-                    if (MobileTouch.Instance.IsOn)
+                    if (MobileTouch.Instance.IsOnPlay)
                     {
                         if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
                         {
-                            if (MobileTouch.Instance.SqrStationaryDragDist() > 50000.0f && MobileTouch.Instance.StationaryDragTime() < 0.3f)// roll
+                            if (MobileTouch.Instance.SqrStationaryDragDist() > 45000.0f && MobileTouch.Instance.StationaryDragTime() < 0.4f)// roll
                             {
                                 transform.LookAt(transform.position + newDir, Vector3.up);
                                 StartNewState(PlayerBehavior.Roll);
@@ -587,11 +607,13 @@ public class Player : Mob
             case PlayerBehavior.Roll://-------------------------------------------------------------ROLL---------------------------------------
                 {
                     float t = Mathf.Clamp01(curTime / rollTime);
-                    float mt = Mathf.Log(Mathf.Sin(t * Mathf.PI), 4);
-                    transform.position += transform.forward * rollSpeed * Time.deltaTime * t;
+                    transform.position += transform.forward * rollSpeed * t * Time.deltaTime;
 
                     if (curTime >= rollTime)
+                    {
                         StartNewState(isRunning ? PlayerBehavior.Run : PlayerBehavior.Idle);
+
+                    }
                 }
                 break;
             case PlayerBehavior.Att1://-------------------------------------------------------------ATT1---------------------------------------
@@ -618,17 +640,15 @@ public class Player : Mob
                 }
 
 #elif UNITY_ANDROID
-                if (MobileTouch.Instance.IsOn)
+                if (MobileTouch.Instance.IsOnPlay)
                 {
                     if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
                     {
-                        if (MobileTouch.Instance.SqrStationaryDragDist() > 50000.0f && MobileTouch.Instance.StationaryDragTime() < 0.3f)// roll
+                        if (MobileTouch.Instance.SqrStationaryDragDist() > 45000.0f && MobileTouch.Instance.StationaryDragTime() < 0.4f)// roll
                         {
                             transform.LookAt(transform.position + newDir, Vector3.up);
-                            {
-                                StartNewState(PlayerBehavior.Roll);
-                                break;
-                            }
+                            StartNewState(PlayerBehavior.Roll);
+                            break;
                         }
                         else if (MobileTouch.Instance.SqrFirstDragDist() < 1000.0f && ((att1Time - curTime) < nextAttTime))
                         {
@@ -673,7 +693,34 @@ public class Player : Mob
                     isSequenceAtt = true;
                 }
 #elif UNITY_ANDROID
+                if (MobileTouch.Instance.IsOnPlay)
+                {
+                    if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
+                    {
+                        if (MobileTouch.Instance.SqrStationaryDragDist() > 45000.0f && MobileTouch.Instance.StationaryDragTime() < 0.4f)// roll
+                        {
+                            transform.LookAt(transform.position + newDir, Vector3.up);
+                            StartNewState(PlayerBehavior.Roll);
+                            break;
+                        }
+                        else if (MobileTouch.Instance.SqrFirstDragDist() < 1000.0f && ((att2Time - curTime) < nextAttTime))
+                        {
+                            isSequenceAtt = true;
+                        }
+                    }
+                }
 
+                if(curTime>=att2Time)
+                {
+                    if (isSequenceAtt)
+                    {
+                        StartNewState(PlayerBehavior.Att3);
+                    }
+                    else
+                    {
+                        StartNewState(isRunning ? PlayerBehavior.Run : PlayerBehavior.Idle);
+                    }
+                }
 #endif
                 break;
             case PlayerBehavior.Att3://-----------------------------------------------------------------------------------ATT3----------------------------
@@ -688,7 +735,23 @@ public class Player : Mob
                     StartNewState(isRunning ? PlayerBehavior.Run : PlayerBehavior.Idle);
                 }
 #elif UNITY_ANDROID
+                if (MobileTouch.Instance.IsOnPlay)
+                {
+                    if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
+                    {
+                        if (MobileTouch.Instance.SqrStationaryDragDist() > 45000.0f && MobileTouch.Instance.StationaryDragTime() < 0.4f)// roll
+                        {
+                            transform.LookAt(transform.position + newDir, Vector3.up);
+                            StartNewState(PlayerBehavior.Roll);
+                            break;
+                        }
+                    }
+                }
 
+                if(curTime>=att3Time)
+                {
+                    StartNewState(isRunning ? PlayerBehavior.Run : PlayerBehavior.Idle);
+                }
 #endif
                 break;
             case PlayerBehavior.Sk_FireBall://------------------------------------------------------------------------SK1_FireBall---------------------------
@@ -700,7 +763,34 @@ public class Player : Mob
                     break;
             case PlayerBehavior.Sk_SpawnGolem://----------------------------------------------------------------------SK_GOLEM------------------------------
 
-                if (Input.GetMouseButton(0))
+#if UNITY_EDITOR
+                if (!IsTouchArea(Input.mousePosition))
+                    break;
+                if (rIndicator.gameObject.activeSelf && Input.GetMouseButtonUp(0))
+#elif UNITY_ANDROID
+                if (!MobileTouch.Instance.IsOnPlay)
+                    break;
+                if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
+#endif
+                {
+                    rIndicator.gameObject.SetActive(false);
+                    Destroy(golemSpawnBodyEffect);
+                    Instantiate(golemSpawnFinishPrefab, transform.position, Quaternion.identity);
+                    Vector3 ballDir = (new Vector3(1, -1, 0)).normalized;
+                    float growRate = Mathf.Clamp01(curSpawnTime / spawnChargeTime);
+                    float ballDist = Mathf.Lerp(30, 50, growRate);
+                    golemGrowRate = growRate;
+                    GolemBall golemBall = Instantiate(golemBallPrefab, rIndicator.transform.position - ballDir * ballDist, Quaternion.LookRotation(ballDir)).GetComponent<GolemBall>();
+                    golemBall.Init(this, growRate, rIndicator.transform.position);
+
+                    StartNewState(PlayerBehavior.Idle);
+                    PlayMainSound("GolemHit2", 0.5f);
+                }
+#if UNITY_EDITOR
+                else if (Input.GetMouseButton(0))
+#elif UNITY_ANDROID
+                else
+#endif
                 {
                     curSpawnTime += Time.deltaTime;
                     RaycastHit hit;
@@ -717,21 +807,7 @@ public class Player : Mob
                         camFollowPt = transform.position + camPosOffset - followCamera.transform.forward * camMaxDist * camT;
                     }
                 }
-                else if(rIndicator.gameObject.activeSelf && Input.GetMouseButtonUp(0))
-                {
-                    rIndicator.gameObject.SetActive(false);
-                    Destroy(golemSpawnBodyEffect);
-                    Instantiate(golemSpawnFinishPrefab, transform.position, Quaternion.identity);
-                    Vector3 ballDir = (new Vector3(1,-1,0)).normalized;
-                    float growRate = Mathf.Clamp01(curSpawnTime / spawnChargeTime);
-                    float ballDist = Mathf.Lerp(30,50, growRate);
-                    golemGrowRate = growRate;
-                    GolemBall golemBall = Instantiate(golemBallPrefab, rIndicator.transform.position - ballDir * ballDist, Quaternion.LookRotation(ballDir)).GetComponent<GolemBall>();
-                    golemBall.Init(this, growRate, rIndicator.transform.position);
-
-                    StartNewState(PlayerBehavior.Idle);
-                    PlayMainSound("GolemHit2", 0.5f);
-                }
+                
 
                 break;
 
@@ -742,13 +818,23 @@ public class Player : Mob
                         float t = Mathf.Clamp01(curTime / camZoonOutTime);
                         float camT = (1 - Mathf.Pow(t - 1, 2)) * 0.5f;
                         camFollowPt = transform.position + camPosOffset - followCamera.transform.forward * camMaxDist * 0.5f * camT;
-
                         RaycastHit hit;
-                        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, float.MaxValue, LayerMask.GetMask("PlayGround")))
+
+#if UNITY_EDITOR
+                        if (IsTouchArea(Input.mousePosition) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, float.MaxValue, LayerMask.GetMask("PlayGround")))
                         {
                             rIndicator.SetPosition(hit.point);
 
                             if (Input.GetMouseButtonDown(0))
+
+
+#elif UNITY_ANDROID
+                        if (MobileTouch.Instance.IsOnPlay && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, float.MaxValue, LayerMask.GetMask("PlayGround")))
+                        {
+                            rIndicator.SetPosition(hit.point);
+
+                            if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
+#endif
                             {
                                 golem.Jump(hit.point);
 
@@ -774,11 +860,6 @@ public class Player : Mob
     private void LateUpdate()
     {
         followCamera.transform.position = Vector3.Lerp(followCamera.transform.position, camFollowPt, 0.1f);
-    }
-
-    private void OnDrawGizmos()
-    {
-        //Gizmos.DrawLine(transform.position, transform.position +)
     }
 }
 

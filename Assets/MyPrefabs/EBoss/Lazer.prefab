@@ -4999,6 +4999,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitEffectPrefab: {fileID: 6655277056233985626, guid: e6846466bc040ef46b2c090f179c4888,
     type: 3}
+  hit2EffectPrefab: {fileID: 6655277056233985626, guid: a80c307c7a70453448d096135ab2cc58,
+    type: 3}
 --- !u!111 &37338127825265538
 Animation:
   m_ObjectHideFlags: 0

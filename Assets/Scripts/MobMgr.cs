@@ -4,7 +4,8 @@ using UnityEngine;
 public enum MobMessage
 {
     Die,
-
+    CurseOn,
+    CurseOff
 }
 public class MobMgr : MonoBehaviour
 {

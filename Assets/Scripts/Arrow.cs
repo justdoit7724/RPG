@@ -47,13 +47,13 @@ public class Arrow : MonoBehaviour
                 switch(UnityEngine.Random.Range(0,3))
                 {
                     case 0:
-                        hitMob.PlayHitSound("Hit1",0.3f);
+                        hitMob.PlayHitSound("Hit1",0.15f);
                         break;
                     case 1:
-                        hitMob.PlayHitSound("Hit2",0.4f);
+                        hitMob.PlayHitSound("Hit2",0.15f);
                         break;
                     case 2:
-                        hitMob.PlayHitSound("Hit3",0.4f);
+                        hitMob.PlayHitSound("Hit3",0.15f);
                         break;
                 }
 

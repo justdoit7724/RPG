@@ -6,10 +6,10 @@ using System.Collections.Generic;
 [RequireComponent(typeof(MeshFilter))]
 public class WeaponTrail : MonoBehaviour
 {
-    [SerializeField] Material trailMat;
-    [SerializeField] Transform startPoint;
-    [SerializeField] Transform endPoint;
-    [SerializeField] float lifeTime = 0.20f;
+    public Material trailMat;
+    public Transform startPoint;
+    public Transform endPoint;
+    public float lifeTime = 0.20f;
 
     private Mesh mesh;
     private const int maxVertCount = 320;

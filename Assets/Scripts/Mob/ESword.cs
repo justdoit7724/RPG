@@ -45,7 +45,7 @@ public class ESword : NPC
         if (IsDeath() || !isUpdating)
             return;
 
-        UpdateHPBar();
+        hpBar.UpdateBar(curHP, maxHP, transform.position);
         UpdateTarget("Alley", ref target);
 
         if (target == null)
@@ -80,7 +80,7 @@ public class ESword : NPC
                         soundKey = "EnemyAttDouble";
                     }
                     BaseBehavior attBehavior = ScriptableObject.CreateInstance<AnimEventBehavior>();
-                    attBehavior.Init(BehaviorPriority.Att, new AnimEventBData("att1", mainSoundPlayer, "EnemyAtt", 0.2f), 2.0f);
+                    attBehavior.Init(BehaviorPriority.Att, new AnimEventBData(animTrigger, mainSoundPlayer, soundKey, 0.2f), 2.0f);
                     fsm.CheckAndAddBehavior(attBehavior);
                 }
             }

@@ -49,17 +49,7 @@ public class Selector
 
     public BossBehaviorKind Get()
     {
-        BossBehaviorKind nextBehavior = BossBehaviorKind.Run;
-        try
-        {
-            nextBehavior = selection[UnityEngine.Random.Range(0, selection.Length)];
-        }
-        catch(System.IndexOutOfRangeException ex)
-        {
-            Debug.LogError("index out of range");
-        }
-
-        return nextBehavior;
+        return selection[UnityEngine.Random.Range(0, selection.Length)];
     }
 }
 
@@ -136,10 +126,10 @@ public class EBoss : NPC
         selector = new Selector();
         selector.Add(BossBehaviorKind.Run, 9);
         //selector.Add(BossBehaviorKind.MeleeAttack, 10);
-        //selector.Add(BossBehaviorKind.Laser, 10);
+        selector.Add(BossBehaviorKind.Laser, 10);
         //selector.Add(BossBehaviorKind.Ball, /*7*/3);
         //selector.Add(BossBehaviorKind.Spawn, 3);
-        selector.Add(BossBehaviorKind.Curse, 10);
+        //selector.Add(BossBehaviorKind.Curse, 10);
 
         InitPostProcessing();
 
@@ -157,6 +147,10 @@ public class EBoss : NPC
     {
         base.Die();
         DeleteLaser();
+        postprocessingMat.SetVector("_WaveCenter", new Vector4(-1, -1, -1, -1));
+
+        if(isCurseOn && !isCurseChanging)
+            StartCoroutine(IE_CurseChange());
     }
 
     public void CreateLaser()
@@ -166,7 +160,11 @@ public class EBoss : NPC
     }
     public void DeleteLaser()
     {
-        laser.Destroy(2.0f);
+        if (laser)
+        {
+            laser.Destroy(2.0f);
+            laser = null;
+        }
     }
 
     public override void AE_StartAttack()
@@ -284,8 +282,12 @@ public class EBoss : NPC
     private IEnumerator IE_CurseChange()
     {
         isCurseChanging = true;
+
+
         if (!isCurseOn)
         {
+            MobMgr.Instance.SendMessage(this, MobMessage.CurseOn);
+            hpBar.ShowUp(false);
             float t = 0;
             while(t<1)
             {
@@ -296,6 +298,8 @@ public class EBoss : NPC
         }
         else
         {
+            MobMgr.Instance.SendMessage(this, MobMessage.CurseOff);
+            hpBar.ShowUp(true);
             float t = 1;
             while(t>0)
             {
@@ -364,7 +368,7 @@ public class EBoss : NPC
             return;
 
         UpdateWave();
-        UpdateHPBar();
+        hpBar.UpdateBar(curHP, maxHP, transform.position);
 
         if (fsm.Count == 0)
         {
@@ -428,7 +432,7 @@ public class EBoss : NPC
             fsm.DirectAddBehavior(laserStartBehavior);
            
             LaserBehavior laserStayBehavior = ScriptableObject.CreateInstance<LaserBehavior>();
-            laserStayBehavior.Init(BehaviorPriority.Skill, new LaserBData(target, mainSoundPlayer, "Laser", 0.5f), laserDuration);
+            laserStayBehavior.Init(BehaviorPriority.Skill, new LaserBData(target, mainSoundPlayer, "Laser", 0.25f), laserDuration);
             fsm.DirectAddBehavior(laserStayBehavior);
             IdleBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
             idleBehavior.Init(BehaviorPriority.Basic, null, 2.5f);

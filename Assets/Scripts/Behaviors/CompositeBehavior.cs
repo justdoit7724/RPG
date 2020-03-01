@@ -21,7 +21,7 @@ public class CompositeBehavior : BaseBehavior
             if (curBehavior.State == BehaviorState.NotStarted)
                 curBehavior.StartBehavior(mob);
 
-            if (!(curBehavior.UpdateBehavior(mob)))
+            if (!curBehavior.UpdateBehavior(mob))
             {
                 curBehavior.EndBehavior(mob);
                 behaviors.RemoveFirst();
