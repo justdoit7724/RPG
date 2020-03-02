@@ -6749,7 +6749,7 @@ MonoBehaviour:
     type: 3}
   attRad: 11
   visualArrow: {fileID: 1385905041924122}
-  bowDamage: 30
+  bowDamage: 40
 --- !u!195 &59609688
 NavMeshAgent:
   m_ObjectHideFlags: 0

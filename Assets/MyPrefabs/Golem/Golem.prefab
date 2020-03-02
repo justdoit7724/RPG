@@ -447,7 +447,7 @@ MonoBehaviour:
   bodyScale: {x: 1, y: 1.6}
   attDamage: {x: 50, y: 90}
   stompDamage: {x: 120, y: 240}
-  maxHPRange: {x: 700, y: 1200}
+  maxHPRange: {x: 1000, y: 1800}
   attRad: {x: 1.5, y: 2}
   jumpSplashRange: {x: 3, y: 5}
   colliderSizeRange: {x: 0.4, y: 0.5}

@@ -6,9 +6,9 @@ using UnityEngine.UI;
 public class NPC : Mob
 {
     [SerializeField] protected float detectRad = 25;
-    [SerializeField] private GameObject hpBarPrefab;
+    [SerializeField] protected GameObject hpBarPrefab;
     protected Transform uiCanvas;
-    protected HPBar hpBar;
+    protected HPBar hpBar=null;
 
     protected RunBehaviorData runBehaviorData;
     
@@ -45,6 +45,7 @@ public class NPC : Mob
 
         uiCanvas = FindObjectOfType<Canvas>().transform;
 
+        if(hpBar==null)
         hpBar = Instantiate(hpBarPrefab, uiCanvas).GetComponent<HPBar>();
 
         fsm = GetComponent<FSM>();

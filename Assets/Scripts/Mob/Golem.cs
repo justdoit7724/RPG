@@ -22,9 +22,16 @@ public class Golem : NPC
     private float jumpSplash;
     private CameraShakeSimpleScript camShaker;
 
-
     public void InitGolem(Player player, float growRate)
     {
+        EBoss boss = FindObjectOfType<EBoss>();
+        if(boss)
+        {
+            if(hpBar==null)
+                hpBar = Instantiate(hpBarPrefab, uiCanvas).GetComponent<HPBar>();
+            hpBar.ShowUp(!boss.IsCurseOn);
+        }
+
         this.player = player;
 
         if(nav)

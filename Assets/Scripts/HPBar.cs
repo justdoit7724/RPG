@@ -9,7 +9,7 @@ public class HPBar : MonoBehaviour
     private Slider slider;
     private Image[] images;
 
-    void Start()
+    void Awake()
     {
         rTransform = GetComponent<RectTransform>();
         slider = GetComponent<Slider>();

@@ -30,10 +30,10 @@ Material:
     m_Floats:
     - _Interval: 0.05
     - _MaxInterval: 0.05
-    - _Value: 0
+    - _Value: 1.0017518
     - _WaveHWidth: 0.136
     - _WaveRad: 0.221
     - _WaveTime: 0.43
     - _WaveValue: 0
     m_Colors:
-    - _WaveCenter: {r: -1, g: -1, b: -1, a: -1}
+    - _WaveCenter: {r: -0.7935245, g: 0.6915028, b: 9.95867, a: 0}

@@ -69,15 +69,15 @@ public void FindIndicator()
         get {
             return (
                 Input.touchCount > 0 &&
-                Input.touches[0].position.y>450.0f);
+                Input.touches[0].position.y>380.0f);
         }
     }
     public bool IsOnPlay {
         get {
             return (
                 Input.touchCount > 0 &&
-                (Input.touches[0].position.x > 500.0f ||
-                Input.touches[0].position.y > 265.0f));
+                (Input.touches[0].position.x > 260.0f ||
+                Input.touches[0].position.y > 160.0f));
         }
     }
     

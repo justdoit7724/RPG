@@ -24,8 +24,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _EndRad: 50
-    - _StartRad: 80
+    - _EndRad: 40
+    - _StartRad: 100
     m_Colors:
     - _EndPt: {r: -10000, g: 0, b: 0, a: 0}
     - _StartPt: {r: -10000, g: 0, b: 0, a: 0}

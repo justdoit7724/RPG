@@ -30,12 +30,11 @@ public class MobMgr : MonoBehaviour
 
     public void RegisterMob(Mob mob)
     {
-        if(mobs.Contains(mob))
+        if(!mobs.Contains(mob))
         {
-            Debug.LogError("this mob is already registered");
+            mobs.Add(mob);
         }
 
-        mobs.Add(mob);
     }
     public void RemoveMob(Mob mob)
     {

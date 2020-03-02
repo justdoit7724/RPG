@@ -53,9 +53,9 @@
 
 			fixed4 frag(v2f i) : SV_Target
 			{
-				float noise = tex2D(_Noise, i.uv).x;
+				float noise = tex2D(_Noise, i.uv).x*0.99f;
 				float t = (cos((_Value + 1) * PI) + 1) * 0.5f;
-				float noiseT = saturate(ceil(noise + t - 0.999f));
+				float noiseT = saturate(ceil(noise + t - 0.9999f));
 
 				float3 col = 0;
 				float2 UV = i.uv;
@@ -73,7 +73,7 @@
 				float waveDist = length(waveCenterSubVec);
 				float maskT = Range01(waveDist, waveRad - _WaveHWidth, waveRad + _WaveHWidth);
 				float distT = maskT * abs(waveDist-waveRad)/ _WaveHWidth;
-				float waveT = abs(sin(distT * PI)) + 1; // f(x) = (1 - cos(x * PI)) * 0.5f 의 미분값 사용 for 빛 왜곡 세기
+				float waveT = abs(sin(distT * PI)) + 1; // f(x) = (1 - cos(x * PI)) * 0.5f 의 미분값 사용 for 빛 왜곡 세기 계산
 				
 				float curveIntensity = (1-_WaveValue)*0.3f;
 

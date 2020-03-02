@@ -62,9 +62,9 @@ public class Player : Mob
     private const float att3Time = 0.85f;
     private const float nextAttTime = 0.3f;
     private const float skBallTime = 0.6f;
-    private const float rollTime = 0.45f;
+    private const float rollTime = 0.55f;
     private const float rollSpeed = 15.0f;
-    private Vector2 rIndicatorMaxRad = new Vector2(2.0f, 4.0f);
+    private Vector2 rIndicatorMaxRad = new Vector2(1.5f, 3.0f);
     private const float spawnChargeTime = 5.0f;
     private const float camZoonOutTime = 5.0f;
     private const float camMaxDist = 12.0f;
@@ -86,7 +86,16 @@ public class Player : Mob
     }
     PlayerBehavior curBehavior= PlayerBehavior.Idle;
 
+    public override void Die()
+    {
+        base.Die();
 
+        mainSoundPlayer.Stop();
+        sk1Button.gameObject.SetActive(false);
+        sk2Button.gameObject.SetActive(false);
+        sk3Button.gameObject.SetActive(false);
+        StartNewState(PlayerBehavior.Die);
+    }
     public override void GetDamaged(float amount)
     {
         base.GetDamaged(amount);
@@ -95,7 +104,7 @@ public class Player : Mob
         // die this time
         if (curHP > 0 && curHP <= amount)
         {
-            StartNewState(PlayerBehavior.Die);
+            Die();
         }
 
         curHP -= amount;
@@ -365,7 +374,7 @@ public class Player : Mob
             case PlayerBehavior.Sk_JumpGolem:
                 anim.SetTrigger("idle");
                 rIndicator.gameObject.SetActive(true);
-                rIndicator.SetMaxRad(4.0f);
+                rIndicator.SetMaxRad(3.5f);
                 sk3Button.StartCooldown();
                 break;
             case PlayerBehavior.Die:
@@ -444,7 +453,7 @@ public class Player : Mob
 
     private bool IsTouchArea(Vector2 clickPt)
     {
-        return (clickPt.x > 500.0f || clickPt.y > 265.0f);
+        return (clickPt.x > 260.0f|| clickPt.y > 160.0f);
     }
 
     void Update()
@@ -460,7 +469,7 @@ public class Player : Mob
         Vector3 newDir = transform.forward;
         bool isRunning = false;
 
-#if UNITY_EDITOR
+#if UNITY_STANDALONE
         isRunning =
             Input.GetKey(KeyCode.A)||
             Input.GetKey(KeyCode.D) ||
@@ -510,7 +519,7 @@ public class Player : Mob
         switch (curBehavior)
         {
             case PlayerBehavior.Idle:
-#if UNITY_EDITOR
+#if UNITY_STANDALONE
                 if(Input.GetKeyDown(KeyCode.C))
                 {
                     transform.LookAt(transform.position + newDir, Vector3.up);
@@ -531,7 +540,7 @@ public class Player : Mob
                 {
                     if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
                     {
-                        if (MobileTouch.Instance.SqrStationaryDragDist() > 45000.0f && MobileTouch.Instance.StationaryDragTime() < 0.4f)// roll
+                        if (MobileTouch.Instance.SqrStationaryDragDist() > 40000.0f && MobileTouch.Instance.StationaryDragTime() < 0.4f)// roll
                         {
                             transform.LookAt(transform.position + newDir, Vector3.up);
                             StartNewState(PlayerBehavior.Roll);
@@ -550,7 +559,7 @@ public class Player : Mob
                 break;
             case PlayerBehavior.Run:
                 {
-#if UNITY_EDITOR
+#if UNITY_STANDALONE
                     if (Input.GetKeyDown(KeyCode.C))
                     {
                         transform.LookAt(transform.position + newDir, Vector3.up);
@@ -576,7 +585,7 @@ public class Player : Mob
                     {
                         if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
                         {
-                            if (MobileTouch.Instance.SqrStationaryDragDist() > 45000.0f && MobileTouch.Instance.StationaryDragTime() < 0.4f)// roll
+                            if (MobileTouch.Instance.SqrStationaryDragDist() > 40000.0f && MobileTouch.Instance.StationaryDragTime() < 0.4f)// roll
                             {
                                 transform.LookAt(transform.position + newDir, Vector3.up);
                                 StartNewState(PlayerBehavior.Roll);
@@ -617,7 +626,7 @@ public class Player : Mob
                 }
                 break;
             case PlayerBehavior.Att1://-------------------------------------------------------------ATT1---------------------------------------
-#if UNITY_EDITOR
+#if UNITY_STANDALONE
                 if (Input.GetKeyDown(KeyCode.C))
                 {
                     transform.LookAt(transform.position + newDir, Vector3.up);
@@ -644,7 +653,7 @@ public class Player : Mob
                 {
                     if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
                     {
-                        if (MobileTouch.Instance.SqrStationaryDragDist() > 45000.0f && MobileTouch.Instance.StationaryDragTime() < 0.4f)// roll
+                        if (MobileTouch.Instance.SqrStationaryDragDist() > 40000.0f && MobileTouch.Instance.StationaryDragTime() < 0.4f)// roll
                         {
                             transform.LookAt(transform.position + newDir, Vector3.up);
                             StartNewState(PlayerBehavior.Roll);
@@ -671,7 +680,7 @@ public class Player : Mob
 #endif
                 break;
             case PlayerBehavior.Att2://----------------------------------------------------------------------ATT2---------------------------------------
-#if UNITY_EDITOR
+#if UNITY_STANDALONE
                 if (Input.GetKeyDown(KeyCode.C))
                 {
                     transform.LookAt(transform.position + newDir, Vector3.up);
@@ -697,7 +706,7 @@ public class Player : Mob
                 {
                     if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
                     {
-                        if (MobileTouch.Instance.SqrStationaryDragDist() > 45000.0f && MobileTouch.Instance.StationaryDragTime() < 0.4f)// roll
+                        if (MobileTouch.Instance.SqrStationaryDragDist() > 40000.0f && MobileTouch.Instance.StationaryDragTime() < 0.4f)// roll
                         {
                             transform.LookAt(transform.position + newDir, Vector3.up);
                             StartNewState(PlayerBehavior.Roll);
@@ -724,7 +733,7 @@ public class Player : Mob
 #endif
                 break;
             case PlayerBehavior.Att3://-----------------------------------------------------------------------------------ATT3----------------------------
-#if UNITY_EDITOR
+#if UNITY_STANDALONE
                 if (Input.GetKeyDown(KeyCode.C))
                 {
                     transform.LookAt(transform.position + newDir, Vector3.up);
@@ -739,7 +748,7 @@ public class Player : Mob
                 {
                     if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
                     {
-                        if (MobileTouch.Instance.SqrStationaryDragDist() > 45000.0f && MobileTouch.Instance.StationaryDragTime() < 0.4f)// roll
+                        if (MobileTouch.Instance.SqrStationaryDragDist() > 40000.0f && MobileTouch.Instance.StationaryDragTime() < 0.4f)// roll
                         {
                             transform.LookAt(transform.position + newDir, Vector3.up);
                             StartNewState(PlayerBehavior.Roll);
@@ -763,7 +772,7 @@ public class Player : Mob
                     break;
             case PlayerBehavior.Sk_SpawnGolem://----------------------------------------------------------------------SK_GOLEM------------------------------
 
-#if UNITY_EDITOR
+#if UNITY_STANDALONE
                 if (!IsTouchArea(Input.mousePosition))
                     break;
                 if (rIndicator.gameObject.activeSelf && Input.GetMouseButtonUp(0))
@@ -786,7 +795,7 @@ public class Player : Mob
                     StartNewState(PlayerBehavior.Idle);
                     PlayMainSound("GolemHit2", 0.5f);
                 }
-#if UNITY_EDITOR
+#if UNITY_STANDALONE
                 else if (Input.GetMouseButton(0))
 #elif UNITY_ANDROID
                 else
@@ -820,7 +829,7 @@ public class Player : Mob
                         camFollowPt = transform.position + camPosOffset - followCamera.transform.forward * camMaxDist * 0.5f * camT;
                         RaycastHit hit;
 
-#if UNITY_EDITOR
+#if UNITY_STANDALONE
                         if (IsTouchArea(Input.mousePosition) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, float.MaxValue, LayerMask.GetMask("PlayGround")))
                         {
                             rIndicator.SetPosition(hit.point);

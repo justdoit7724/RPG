@@ -110,7 +110,7 @@ public class UIController : MonoBehaviour
 
     private void Update()
     {
-#if UNITY_EDITOR
+#if UNITY_STANDALONE
         if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
         {
             if (Input.GetMouseButtonDown(0))

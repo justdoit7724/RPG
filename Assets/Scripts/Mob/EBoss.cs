@@ -77,7 +77,7 @@ public class EBoss : NPC
     public RangeIndicator rIndicator;
     public Transform wavePt;
 
-    private Lazer laser=null;
+    private Lazer laser = null;
     private MeleeWeapon wand;
     private Selector selector;
     private WeaponTrail trail;
@@ -89,16 +89,20 @@ public class EBoss : NPC
     private bool isCurseChanging = false;
     private float waveTime = 0;
 
-    private const float laserDuration = 7.0f;
-    private const float xMoveOffset= 20.0f;
-    private const float zMoveOffset= 20.0f;
+    private const float laserDuration = 6.0f;
+    private const float xMoveOffset = 20.0f;
+    private const float zMoveOffset = 20.0f;
     private const float laserChargeTime = 1.7f;
 
 
     private delegate void BossBehaviorFunc();
     private BossBehaviorFunc[] behaviorFunc = new BossBehaviorFunc[6];
 
-    
+    public bool IsCurseOn{
+        get {
+        return isCurseOn;
+        }
+    }
 
     public override void Start()
     {
@@ -125,11 +129,11 @@ public class EBoss : NPC
 
         selector = new Selector();
         selector.Add(BossBehaviorKind.Run, 9);
-        //selector.Add(BossBehaviorKind.MeleeAttack, 10);
-        selector.Add(BossBehaviorKind.Laser, 10);
-        //selector.Add(BossBehaviorKind.Ball, /*7*/3);
-        //selector.Add(BossBehaviorKind.Spawn, 3);
-        //selector.Add(BossBehaviorKind.Curse, 10);
+        selector.Add(BossBehaviorKind.MeleeAttack, 10);
+        selector.Add(BossBehaviorKind.Laser, 5);
+        selector.Add(BossBehaviorKind.Ball, 9);
+        selector.Add(BossBehaviorKind.Spawn, 4);
+        selector.Add(BossBehaviorKind.Curse, 6);
 
         InitPostProcessing();
 
@@ -138,7 +142,7 @@ public class EBoss : NPC
 
     private void InitPostProcessing()
     {
-        postprocessingMat.SetFloat("_Value", 0);
+        postprocessingMat.SetFloat("_Value", 0.0f);
         postprocessingMat.SetFloat("_WaveValue", 0);
         postprocessingMat.SetVector("_WaveCenter", new Vector4(-1,-1,-1,-1));
     }
