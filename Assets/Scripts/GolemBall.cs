@@ -54,7 +54,7 @@ public class GolemBall : MonoBehaviour
             return;
 
         Collider[] colls = Physics.OverlapSphere(transform.position, mSplashRad, LayerMask.GetMask("Enemy"));
-        float physicPower = Mathf.Lerp(350f, 500.0f, growRate);
+        float physicPower = Mathf.Lerp(400f, 650.0f, growRate);
         foreach (var item in colls)
         {
             NPC target = item.GetComponent<NPC>();

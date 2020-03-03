@@ -80,7 +80,12 @@ public void FindIndicator()
                 Input.touches[0].position.y > 160.0f));
         }
     }
-    
+    public bool IsOn {
+        get {
+            return (Input.touchCount > 0);
+        }
+    }
+
     private TouchPhase phase= TouchPhase.Canceled;
     private Vector3 firstTouchPt = new Vector3(0, 0, 0);
     private float firstTouchTime = 0;

@@ -50,7 +50,7 @@ public class ESword : NPC
 
         if (target == null)
         {
-            if(!fsm.ContainBehavior(Type.GetType("IdleBehavior")))
+            if(fsm.CurBehaviorType!=Type.GetType("IdleBehavior"))
             {
                 BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
                 idleBehavior.Init(BehaviorPriority.Basic, null, 0);
@@ -63,7 +63,7 @@ public class ESword : NPC
             subVec.y = 0;
             if (subVec.sqrMagnitude <= sqrAttRad)
             {
-                if (!fsm.ContainBehavior(Type.GetType("AnimEventBehavior")))
+                if (fsm.CurBehaviorType != Type.GetType("AnimEventBehavior"))
                 {
                     transform.forward = subVec.normalized;
 
@@ -87,7 +87,7 @@ public class ESword : NPC
             else
             {
                 runBehaviorData.dest = target.transform.position;
-                if (!fsm.ContainBehavior(Type.GetType("RunBehavior")))
+                if (fsm.CurBehaviorType != Type.GetType("RunBehavior"))
                 {
                     BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
                     walkBehavior.Init(BehaviorPriority.Basic, runBehaviorData,0);

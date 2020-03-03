@@ -6,9 +6,8 @@ using UnityEngine;
 
 public class FSM : MonoBehaviour
 {
-    // push back / pop front
+    // Last-In-First-Out 상태에서 삽입, 제거가 모두 효율적인 '링크드 리스트' 사용
     private LinkedList<BaseBehavior> behaviors = new LinkedList<BaseBehavior>();
-    private Dictionary<Type, int> behaviorKinds = new Dictionary<Type, int>();
     private Mob mob;
 
     public int Count { get { return behaviors.Count; } }
@@ -16,11 +15,6 @@ public class FSM : MonoBehaviour
     public void Clear()
     {
         behaviors.Clear();
-        behaviorKinds.Clear();
-    }
-    public bool ContainBehavior(Type type)
-    {
-        return behaviorKinds.ContainsKey(type);
     }
 
     public void CheckAndAddBehavior(BaseBehavior behavior)
@@ -31,35 +25,16 @@ public class FSM : MonoBehaviour
         }
 
         behaviors.AddLast(behavior);
-        if (behaviorKinds.ContainsKey(behavior.GetType()))
-        {
-            behaviorKinds[behavior.GetType()]++;
-        }
-        else
-        {
-            behaviorKinds.Add(behavior.GetType(), 1);
-        }
     }
     public void DirectAddBehavior(BaseBehavior behavior)
     {
         behaviors.AddLast(behavior);
-        if (behaviorKinds.ContainsKey(behavior.GetType()))
-        {
-            behaviorKinds[behavior.GetType()]++;
-        }
-        else
-        {
-            behaviorKinds.Add(behavior.GetType(), 1);
-        }
     }
     private void RemoveFirstBehavior()
     {
         BaseBehavior firstBehavior = behaviors.First.Value;
         firstBehavior.EndBehavior(mob);
         behaviors.RemoveFirst();
-        behaviorKinds[firstBehavior.GetType()]--;
-        if (behaviorKinds[firstBehavior.GetType()] == 0)
-            behaviorKinds.Remove(firstBehavior.GetType());
     }
     private void RemoveLastBehavior()
     {
@@ -72,9 +47,14 @@ public class FSM : MonoBehaviour
         }
 
         behaviors.RemoveLast();
-        behaviorKinds[lastBehavior.GetType()]--;
-        if (behaviorKinds[lastBehavior.GetType()] == 0)
-            behaviorKinds.Remove(lastBehavior.GetType());
+    }
+
+    public Type CurBehaviorType {
+        get {
+            if (CurBehavior() == null)
+                return null;
+            return CurBehavior().GetType();
+        }
     }
     private BaseBehavior CurBehavior()
     {
@@ -105,12 +85,6 @@ public class FSM : MonoBehaviour
 
     void Update()
     {
-        if(name =="Golem")
-        {
-            int a = 0;
-
-        }
-
         // check
         if (CurBehavior())
         {
@@ -125,26 +99,4 @@ public class FSM : MonoBehaviour
         }
     }
 
-    //private void OnGUI()
-    //{
-
-    //    Vector2 scn = Camera.main.WorldToScreenPoint(transform.position);
-    //    scn.y = Screen.height - scn.y;
-    //    bool isFirst = false;
-    //    foreach(var i in behaviors)
-    //    {
-    //        if(!isFirst)
-    //        {
-    //            GUI.color = Color.red;
-    //            isFirst = true;
-    //        }
-    //        else
-    //        {
-    //            GUI.color = Color.cyan;
-    //        }
-    //        GUI.Label(new Rect(scn, new Vector2(150, 30)), i.ToString());
-
-    //        scn.y += 20;
-    //    }
-    //}
 }

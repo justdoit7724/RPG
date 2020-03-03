@@ -196,9 +196,14 @@ public class EBoss : NPC
 
     public void AE_StartLaserRangeIndicator()
     {
-        Vector3 subVec = target.transform.position - transform.position;
-        subVec.y = 0;
-        transform.forward = subVec.normalized;
+        Vector3 targetDir = transform.forward;
+        if (target)
+        {
+            Vector3 subVec = target.transform.position - transform.position;
+            subVec.y = 0;
+            targetDir = subVec.normalized;
+        }
+        transform.forward = targetDir;
         rIndicator.SetPosition(transform.position);
         rIndicator.SetDir(transform.forward);
         rIndicator.StartProgress(laserChargeTime, false);

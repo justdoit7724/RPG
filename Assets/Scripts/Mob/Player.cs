@@ -60,14 +60,14 @@ public class Player : Mob
     private const float att1Time = 0.5f;
     private const float att2Time = 0.55f;
     private const float att3Time = 0.85f;
-    private const float nextAttTime = 0.3f;
+    private const float nextAttTime = 0.25f;
     private const float skBallTime = 0.6f;
     private const float rollTime = 0.55f;
     private const float rollSpeed = 15.0f;
     private Vector2 rIndicatorMaxRad = new Vector2(1.5f, 3.0f);
     private const float spawnChargeTime = 5.0f;
     private const float camZoonOutTime = 5.0f;
-    private const float camMaxDist = 12.0f;
+    private const float camMaxDist = 15.0f;
 
     private bool isSequenceAtt = false;
 
@@ -536,7 +536,7 @@ public class Player : Mob
 
 
 #elif UNITY_ANDROID
-                if (MobileTouch.Instance.IsOnPlay)
+                if (MobileTouch.Instance.IsOn)
                 {
                     if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
                     {
@@ -545,7 +545,8 @@ public class Player : Mob
                             transform.LookAt(transform.position + newDir, Vector3.up);
                             StartNewState(PlayerBehavior.Roll);
                         }
-                        else if(MobileTouch.Instance.SqrFirstDragDist() < 1000.0f)
+                        else if(MobileTouch.Instance.SqrFirstDragDist() < 1000.0f &&  
+                            (Input.touches[0].position.x > 260.0f || Input.touches[0].position.y > 160.0f))
                         {
                             StartNewState(PlayerBehavior.Att1);
                         }
@@ -581,7 +582,7 @@ public class Player : Mob
                     }
 
 #elif UNITY_ANDROID
-                    if (MobileTouch.Instance.IsOnPlay)
+                    if (MobileTouch.Instance.IsOn)
                     {
                         if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
                         {
@@ -591,10 +592,10 @@ public class Player : Mob
                                 StartNewState(PlayerBehavior.Roll);
                                 break;
                             }
-                            else if (MobileTouch.Instance.SqrFirstDragDist() < 1000.0f)
+                            else if(MobileTouch.Instance.SqrFirstDragDist() < 1000.0f &&  
+                            (Input.touches[0].position.x > 260.0f || Input.touches[0].position.y > 160.0f))
                             {
                                 StartNewState(PlayerBehavior.Att1);
-                                break;
                             }
                         }
                     }
@@ -649,7 +650,7 @@ public class Player : Mob
                 }
 
 #elif UNITY_ANDROID
-                if (MobileTouch.Instance.IsOnPlay)
+                if (MobileTouch.Instance.IsOn)
                 {
                     if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
                     {
@@ -659,7 +660,8 @@ public class Player : Mob
                             StartNewState(PlayerBehavior.Roll);
                             break;
                         }
-                        else if (MobileTouch.Instance.SqrFirstDragDist() < 1000.0f && ((att1Time - curTime) < nextAttTime))
+                        else if (MobileTouch.Instance.SqrFirstDragDist() < 1000.0f && ((att1Time - curTime) < nextAttTime) &&  
+                            (MobileTouch.Instance.GetCurPt.x > 260.0f || MobileTouch.Instance.GetCurPt.y > 160.0f))
                         {
                             isSequenceAtt = true;
                         }
@@ -702,7 +704,7 @@ public class Player : Mob
                     isSequenceAtt = true;
                 }
 #elif UNITY_ANDROID
-                if (MobileTouch.Instance.IsOnPlay)
+                if (MobileTouch.Instance.IsOn)
                 {
                     if (MobileTouch.Instance.GetTouchPhase == TouchPhase.Ended)
                     {
@@ -712,7 +714,8 @@ public class Player : Mob
                             StartNewState(PlayerBehavior.Roll);
                             break;
                         }
-                        else if (MobileTouch.Instance.SqrFirstDragDist() < 1000.0f && ((att2Time - curTime) < nextAttTime))
+                        else if (MobileTouch.Instance.SqrFirstDragDist() < 1000.0f && ((att2Time - curTime) < nextAttTime)&&  
+                            (MobileTouch.Instance.GetCurPt.x > 260.0f || MobileTouch.Instance.GetCurPt.y > 160.0f))
                         {
                             isSequenceAtt = true;
                         }

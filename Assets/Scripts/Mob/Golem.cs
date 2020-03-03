@@ -20,10 +20,13 @@ public class Golem : NPC
     private float sqrAttRad;
     private float mStompDamage;
     private float jumpSplash;
+    private float growRate;
     private CameraShakeSimpleScript camShaker;
 
     public void InitGolem(Player player, float growRate)
     {
+        this.growRate = growRate;
+
         EBoss boss = FindObjectOfType<EBoss>();
         if(boss)
         {
@@ -52,7 +55,7 @@ public class Golem : NPC
         fist.SetDamage(Mathf.Lerp(attDamage.x, attDamage.y, growRate));
 
         camShaker = Camera.main.GetComponent<CameraShakeSimpleScript>();
-        camShaker.ShakeCaller(2.5f, 2.0f);
+        camShaker.ShakeCaller(3.5f, 2.0f);
 
         StartCoroutine(IE_Enable());
     }
@@ -127,6 +130,7 @@ public class Golem : NPC
         Instantiate(jumpHitEffectPrefab, transform.position, Quaternion.identity);
 
         Collider[] colls = Physics.OverlapSphere(transform.position, jumpSplash, LayerMask.GetMask("Enemy"));
+        float physicPower = Mathf.Lerp(300f, 450.0f, growRate);
         foreach (var item in colls)
         {
             NPC target = item.GetComponent<NPC>();
@@ -136,11 +140,11 @@ public class Golem : NPC
                 float distRate = 1.0f - (subVec.magnitude / jumpSplash);
                 float curDamage = distRate * mStompDamage;
                 target.GetDamaged(curDamage);
-                target.Rigid.AddForce(subVec.normalized * distRate * 150.0f);
+                target.Rigid.AddForce(subVec.normalized * distRate * physicPower);
             }
         }
 
-        camShaker.ShakeCaller(1.5f, 1.0f);
+        camShaker.ShakeCaller(2.5f, 1.5f);
         SoundMgr.Instance.Play(mainSoundPlayer, "GolemHit", 1.0f);
     }
     public void AE_Step()
@@ -153,7 +157,7 @@ public class Golem : NPC
     }
     public void Jump(Vector3 dest)
     {
-        if (!fsm.ContainBehavior(Type.GetType("GolemJumpBehavior")))
+        if (fsm.CurBehaviorType != Type.GetType("GolemJumpBehavior"))
         {
             target = null;
 
@@ -171,13 +175,13 @@ public class Golem : NPC
 
         hpBar.UpdateBar(curHP, maxHP, transform.position);
 
-        if (!fsm.ContainBehavior(Type.GetType("GolemJumpBehavior")))
+        if (fsm.CurBehaviorType != Type.GetType("GolemJumpBehavior"))
         {
             UpdateTarget("Enemy", ref target);
 
             if (target == null)
             {
-                if (!fsm.ContainBehavior(Type.GetType("IdleBehavior")))
+                if (fsm.CurBehaviorType != Type.GetType("IdleBehavior"))
                 {
                     BaseBehavior idleBehavior = ScriptableObject.CreateInstance<IdleBehavior>();
                     idleBehavior.Init(BehaviorPriority.Basic, null, 0);
@@ -190,7 +194,7 @@ public class Golem : NPC
                 subVec.y = 0;
                 if (subVec.sqrMagnitude <= sqrAttRad)
                 {
-                    if (!fsm.ContainBehavior(Type.GetType("AnimEventBehavior")))
+                    if (fsm.CurBehaviorType != Type.GetType("AnimEventBehavior"))
                     {
                         transform.LookAt(target.transform.position, Vector3.up);
 
@@ -202,7 +206,7 @@ public class Golem : NPC
                 else
                 {
                     runBehaviorData.dest = target.transform.position;
-                    if (!fsm.ContainBehavior(Type.GetType("RunBehavior")))
+                    if (fsm.CurBehaviorType != Type.GetType("RunBehavior"))
                     {
                         BaseBehavior walkBehavior = ScriptableObject.CreateInstance<RunBehavior>();
                         walkBehavior.Init(BehaviorPriority.Basic, runBehaviorData, 1.0f);

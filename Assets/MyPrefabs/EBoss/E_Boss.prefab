@@ -6826,7 +6826,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e7b87795e255914d933e26434679dab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 2000
+  maxHP: 1800
   mainMat: {fileID: 2100000, guid: 1c569ef19bc3bfd419c8cf99c7793706, type: 2}
   detectRad: 25
   hpBarPrefab: {fileID: 7630893359727299938, guid: a4e17527930a9934db4179e7d5ce4117,
