@@ -1,4 +1,4 @@
-﻿Shader "Custom/PostProcessing"
+Shader "Custom/PostProcessing"
 {
     Properties
     {
@@ -53,56 +53,61 @@
 
 			fixed4 frag(v2f i) : SV_Target
 			{
-				float noise = tex2D(_Noise, i.uv).x*0.99f;
+				float noise = tex2D(_Noise, i.uv).x*0.9999f;
 				float t = (cos((_Value + 1) * PI) + 1) * 0.5f;
 				float noiseT = saturate(ceil(noise + t - 0.9999f));
 
 				float3 col = 0;
 				float2 UV = i.uv;
 
-				//-------------------------------------------------------
-				// 저주(좌우반대) 효과와 결합 - 웨이브도 반대로 적용
+				// 1.-------------------------------------------------------
+				// Apply Left-Right reverse / Noise
 				UV -= 0.5f;
-				UV.x *= 1 - 2 * noiseT;
+				UV.x *= 1 - 2 * noiseT; // 1 ~ -1
 				UV += 0.5f;
+
+
 				float waveRad = lerp(0, 0.7f, _WaveValue);
 				float2 waveCenterSubVec = UV - _WaveCenter.xy;
-				waveCenterSubVec.y *= 2280.0f/1080.0f;
+				waveCenterSubVec.y *= 2280.0f/1080.0f; // screen ratio
 				float2 waveCenterDir = normalize(waveCenterSubVec);
 
 				float waveDist = length(waveCenterSubVec);
 				float maskT = Range01(waveDist, waveRad - _WaveHWidth, waveRad + _WaveHWidth);
 				float distT = maskT * abs(waveDist-waveRad)/ _WaveHWidth;
-				float waveT = abs(sin(distT * PI)) + 1; // f(x) = (1 - cos(x * PI)) * 0.5f 의 미분값 사용 for 빛 왜곡 세기 계산
+				float waveT = abs(sin(distT * PI)) + 1; // calculus of f(x) = (1 - cos(x * PI)) * 0.5f 
 				
 				float curveIntensity = (1-_WaveValue)*0.3f;
 
-				
-				// 웨이브 적용
+				// 2.----------------------------------------------------
+				// Apply Wave
 				UV -= _WaveCenter.xy;
 				UV *= ((waveT - 1) * curveIntensity * maskT + 1);
 				UV += _WaveCenter.xy;
 
-				// 웨이브 적용 후, 좌우 반전 재배치
+				// 3.-----------------------------------------------------
+				// Apply Left-Right reverse after Wave
 				UV -= 0.5f;
 				UV.x *= 1 - 2 * noiseT;
 				UV += 0.5f;
-				
-				//-------------------------------------------------------
 
-				//쉐이더에서 조건문 최대한 자제 (최적화)
+
 				col = tex2D(_MainTex, UV).xyz * (1 - noiseT);
-				float intervalT = pow((cos(_Time * 180.0f) + 1) * 0.5f, 7);
-				float hInterval = lerp(0.01f, 0.0225f, intervalT) * 0.5f;
+				
+				// 4.------------------------------------------------------
 				UV -= 0.5f;
 				UV.x *= -1.0f;
 				UV += 0.5f;
+
+				float intervalT = pow((cos(_Time * 180.0f) + 1) * 0.5f, 7);
+				float hInterval = lerp(0.01f, 0.0225f, intervalT) * 0.5f;
 				col += noiseT * tex2D(_MainTex, UV + float2(-hInterval, 0));
 				col += noiseT * tex2D(_MainTex, UV + float2(hInterval, 0));
 				col += noiseT * tex2D(_MainTex, UV + float2(0, -hInterval));
 				col += noiseT * tex2D(_MainTex, UV + float2(0, hInterval));
 				col = col * (0.25f + 0.75f * (1.0f - noiseT));
 				col = dot(col, float3(0.450, 0.86, 0.16)) * noiseT + col * (1 - noiseT);
+
 
 
 				return float4(col,1);
