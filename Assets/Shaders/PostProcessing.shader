@@ -63,7 +63,7 @@ Shader "Custom/PostProcessing"
 				// 1.-------------------------------------------------------
 				// Apply Left-Right reverse / Noise
 				UV -= 0.5f;
-				UV.x *= 1 - 2 * noiseT; // 1 ~ -1
+				UV.x *= 1 - 2 * noiseT; // 1 or -1
 				UV += 0.5f;
 
 
@@ -85,20 +85,10 @@ Shader "Custom/PostProcessing"
 				UV *= ((waveT - 1) * curveIntensity * maskT + 1);
 				UV += _WaveCenter.xy;
 
-				// 3.-----------------------------------------------------
-				// Apply Left-Right reverse after Wave
-				UV -= 0.5f;
-				UV.x *= 1 - 2 * noiseT;
-				UV += 0.5f;
 
 
 				col = tex2D(_MainTex, UV).xyz * (1 - noiseT);
 				
-				// 4.------------------------------------------------------
-				UV -= 0.5f;
-				UV.x *= -1.0f;
-				UV += 0.5f;
-
 				float intervalT = pow((cos(_Time * 180.0f) + 1) * 0.5f, 7);
 				float hInterval = lerp(0.01f, 0.0225f, intervalT) * 0.5f;
 				col += noiseT * tex2D(_MainTex, UV + float2(-hInterval, 0));
